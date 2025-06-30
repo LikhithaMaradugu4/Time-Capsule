@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1980s India - Streets of Memory</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Lexend:wght@400;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --saree-cream: #F5E7D6;
+            --saree-red: #C8402B;
+            --blouse-red: #A13126;
+            --polo-navy: #26314C;
+            --polo-red: #B23930;
+            --polo-yellow: #E0B94D;
+            --rickshaw-teal: #0E7A89;
+            --rickshaw-yellow: #E0A735;
+            --road-grey: #4F4A44;
+            --shirt-beige: #D7CBB3;
+            --trouser-brown: #5C4332;
+            --building-grey: #A89F90;
+            --building-blue: #567894;
+            --sky-haze: #D5C8B4;
+            --text-dark: #333333;
+            --text-light: #F5E7D6;
+            --accent: #C8402B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--saree-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../assets/images/noise-texture.png');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        header {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('../assets/images/1980s/india_street_scene.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: saturate(1.05) contrast(1.05);
+        }
+
+        .header-background::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(14, 122, 137, 0.1), rgba(245, 231, 214, 0.7));
+        }
+
+        .header-content {
+            text-align: center;
+            z-index: 1;
+            padding: 3rem;
+            max-width: 1000px;
+            background-color: rgba(14, 122, 137, 0.85);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(79, 74, 68, 0.3);
+            border-top: 5px solid var(--rickshaw-yellow);
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 5rem;
+            color: var(--saree-cream);
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--rickshaw-yellow);
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .decade-description {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .decade-btn {
+            background-color: var(--rickshaw-yellow);
+            color: var(--polo-navy);
+            border: none;
+            padding: 1rem 2rem;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .decade-btn:hover {
+            background-color: var(--saree-red);
+            color: var(--text-light);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        nav.category-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: var(--polo-navy);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            padding: 1.2rem 1.8rem;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: var(--rickshaw-yellow);
+            transition: all 0.3s;
+        }
+
+        .tab:hover::after, .tab.active::after {
+            width: 80%;
+        }
+
+        .tab:hover, .tab.active {
+            color: var(--rickshaw-yellow);
+        }
+
+        main {
+            position: relative;
+            padding: 4rem 2rem;
+            background-color: var(--saree-cream);
+        }
+
+        .section {
+            padding: 3rem 0;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            color: var(--saree-red);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--rickshaw-teal);
+        }
+
+        .music-player {
+            background: linear-gradient(to right, var(--polo-navy), var(--rickshaw-teal));
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-player::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--rickshaw-yellow), var(--saree-red), var(--rickshaw-yellow));
+        }
+
+        .music-player-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-list {
+            list-style-type: none;
+        }
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(245, 231, 214, 0.2);
+            transition: all 0.3s;
+            background-color: rgba(245, 231, 214, 0.1);
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .song-item:hover {
+            background-color: rgba(245, 231, 214, 0.2);
+            transform: translateX(10px);
+        }
+
+        .song-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--rickshaw-yellow);
+            margin-right: 1rem;
+            min-width: 30px;
+        }
+
+        .song-info {
+            flex-grow: 1;
+        }
+
+        .song-title {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .song-artist {
+            color: var(--shirt-beige);
+            font-size: 0.9rem;
+        }
+
+        .song-play {
+            color: var(--rickshaw-yellow);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .song-play:hover {
+            color: var(--saree-red);
+            transform: scale(1.2);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--shirt-beige);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(79, 74, 68, 0.1);
+            border: 1px solid var(--building-grey);
+            position: relative;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--rickshaw-teal);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(79, 74, 68, 0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            filter: saturate(1.05);
+            transition: all 0.3s;
+        }
+
+        .card:hover .card-image {
+            filter: saturate(1.2);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--saree-red);
+            margin-bottom: 0.8rem;
+        }
+
+        .card-text {
+            color: var(--trouser-brown);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-btn {
+            display: inline-block;
+            background-color: var(--rickshaw-teal);
+            color: var(--text-light);
+            padding: 0.5rem 1rem;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .card-btn:hover {
+            background-color: var(--saree-red);
+        }
+
+        .fashion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .fashion-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(79, 74, 68, 0.2);
+            background-color: var(--building-grey);
+        }
+
+        .fashion-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            transition: all 0.3s;
+        }
+
+        .fashion-item:hover .fashion-image {
+            filter: saturate(1.2);
+            transform: scale(1.05);
+        }
+
+        .fashion-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(transparent, rgba(38, 49, 76, 0.9));
+            color: var(--text-light);
+            transform: translateY(100%);
+            transition: all 0.3s;
+        }
+
+        .fashion-caption h3 {
+            color: var(--rickshaw-yellow);
+            margin-bottom: 0.5rem;
+            font-family: 'DM Serif Display', serif;
+        }
+
+        .fashion-item:hover .fashion-caption {
+            transform: translateY(0);
+        }
+
+        .news-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .news-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: var(--rickshaw-teal);
+            transform: translateX(-50%);
+        }
+
+        .news-item {
+            position: relative;
+            margin-bottom: 3rem;
+            width: 45%;
+        }
+
+        .news-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .news-item:nth-child(even) {
+            left: 55%;
+        }
+
+        .news-item::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--rickshaw-yellow);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px var(--rickshaw-teal);
+        }
+
+        .news-item:nth-child(odd)::before {
+            right: -44px;
+        }
+
+        .news-item:nth-child(even)::before {
+            left: -44px;
+        }
+
+        .news-content {
+            background-color: var(--shirt-beige);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(79, 74, 68, 0.1);
+            border-left: 5px solid var(--rickshaw-yellow);
+        }
+
+        .news-date {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--rickshaw-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--saree-red);
+            margin-bottom: 0.8rem;
+        }
+
+        .trends-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .trend-box {
+            background-color: var(--shirt-beige);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(79, 74, 68, 0.1);
+            transition: all 0.3s;
+            border: 1px solid var(--building-grey);
+        }
+
+        .trend-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(79, 74, 68, 0.2);
+        }
+
+        .trend-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--rickshaw-teal);
+        }
+
+        .trend-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--saree-red);
+            margin-bottom: 1rem;
+        }
+
+        .blog-section {
+            background: linear-gradient(to right, var(--shirt-beige), var(--saree-cream));
+            padding: 3rem;
+            border-radius: 8px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(79, 74, 68, 0.2);
+            position: relative;
+        }
+
+        .blog-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--rickshaw-teal), var(--rickshaw-yellow));
+        }
+
+        .blog-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--saree-red);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-meta {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--trouser-brown);
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--trouser-brown);
+        }
+
+        .blog-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .rickshaw-divider {
+            position: relative;
+            height: 30px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .rickshaw-divider::before {
+            content: '🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺🛺';
+            position: absolute;
+            animation: rickshawMove 30s linear infinite;
+            font-size: 24px;
+            white-space: nowrap;
+        }
+
+        @keyframes rickshawMove {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .cassette-tape {
+            background-color: var(--building-grey);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cassette-tape::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40%;
+            height: 40%;
+            background-color: var(--trouser-brown);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.2;
+        }
+
+        .cassette-tape::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(90deg, 
+                transparent, transparent 10px, 
+                rgba(79, 74, 68, 0.1) 10px, 
+                rgba(79, 74, 68, 0.1) 20px);
+        }
+
+        .polaroid {
+            background-color: var(--text-light);
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            display: inline-block;
+            margin: 1rem;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--building-grey);
+        }
+
+        .polaroid-caption {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 0.8rem;
+            color: var(--trouser-brown);
+            transform: rotate(2deg);
+        }
+
+        .decorative-pattern {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(45deg, 
+                var(--rickshaw-teal), var(--rickshaw-teal) 10px, 
+                transparent 10px, transparent 20px);
+        }
+
+        .vhs-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 9998;
+            pointer-events: none;
+            opacity: 0.5;
+            animation: vhsScan 8s linear infinite;
+        }
+
+        @keyframes vhsScan {
+            0% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        footer {
+            padding: 3rem 2rem;
+            background-color: var(--polo-navy);
+            color: var(--text-light);
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-image: repeating-linear-gradient(to right, 
+                var(--rickshaw-teal), var(--rickshaw-teal) 30px, 
+                var(--rickshaw-yellow) 30px, var(--rickshaw-yellow) 60px, 
+                var(--saree-red) 60px, var(--saree-red) 90px);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--rickshaw-yellow);
+        }
+
+        .footer-text {
+            margin-bottom: 2rem;
+            color: var(--shirt-beige);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-light);
+            font-family: 'Lexend', sans-serif;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--rickshaw-yellow);
+            text-decoration: underline;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-icon {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            color: var(--rickshaw-yellow);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: var(--building-grey);
+        }
+
+        @media (max-width: 900px) {
+            h1 {
+                font-size: 3.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .news-timeline::before {
+                left: 30px;
+            }
+
+            .news-item {
+                width: 100%;
+                left: 0 !important;
+                margin-left: 60px;
+            }
+
+            .news-item::before {
+                left: -44px !important;
+            }
+
+            .blog-section {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .decade-description {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .tab {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .blog-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vhs-effect"></div>
+    <header>
+        <div class="header-background"></div>
+        <div class="header-content">
+            <h1>1980s India</h1>
+            <p class="subtitle">STREETS OF MEMORY</p>
+            <p class="decade-description">
+                Step back in time to a vibrant era when teal auto-rickshaws zipped through dusty streets, 
+                cassette tapes revolutionized music consumption, and liberalization began to transform a nation.
+                Experience the colorful tapestry of 1980s India - a blend of tradition and emerging modernity.
+            </p>
+            <div class="header-buttons">
+                <button class="decade-btn">EXPLORE TIMELINE</button>
+                <button class="decade-btn">EXPERIENCE CULTURE</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="category-tabs">
+        <div class="tab active" data-target="music">Music</div>
+        <div class="tab" data-target="movies">Cinema</div>
+        <div class="tab" data-target="fashion">Fashion</div>
+        <div class="tab" data-target="news">News</div>
+        <div class="tab" data-target="trends">Trends</div>
+        <div class="tab" data-target="blog">Daily Life</div>
+    </nav>
+
+    <main>
+        <!-- Music Section -->
+        <section id="music" class="section active">
+            <h2 class="section-title">The Cassette Revolution</h2>
+            <div class="music-player">
+                <h3 class="music-player-title">Hits of the Decade</h3>
+                <ul class="song-list">
+                    <li class="song-item">
+                        <span class="song-number">01</span>
+                        <div class="song-info">
+                            <div class="song-title">Ek Do Teen</div>
+                            <div class="song-artist">Tezaab (1988) - Alka Yagnik</div>
+                        </div>
+                        <span class="song-play">▶️</span>
+                    </li>
+                    <li class="song-item">
+                        <span class="song-number">02</span>
+                        <div class="song-info">
+                            <div class="song-title">I Am A Disco Dancer</div>
+                            <div class="song-artist">Disco Dancer (1982) - Bappi Lahiri</div>
+                        </div>
+                        <span class="song-play">▶️</span>
+                    </li>
+                    <li class="song-item">
+                        <span class="song-number">03</span>
+                        <div class="song-info">
+                            <div class="song-title">Hum Bane Tum Bane</div>
+                            <div class="song-artist">Ek Duuje Ke Liye (1981) - Lata Mangeshkar & S.P. Balasubrahmanyam</div>
+                        </div>
+                        <span class="song-play">▶️</span>
+                    </li>
+                    <li class="song-item">
+                        <span class="song-number">04</span>
+                        <div class="song-info">
+                            <div class="song-title">Tamma Tamma Loge</div>
+                            <div class="song-artist">Thanedaar (1989) - Bappi Lahiri & Anuradha Paudwal</div>
+                        </div>
+                        <span class="song-play">▶️</span>
+                    </li>
+                    <li class="song-item">
+                        <span class="song-number">05</span>
+                        <div class="song-info">
+                            <div class="song-title">Ek Ladki Ko Dekha</div>
+                            <div class="song-artist">1942: A Love Story (1994) - Kumar Sanu</div>
+                        </div>
+                        <span class="song-play">▶️</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <img src="../assets/images/1980s/music/bappi_lahiri.jpg" alt="Bappi Lahiri" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Bappi Lahiri's Disco Era</h3>
+                        <p class="card-text">The "Disco King" of India revolutionized the music scene with his synthesizer-heavy beats and glitzy style, bringing disco fever to Bollywood.</p>
+                        <button class="card-btn">Discover More</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="../assets/images/1980s/music/cassette_culture.jpg" alt="Cassette Culture" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Cassette Revolution</h3>
+                        <p class="card-text">The affordable T-Series cassettes democratized music consumption, allowing regional and indie artists to reach audiences across the country.</p>
+                        <button class="card-btn">Explore History</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="cassette-tape"></div>
+                    <div class="card-content">
+                        <h3 class="card-title">Kumar Sanu & The Melody Kings</h3>
+                        <p class="card-text">The late 80s saw the rise of melodious voices like Kumar Sanu, Alka Yagnik, and Udit Narayan who would dominate the 90s charts.</p>
+                        <button class="card-btn">Listen Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movies Section -->
+        <section id="movies" class="section">
+            <h2 class="section-title">Masala Films & Parallel Cinema</h2>
+            <div class="rickshaw-divider"></div>
+            <div class="grid-container">
+                <div class="card">
+                    <img src="../assets/images/1980s/movies/mr_india.jpg" alt="Mr. India Movie Poster" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Mr. India (1987)</h3>
+                        <p class="card-text">Shekhar Kapur's sci-fi superhero film starring Anil Kapoor and Sridevi became a cultural phenomenon with its iconic villain Mogambo.</p>
+                        <button class="card-btn">Watch Trailer</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="../assets/images/1980s/movies/disco_dancer.jpg" alt="Disco Dancer Movie Poster" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Disco Dancer (1982)</h3>
+                        <p class="card-text">Mithun Chakraborty's rags-to-riches musical became a global sensation, especially in the Soviet Union and Central Asia.</p>
+                        <button class="card-btn">Watch Trailer</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="../assets/images/1980s/movies/jaane_bhi_do_yaaro.jpg" alt="Jaane Bhi Do Yaaro Movie Poster" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Jaane Bhi Do Yaaro (1983)</h3>
+                        <p class="card-text">Kundan Shah's dark satire on corruption became a cult classic and is considered one of the greatest Indian comedies ever made.</p>
+                        <button class="card-btn">Watch Trailer</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="../assets/images/1980s/movies/tezaab.jpg" alt="Tezaab Movie Poster" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">Tezaab (1988)</h3>
+                        <p class="card-text">N. Chandra's action drama launched Madhuri Dixit into superstardom with her iconic "Ek Do Teen" dance number.</p>
+                        <button class="card-btn">Watch Trailer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="rickshaw-divider"></div>
+        </section>
+
+        <!-- Fashion Section -->
+        <section id="fashion" class="section">
+            <h2 class="section-title">Bold Patterns & Synthetic Fabrics</h2>
+            <div class="fashion-grid">
+                <div class="fashion-item">
+                    <img src="../assets/images/1980s/fashion/polka_dots.jpg" alt="Polka Dot Sarees" class="fashion-image">
+                    <div class="fashion-caption">
+                        <h3>Polka Dot Sarees</h3>
+                        <p>Bold polka dot patterns on synthetic fabrics became a staple for women's fashion across urban India.</p>
+                    </div>
+                </div>
+                <div class="fashion-item">
+                    <img src="../assets/images/1980s/fashion/bell_bottoms.jpg" alt="Bell Bottoms & High-Waist Pants" class="fashion-image">
+                    <div class="fashion-caption">
+                        <h3>Bell Bottoms Evolution</h3>
+                        <p>The late 70s bell bottoms evolved into high-waisted pants with pleats, often paired with tucked-in printed shirts.</p>
+                    </div>
+                </div>
+                <div class="fashion-item">
+                    <img src="../assets/images/1980s/fashion/disco_influence.jpg" alt="Disco Fashion" class="fashion-image">
+                    <div class="fashion-caption">
+                        <h3>Disco Influence</h3>
+                        <p>Sequins, shimmery fabrics, and statement accessories gained popularity through Bollywood's disco-era films.</p>
+                    </div>
+                </div>
+                <div class="fashion-item">
+                    <img src="../assets/images/1980s/fashion/permed_hair.jpg" alt="Permed Hair & Headbands" class="fashion-image">
+                    <div class="fashion-caption">
+                        <h3>Permed Hair & Headbands</h3>
+                        <p>The "bubble cut" and permed hairstyles for women, along with colorful headbands, defined the decade's beauty standards.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="polaroid" style="transform: rotate(3deg);">
+                <img src="../assets/images/1980s/fashion/street_fashion.jpg" alt="Street Fashion 1985">
+                <div class="polaroid-caption">Mumbai Street Fashion, circa 1985</div>
+            </div>
+            <div class="polaroid" style="transform: rotate(-5deg);">
+                <img src="../assets/images/1980s/fashion/movie_inspired.jpg" alt="Movie Inspired Fashion">
+                <div class="polaroid-caption">Cinema-inspired trends, 1988</div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="section">
+            <h2 class="section-title">Defining Moments</h2>
+            <div class="news-timeline">
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">October 31, 1984</div>
+                        <h3 class="news-title">Assassination of Indira Gandhi</h3>
+                        <p>Prime Minister Indira Gandhi was assassinated by her bodyguards, leading to nationwide anti-Sikh riots and a period of political uncertainty.</p>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">December 2-3, 1984</div>
+                        <h3 class="news-title">Bhopal Gas Tragedy</h3>
+                        <p>A gas leak at the Union Carbide pesticide plant in Bhopal became one of the world's worst industrial disasters, killing thousands.</p>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">June 1983</div>
+                        <h3 class="news-title">Cricket World Cup Victory</h3>
+                        <p>India won its first Cricket World Cup under Kapil Dev's captaincy, defeating the West Indies at Lord's Cricket Ground in London.</p>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">November 1, 1984</div>
+                        <h3 class="news-title">Rajiv Gandhi Becomes PM</h3>
+                        <p>Following his mother's assassination, Rajiv Gandhi became India's youngest Prime Minister at the age of 40.</p>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">1985-1986</div>
+                        <h3 class="news-title">Shah Bano Case</h3>
+                        <p>A landmark Supreme Court judgment on Muslim women's right to maintenance led to controversial legislative intervention by the Rajiv Gandhi government.</p>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-content">
+                        <div class="news-date">1985</div>
+                        <h3 class="news-title">Doordarshan Expands</h3>
+                        <p>India's national television broadcaster expanded to broadcast in color, reaching millions more homes and becoming a cultural unifier.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trends Section -->
+        <section id="trends" class="section">
+            <h2 class="section-title">Cultural Phenomena</h2>
+            <div class="trends-container">
+                <div class="trend-box">
+                    <div class="trend-icon">📺</div>
+                    <h3 class="trend-title">Doordarshan Monopoly</h3>
+                    <p>The state broadcaster's shows like "Hum Log," "Buniyaad," and "Ramayan" united the nation through shared viewing experiences every Sunday morning.</p>
+                </div>
+                <div class="trend-box">
+                    <div class="trend-icon">🛺</div>
+                    <h3 class="trend-title">Auto-Rickshaw Culture</h3>
+                    <p>The teal-yellow autorickshaws became symbols of urban transportation, featuring in countless films and songs as icons of city life.</p>
+                </div>
+                <div class="trend-box">
+                    <div class="trend-icon">📼</div>
+                    <h3 class="trend-title">Video Parlors</h3>
+                    <p>Before home VCRs became common, neighborhood video parlors offered shared film viewing experiences, often with modified content.</p>
+                </div>
+                <div class="trend-box">
+                    <div class="trend-icon">📱</div>
+                    <h3 class="trend-title">Waiting for Landlines</h3>
+                    <p>Families would wait for years to get a telephone connection, making it a status symbol and necessitating the "PCO/STD booth" culture.</p>
+                </div>
+                <div class="trend-box">
+                    <div class="trend-icon">🎮</div>
+                    <h3 class="trend-title">Video Game Arrival</h3>
+                    <p>The first generation of video games reached India with "TV games" featuring Atari-style consoles that connected to television sets.</p>
+                </div>
+                <div class="trend-box">
+                    <div class="trend-icon">🥤</div>
+                    <h3 class="trend-title">Indian Soft Drinks</h3>
+                    <p>After Coca-Cola's 1977 exit, Indian brands like Thums Up, Limca, and Gold Spot dominated the market until multinational re-entry in the 90s.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="section">
+            <h2 class="section-title">A Day in Mumbai, 1985</h2>
+            <div class="decorative-pattern"></div>
+            <div class="blog-section">
+                <h3 class="blog-title">The Rhythm of Daily Life</h3>
+                <div class="blog-meta">By Historical AI Narrative | September 20, 2023</div>
+                <div class="blog-content">
+                    <p>The day begins early in our middle-class Dadar apartment. It's 6:30 AM, and All India Radio's signature tune drifts from our Murphy radio set as my father adjusts the dial. My mother is already in the kitchen, preparing chai and breakfast before the day's responsibilities begin. Outside, the first sounds of street vendors announcing their wares blend with the distant horns of BEST buses beginning their routes.</p>
+                    
+                    <p>Getting ready for school means putting on my crisp uniform – blue trousers and white shirt, neatly ironed the night before. My father will wear a light-colored synthetic shirt and dark trousers to his government job, while my mother selects a printed nylon saree with bold geometric patterns – the latest style that replaced the more traditional cotton handlooms of previous decades. Synthetic fabrics are everywhere now; they dry quickly in Mumbai's humidity and require less maintenance.</p>
+                    
+                    <p>I stuff my school books into my bag while my father scans the front page of The Times of India. Headlines about Prime Minister Rajiv Gandhi's modernization plans share space with news about the ongoing Punjab situation. The newspaper also carries a full-page advertisement for the newly launched Maruti 800 – the small car that everyone aspires to own, though our family continues to rely on public transport and my father's trusty Bajaj Chetak scooter.</p>
+                    
+                    <p>Before leaving, I quickly check if the latest edition of "Champak" magazine has arrived. It hasn't. Reading materials are precious and circulate among friends – comics like Amar Chitra Katha and Tinkle, or detective novels like "Jasusi Duniya." At school, we'll exchange these treasures during lunch breaks.</p>
+                    
+                    <p>The journey to school involves a crowded bus ride. The streets are alive with a colorful procession of teal and yellow auto-rickshaws, red BEST buses, and the occasional Premier Padmini taxi. Billboards advertise everything from Vimal textiles to the upcoming Amitabh Bachchan film. The city smells of exhaust fumes mixed with street food – the vada pav vendor is already setting up his stall near the bus stop.</p>
+                    
+                    <p>School today includes the exciting news that we'll be taken to watch the Republic Day parade on the new color television in the audiovisual room. Doordarshan broadcasts are a special occasion – at home, we gather every Sunday for the weekly movie, and now for popular serials like "Hum Log." My friends and I discuss last night's episode during lunch break, along with heated debates about cricket and Kapil Dev's latest performance.</p>
+                    
+                    <p>After school, I stop by the neighborhood lending library. For a small fee, I can borrow the latest magazines or novels. The shopkeeper also rents out comic books by the hour – children sit on a bench outside, carefully reading their temporary treasures. Next door, the video cassette rental shop displays posters of new releases, both Bollywood and occasional Hollywood films. My father sometimes rents movies for weekend family viewing on our neighbor's VCR.</p>
+                    
+                    <p>Walking home, I pass a group of children playing cricket in the narrow gully, using makeshift stumps and a rubber ball. The winning team will undoubtedly reenact scenes from India's famous 1983 World Cup victory. Nearby, young men with Sony Walkmans – prized possessions usually brought by relatives visiting from "foreign" – listen to mixtapes of the latest film songs.</p>
+                    
+                    <p>Evening brings the familiar ritual of standing in line at the public telephone booth to call my grandmother in our ancestral village. The STD (Subscriber Trunk Dialling) call is expensive, so conversations are brief and practical. The booth operator hands my father the bill, carefully calculated by a mechanical meter. Getting our own phone connection remains a distant dream – the waiting list is several years long.</p>
+                    
+                    <p>Dinner is accompanied by tales of office politics from my father and neighborhood gossip from my mother. The conversation inevitably turns to finances – rising prices, the struggle to save for my education, and whether we should invest in the new Indira Vikas Patra savings certificates. The liberalization of the economy is gradually introducing new products and aspirations, though most remain out of reach for average families like ours.</p>
+                    
+                    <p>Before bed, we gather around our neighbors' color TV to watch the evening news, followed by a popular serial. The entire apartment building seems to have the same viewing schedule, creating a strange synchronicity as identical sounds echo from multiple homes. The news reports on technological advancements and economic reforms, painting a picture of a modernizing India poised at the threshold of major transformation.</p>
+                    
+                    <p>As I prepare for bed, I glance at the poster of Amitabh Bachchan from "Shahenshah" on my wall. On my small desk sits a prized possession – a digital watch with calculator functions, brought by an uncle returning from Dubai. It represents the future, just as the weathered wooden desk inherited from my grandfather represents our past. Like India itself in the mid-1980s, our home is a blend of tradition and emerging modernity, navigating between established patterns and the exciting, if uncertain, new possibilities that each day brings.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-pattern"></div>
+        <div class="footer-content">
+            <h3 class="footer-title">Time Capsule: 1980s India</h3>
+            <p class="footer-text">Journey through the decades with our historical exploration project.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">About the Project</a>
+                <a href="#" class="footer-link">More Decades</a>
+                <a href="#" class="footer-link">Historical Resources</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="#" class="social-icon">📱</a>
+                <a href="#" class="social-icon">📘</a>
+                <a href="#" class="social-icon">📸</a>
+                <a href="#" class="social-icon">📹</a>
+            </div>
+            <p class="copyright">© 2023 Time Capsule Project | All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab navigation functionality
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show corresponding section
+                    const targetId = tab.dataset.target;
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Smooth scroll to section
+                    document.getElementById(targetId).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+            
+            // Simulated song playback
+            const playButtons = document.querySelectorAll('.song-play');
+            playButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const songTitle = this.parentNode.querySelector('.song-title').textContent;
+                    const songArtist = this.parentNode.querySelector('.song-artist').textContent;
+                    
+                    alert(`Now playing: ${songTitle} from ${songArtist}`);
+                    
+                    // Reset all play buttons
+                    playButtons.forEach(btn => btn.textContent = '▶️');
+                    
+                    // Change clicked button to pause
+                    this.textContent = '⏸️';
+                });
+            });
+            
+            // Scroll to explore button functionality
+            const exploreButtons = document.querySelectorAll('.decade-btn');
+            exploreButtons[0].addEventListener('click', function() {
+                document.querySelector('.category-tabs').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+            
+            exploreButtons[1].addEventListener('click', function() {
+                document.getElementById('music').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // VHS effect animation
+            const vhsEffect = document.querySelector('.vhs-effect');
+            
+            // Random glitches
+            setInterval(() => {
+                // Random position
+                vhsEffect.style.opacity = Math.random() > 0.7 ? '0.7' : '0.3';
+                
+                // Random height
+                vhsEffect.style.height = Math.random() > 0.8 ? '8px' : '4px';
+                
+                // Random speed
+                const duration = 5 + Math.random() * 10;
+                vhsEffect.style.animationDuration = `${duration}s`;
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

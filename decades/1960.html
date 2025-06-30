@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1960s India - Vintage TV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-blue: #A3C9E2;
+            --cream-building: #F3E2C1;
+            --beige-building: #E8D8B8;
+            --grey-building: #B5ADA3;
+            --street-brown: #6B5740;
+            --deep-brown: #2F1E15;
+            --cotton-white: #ECE3D5;
+            --faded-cotton: #D1C4AF;
+            --saree-red: #A53D36;
+            --saree-green: #3D744F;
+            --saree-mustard: #F0B672;
+            --bus-turquoise: #3C8995;
+            --bus-beige: #E6D7BB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(145deg, #4A3B2A 0%, #6B5B47 30%, #8B7355 70%, #5D4E35 100%);
+            color: var(--deep-brown);
+            line-height: 1.6;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+            position: relative;
+        }
+
+        .room-environment {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(240, 182, 114, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 70%, rgba(165, 61, 54, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #6B5B47 0%, #4A3B2A 70%, #3D2F1C 100%);
+            z-index: -2;
+        }
+
+        .wallpaper-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(240, 182, 114, 0.1) 0px,
+                    rgba(240, 182, 114, 0.1) 2px,
+                    transparent 2px,
+                    transparent 20px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(165, 61, 54, 0.05) 0px,
+                    rgba(165, 61, 54, 0.05) 1px,
+                    transparent 1px,
+                    transparent 15px
+                );
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .floor {
+            position: fixed;
+            bottom: -30%;
+            left: -30%;
+            width: 160%;
+            height: 80%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    #5D4E35 0px,
+                    #5D4E35 120px,
+                    #4A3B2A 120px,
+                    #4A3B2A 122px
+                ),
+                linear-gradient(0deg, #3D2F1C 0%, #5D4E35 100%);
+            transform: rotateX(75deg) translateZ(-150px);
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .tv-setup {
+            position: relative;
+            transform: perspective(1500px) rotateY(-12deg) rotateX(3deg);
+            z-index: 10;
+        }
+
+        .tv-console {
+            width: 950px;
+            height: 180px;
+            background: linear-gradient(145deg, #A0743D 0%, #8B5F32 50%, #6B4826 100%);
+            border-radius: 12px 12px 6px 6px;
+            position: relative;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.6),
+                0 10px 25px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(160, 116, 61, 0.3),
+                inset 0 -2px 4px rgba(61, 47, 28, 0.6);
+            margin-bottom: -40px;
+            z-index: -1;
+        }
+
+        .console-wood-grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(139, 95, 50, 0.4) 0px,
+                    rgba(139, 95, 50, 0.4) 3px,
+                    transparent 3px,
+                    transparent 12px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(107, 72, 38, 0.2) 0px,
+                    rgba(107, 72, 38, 0.2) 1px,
+                    transparent 1px,
+                    transparent 8px
+                );
+            border-radius: 12px 12px 6px 6px;
+            opacity: 0.7;
+        }
+
+        .console-doors {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            right: 30px;
+            bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .console-door {
+            flex: 1;
+            background: linear-gradient(145deg, #8B5F32, #6B4826);
+            border-radius: 8px;
+            border: 2px solid #5D4E35;
+            box-shadow: 
+                inset 0 2px 4px rgba(160, 116, 61, 0.2),
+                inset 0 -1px 2px rgba(61, 47, 28, 0.4);
+            position: relative;
+        }
+
+        .console-door::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: #3D2F1C;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .console-legs {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 850px;
+            height: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .console-leg {
+            width: 15px;
+            height: 30px;
+            background: linear-gradient(180deg, #8B5F32 0%, #6B4826 100%);
+            transform: perspective(100px) rotateX(20deg);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 
+                2px 4px 8px rgba(0,0,0,0.5),
+                inset 1px 0 2px rgba(160, 116, 61, 0.2);
+        }
+
+        .tv-container {
+            width: 800px;
+            height: 500px;
+            background: linear-gradient(145deg, #4A3C28, #5D4E35, #3D2F1C);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 
+                0 35px 70px rgba(0,0,0,0.8),
+                0 20px 40px rgba(0,0,0,0.6),
+                0 10px 20px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.1),
+                inset 0 -2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            transform: translateY(-25px);
+            z-index: 2;
+        }
+
+        .tv-container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px solid #8B7355;
+            border-radius: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .tv-main {
+            display: flex;
+            height: 100%;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .screen-container {
+            flex: 1;
+            background: linear-gradient(145deg, #2A2A2A, #1A1A1A);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 
+                inset 0 5px 15px rgba(0,0,0,0.8),
+                inset 0 -2px 5px rgba(255,255,255,0.1);
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #E8E0D0, #D5CDB8);
+            border-radius: 10px;
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            font-size: 48px;
+            color: #C44536;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #4A4A4A;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .button {
+            background: linear-gradient(145deg, #4A6741, #5A7751);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 1px 2px rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .controls {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .knob-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .knob {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #8B7355, #5D4E35, #3D2F1C);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.1);
+        }
+
+        .knob::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, #A0926B, #6B5B47);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .knob::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 3px;
+            height: 12px;
+            background: #2A2A2A;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .knob-labels {
+            display: flex;
+            justify-content: space-around;
+            width: 80px;
+            font-size: 8px;
+            color: #8B7355;
+            margin-top: 5px;
+        }
+
+        .small-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .small-button {
+            width: 20px;
+            height: 15px;
+            background: linear-gradient(145deg, #3D2F1C, #2A1F14);
+            border: 1px solid #5D4E35;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .speaker-grill {
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(90deg, transparent 0%, #2A1F14 2%, #2A1F14 4%, transparent 6%);
+            background-size: 4px 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+            opacity: 0.6;
+        }
+
+        .brand-label {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #3D2F1C;
+            letter-spacing: 3px;
+        }
+
+        .tv-shadow {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 700px;
+            height: 120px;
+            transform: translate(-50%, -40px) scaleX(1.2);
+            background: radial-gradient(ellipse at center, rgba(61, 47, 28, 0.6) 0%, rgba(61, 47, 28, 0.2) 70%, transparent 100%);
+            filter: blur(8px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .console-shadow {
+            position: absolute;
+            left: 50%;
+            top: 90%;
+            width: 800px;
+            height: 80px;
+            transform: translate(-50%, 20px) scaleX(1.1);
+            background: radial-gradient(ellipse at center, rgba(61, 47, 28, 0.4) 0%, rgba(61, 47, 28, 0.1) 70%, transparent 100%);
+            filter: blur(6px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-lighting {
+            position: absolute;
+            top: -150px;
+            left: -200px;
+            width: 400px;
+            height: 300px;
+            background: radial-gradient(
+                ellipse at 70% 80%,
+                rgba(240, 182, 114, 0.3) 0%,
+                rgba(240, 182, 114, 0.15) 40%,
+                transparent 70%
+            );
+            border-radius: 50%;
+            filter: blur(25px);
+            z-index: 0;
+            animation: ambientGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes ambientGlow {
+            0%, 100% { 
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.9;
+                transform: scale(1.1);
+            }
+        }
+
+        .room-accent {
+            position: fixed;
+            bottom: 20%;
+            right: 15%;
+            width: 120px;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(165, 61, 54, 0.1) 0%, transparent 100%);
+            border-radius: 60px;
+            filter: blur(15px);
+            z-index: 0;
+        }
+
+        .floor-lamp-glow {
+            position: fixed;
+            top: 25%;
+            left: 10%;
+            width: 180px;
+            height: 200px;
+            background: radial-gradient(
+                ellipse at 50% 100%,
+                rgba(240, 220, 180, 0.4) 0%,
+                rgba(240, 220, 180, 0.1) 60%,
+                transparent 100%
+            );
+            filter: blur(8px);
+            z-index: 0;
+        }
+
+        .vintage-floor-lamp {
+            position: absolute;
+            right: 80px;
+            top: -120px;
+            z-index: 15;
+            width: 80px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: perspective(300px) rotateY(-10deg) rotateX(5deg);
+        }
+
+        .lamp-shade-large {
+            width: 90px;
+            height: 60px;
+            background: linear-gradient(145deg, #F5E6D3 0%, #E6D4C1 50%, #D5CDB8 100%);
+            border-radius: 50% 50% 35% 35%/65% 65% 100% 100%;
+            border: 3px solid #D4C4A8;
+            position: relative;
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.4),
+                0 4px 10px rgba(0,0,0,0.2),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 8px rgba(0,0,0,0.1);
+            margin-bottom: -8px;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .lamp-shade-large::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(212, 196, 168, 0.3) 0px,
+                    rgba(212, 196, 168, 0.3) 2px,
+                    transparent 2px,
+                    transparent 6px
+                );
+            border-radius: 50% 50% 30% 30%/60% 60% 100% 100%;
+        }
+
+        .lamp-shade-large::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 8px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, transparent 100%);
+            filter: blur(4px);
+        }
+
+        .lamp-pole-large {
+            width: 10px;
+            height: 80px;
+            background: linear-gradient(145deg, #A67C52 0%, #8B6F47 50%, #6B5538 100%);
+            border-radius: 6px;
+            box-shadow: 
+                0 0 8px rgba(0,0,0,0.3),
+                2px 0 4px rgba(0,0,0,0.2),
+                inset 2px 0 4px rgba(139, 111, 71, 0.3),
+                inset -1px 0 2px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .lamp-pole-large::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 20px;
+            background: linear-gradient(145deg, #8B6F47, #6B5538);
+            border-radius: 10px;
+            box-shadow: 
+                inset 0 2px 4px rgba(0,0,0,0.3),
+                0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .lamp-base-large {
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(145deg, #8B6F47 0%, #6B5538 50%, #4A3B2A 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.5),
+                0 4px 8px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(139, 111, 71, 0.4),
+                inset 0 -2px 6px rgba(0,0,0,0.3);
+            margin-top: 0;
+            position: relative;
+        }
+
+        .lamp-base-large::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(107, 85, 56, 0.4) 0px,
+                    rgba(107, 85, 56, 0.4) 2px,
+                    transparent 2px,
+                    transparent 5px
+                );
+            border-radius: 50%;
+        }
+
+        .lamp-base-large::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 12px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 70%, transparent 100%);
+            filter: blur(6px);
+        }
+
+        .lamp-glow-large {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 100px;
+            background: radial-gradient(
+                ellipse at 50% 0%,
+                rgba(255, 245, 220, 0.7) 0%,
+                rgba(255, 245, 220, 0.4) 30%,
+                rgba(255, 245, 220, 0.1) 60%,
+                transparent 100%
+            );
+            filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .vintage-floor-lamp.on .lamp-glow-large {
+            opacity: 1;
+        }
+
+        .vintage-floor-lamp.on .lamp-shade-large {
+            background: linear-gradient(145deg, #FFFAEF 0%, #F5E6D3 50%, #E6D4C1 100%);
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.4),
+                0 4px 10px rgba(0,0,0,0.2),
+                0 0 30px rgba(255, 245, 220, 0.8),
+                inset 0 0 20px rgba(255, 245, 220, 0.6);
+        }
+
+        .lamp-switch-large {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #6B5538;
+            border-radius: 50%;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 1px 2px rgba(139, 111, 71, 0.3),
+                inset 0 -1px 2px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vintage-floor-lamp.on .lamp-switch-large {
+            background: #D4C4A8;
+            box-shadow: 
+                0 0 8px rgba(212, 196, 168, 0.7),
+                0 2px 4px rgba(0,0,0,0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4);
+        }
+
+        .lamp-cord-large {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 25px;
+            background: #3D2F1C;
+            border-radius: 2px;
+            box-shadow: 1px 0 2px rgba(0,0,0,0.3);
+        }
+
+        .lamp-reflection-large {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 20px;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(255, 245, 220, 0.3) 0%,
+                rgba(255, 245, 220, 0.1) 50%,
+                transparent 100%
+            );
+            filter: blur(2px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .vintage-floor-lamp.on .lamp-reflection-large {
+            opacity: 1;
+        }
+
+        .background-twinkles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .twinkle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #F0B672;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        .twinkle:nth-child(2n) {
+            background: #A53D36;
+            animation-duration: 4s;
+            animation-delay: 0.5s;
+        }
+
+        .twinkle:nth-child(3n) {
+            background: #3D744F;
+            animation-duration: 2.5s;
+            animation-delay: 1s;
+        }
+
+        .twinkle:nth-child(4n) {
+            background: #3C8995;
+            animation-duration: 3.5s;
+            animation-delay: 1.5s;
+        }
+
+        .twinkle:nth-child(5n) {
+            background: #E8D8B8;
+            animation-duration: 2.8s;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { 
+                opacity: 0; 
+                transform: scale(0.8);
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: scale(1.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="room-environment"></div>
+    <div class="wallpaper-pattern"></div>
+    <div class="floor"></div>
+    <div class="background-twinkles" id="twinkles"></div>
+    
+    <div class="tv-setup">
+        <div class="vintage-floor-lamp" id="floorLamp">
+            <div class="lamp-glow-large"></div>
+            <div class="lamp-shade-large"></div>
+            <div class="lamp-pole-large"></div>
+            <div class="lamp-switch-large"></div>
+            <div class="lamp-cord-large"></div>
+            <div class="lamp-base-large"></div>
+            <div class="lamp-reflection-large"></div>
+        </div>
+        <div class="ambient-lighting"></div>
+        <div class="tv-console">
+            <div class="console-wood-grain"></div>
+            <div class="console-doors">
+                <div class="console-door"></div>
+                <div class="console-door"></div>
+            </div>
+            <div class="console-legs">
+                <div class="console-leg"></div>
+                <div class="console-leg"></div>
+                <div class="console-leg"></div>
+                <div class="console-leg"></div>
+            </div>
+        </div>
+        <div class="console-shadow"></div>
+        <div class="tv-container">
+            <div class="tv-shadow"></div>
+            <div class="tv-main">
+                <div class="screen-container">
+                    <div class="screen">
+                        <div class="title">1960s India</div>
+                        <div class="subtitle">Post-Independence Transformation</div>
+                        <div class="description">
+                            Step back in time to an era when India was establishing its identity as a young independent nation. The 1960s saw India navigating new political challenges, embracing cultural renaissance, and building the foundations for its future while preserving its rich heritage.
+                        </div>
+                        <div class="buttons-container">
+                            <button class="button explore-btn">Explore Indian Heritage</button>
+                            <button class="button culture-btn">Experience The Culture</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="knob-container">
+                        <div class="knob"></div>
+                        <div class="knob-labels">
+                            <span>VL</span>
+                            <span>2</span>
+                            <span>4</span>
+                            <span>6</span>
+                            <span>8</span>
+                            <span>10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="knob-container">
+                        <div class="knob" style="width: 45px; height: 45px;">
+                            <div style="font-size: 8px; color: #8B7355; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">CH</div>
+                        </div>
+                        <div class="knob-labels" style="width: 60px;">
+                            <span>2</span>
+                            <span>4</span>
+                            <span>6</span>
+                            <span>8</span>
+                            <span>10</span>
+                            <span>12</span>
+                        </div>
+                    </div>
+                    
+                    <div class="small-buttons">
+                        <div class="small-button"></div>
+                        <div class="small-button"></div>
+                        <div class="small-button"></div>
+                        <div class="small-button"></div>
+                    </div>
+                    
+                    <div class="speaker-grill"></div>
+                </div>
+            </div>
+            
+            <div class="brand-label">COLOR TV</div>
+        </div>
+    </div>
+
+    <script>
+        // Create background twinkles
+        function createTwinkles() {
+            const twinklesContainer = document.getElementById('twinkles');
+            const twinkleCount = 300;
+            
+            for (let i = 0; i < twinkleCount; i++) {
+                const twinkle = document.createElement('div');
+                twinkle.className = 'twinkle';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size variation
+                const size = 1 + Math.random() * 2;
+                
+                twinkle.style.left = x + '%';
+                twinkle.style.top = y + '%';
+                twinkle.style.width = size + 'px';
+                twinkle.style.height = size + 'px';
+                twinkle.style.animationDelay = Math.random() * 3 + 's';
+                
+                twinklesContainer.appendChild(twinkle);
+            }
+        }
+        
+        // Initialize twinkles when page loads
+        window.addEventListener('load', createTwinkles);
+
+        // Add interactive knob rotation
+        document.querySelectorAll('.knob').forEach(knob => {
+            let rotation = 0;
+            knob.addEventListener('click', function() {
+                rotation += 30;
+                this.style.transform = `rotate(${rotation}deg)`;
+            });
+        });
+        
+        // Add button press effect
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'translateY(2px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px)';
+                }, 150);
+            });
+        });
+        
+        // Button functionality
+        document.querySelector('.explore-btn').addEventListener('click', function() {
+            alert('Exploring Indian Heritage...');
+        });
+        
+        document.querySelector('.culture-btn').addEventListener('click', function() {
+            alert('Experiencing the culture...');
+        });
+        
+        // Floor lamp on/off functionality with sound
+        document.getElementById('floorLamp').addEventListener('click', function() {
+            this.classList.toggle('on');
+            
+            // Create switch sound effect
+            const isOn = this.classList.contains('on');
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create a more realistic switch sound
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (isOn) {
+                // Switch ON sound - higher pitch click
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.05);
+            } else {
+                // Switch OFF sound - lower pitch click
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.05);
+            }
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        });
+    </script>
+</body>
+</html>

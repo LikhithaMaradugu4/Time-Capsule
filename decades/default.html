@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Capsule</title>
+    <style>
+        /* Default template styling */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(to bottom, #1a0b2e, #2a1b4e);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #b19cd9, #9b59b6, #d8b2ff, #e6e6fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .decade-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 20px 0;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <div class="header">
+            <h1 id="year-title">Exploring Time</h1>
+            <p>Journey through the years and discover the past</p>
+        </div>
+        
+        <div id="year-specific-content">
+            <!-- Content from API will be placed here -->
+        </div>
+        
+        <p>This is the default time explorer template. It adapts to show information about any year in history.</p>
+        
+        <h2>What Happened This Year?</h2>
+        <div id="events-list">
+            <!-- Events will be populated from the API -->
+        </div>
+        
+        <h2>Cultural Snapshot</h2>
+        <p>Music, fashion, and trends from this period in time.</p>
+        <div id="culture-content">
+            <!-- Cultural content will be populated here -->
+        </div>
+    </div>
+    
+    <script>
+        // Script to populate year-specific content will be added by the main application
+    </script>
+</body>
+</html>

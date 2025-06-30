@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1970s India - Railway Chronicles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Lora:wght@400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --saree-orange: #D66C1E;
+            --saree-red: #972618;
+            --saree-blue: #2C5D77;
+            --saree-beige: #D1B78A;
+            --shirt-cream: #F2E1C6;
+            --shirt-khaki: #C6AA85;
+            --pant-brown: #6D4835;
+            --pant-rust: #854D3C;
+            --train-green: #3B7467;
+            --train-yellow: #D7B446;
+            --platform-grey: #645C51;
+            --skin-tan: #C89A73;
+            --skin-brown: #6A402C;
+            --hair-dark: #2A1F1B;
+            --black: #1A120D;
+            --wall-yellow: #E5C087;
+            --wall-fade: #D1B173;
+            --floor-grey: #A9A296;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: var(--wall-yellow);
+            color: var(--hair-dark);
+            line-height: 1.6;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #D1B173 0%, #C1A368 40%, #B89959 100%);
+            perspective: 1000px;
+        }
+
+        .station-scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+
+        /* Railway station elements */
+        .station-wall {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--wall-yellow);
+            background-image: 
+                linear-gradient(0deg, rgba(169, 162, 150, 0.3) 0, transparent 10px),
+                linear-gradient(90deg, rgba(209, 177, 115, 0.5) 0%, var(--wall-yellow) 30%, var(--wall-fade) 70%, rgba(209, 177, 115, 0.6) 100%);
+            z-index: -10;
+        }
+
+        .wall-crack {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: -9;
+        }
+
+        .wall-crack:nth-child(1) {
+            top: 15%;
+            left: 30%;
+            width: 2px;
+            height: 160px;
+            transform: rotate(15deg);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .wall-crack:nth-child(2) {
+            top: 40%;
+            right: 20%;
+            width: 3px;
+            height: 200px;
+            transform: rotate(-20deg) translateY(-50%);
+        }
+
+        .wall-crack:nth-child(3) {
+            top: 70%;
+            left: 15%;
+            width: 100px;
+            height: 2px;
+            transform: rotate(5deg);
+        }
+
+        .wall-stain {
+            position: absolute;
+            background: radial-gradient(ellipse at center, rgba(151, 38, 24, 0.1), transparent 70%);
+            width: 180px;
+            height: 120px;
+            top: 10%;
+            right: 15%;
+            opacity: 0.6;
+            z-index: -9;
+        }
+
+        .wall-stain:nth-child(2) {
+            background: radial-gradient(ellipse at center, rgba(100, 92, 81, 0.15), transparent 70%);
+            width: 150px;
+            height: 200px;
+            top: 60%;
+            left: 8%;
+            opacity: 0.5;
+        }
+
+        .station-floor {
+            position: absolute;
+            bottom: 0;
+            left: -20vw;
+            width: 140vw;
+            height: 120vh;
+            background-image: 
+                linear-gradient(90deg, rgba(169, 162, 150, 0.2) 0px, transparent 2px),
+                linear-gradient(0deg, rgba(169, 162, 150, 0.2) 0px, transparent 2px),
+                linear-gradient(to bottom, var(--floor-grey) 0%, #9D968A 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            transform: rotateX(75deg) translateY(50vh) translateZ(-160px);
+            transform-origin: center bottom;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2) inset;
+            z-index: -8;
+        }
+
+        .ceiling {
+            position: absolute;
+            top: 0;
+            left: -20vw;
+            width: 140vw;
+            height: 100vh;
+            background-color: #C1A368;
+            transform: rotateX(-75deg) translateY(-50vh) translateZ(-160px);
+            transform-origin: center top;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3) inset;
+            z-index: -11;
+        }
+
+        .station-light {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(255, 249, 219, 0.8), transparent 70%);
+            filter: blur(8px);
+            z-index: -7;
+        }
+
+        .light-1 {
+            top: 0;
+            left: 30%;
+            width: 300px;
+            height: 150px;
+            opacity: 0.7;
+        }
+
+        .light-2 {
+            top: 0;
+            right: 20%;
+            width: 250px;
+            height: 120px;
+            opacity: 0.6;
+        }
+
+        .light-beam {
+            position: absolute;
+            top: 0;
+            left: 70%;
+            width: 120px;
+            height: 60vh;
+            background: linear-gradient(to bottom, rgba(255, 249, 219, 0.2), transparent);
+            transform: rotate(-20deg);
+            z-index: -7;
+            opacity: 0.5;
+        }
+
+        .ceiling-fan {
+            position: absolute;
+            top: 30px;
+            left: 45%;
+            width: 150px;
+            height: 150px;
+            z-index: -7;
+            transform-style: preserve-3d;
+        }
+
+        .fan-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: #4A4A4A;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fan-blade {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 15px;
+            height: 60px;
+            background: linear-gradient(to bottom, #4A4A4A, #777);
+            border-radius: 50%/10%;
+            transform-origin: center 0;
+            animation: spin 8s linear infinite;
+        }
+
+        .fan-blade:nth-child(2) {
+            transform: rotate(90deg) translateY(-10px);
+        }
+        
+        .fan-blade:nth-child(3) {
+            transform: rotate(180deg) translateY(-10px);
+        }
+        
+        .fan-blade:nth-child(4) {
+            transform: rotate(270deg) translateY(-10px);
+        }
+
+        @keyframes spin {
+            from {transform: rotate(0deg) translateY(-10px);}
+            to {transform: rotate(360deg) translateY(-10px);}
+        }
+
+        .fan-rod {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 6px;
+            height: 50px;
+            background-color: #777;
+            transform: translateX(-50%);
+        }
+
+        .dust-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            z-index: -6;
+            animation: float 15s infinite linear;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) rotate(0);
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) translateX(50px) rotate(360deg);
+            }
+        }
+
+        .poster {
+            position: absolute;
+            background-color: #F2E1C6;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+            transform: rotateY(-5deg);
+            z-index: -5;
+        }
+
+        .poster-1 {
+            width: 150px;
+            height: 220px;
+            top: 40%;
+            left: 5%;
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 100%),
+                url('../assets/images/1970s/posters/gov_poster.jpg');
+            background-size: cover;
+            transform: rotateY(5deg) rotateZ(-2deg);
+            filter: sepia(20%) brightness(0.9);
+            opacity: 0.9;
+        }
+
+        .poster-2 {
+            width: 120px;
+            height: 180px;
+            top: 30%;
+            right: 10%;
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.15) 100%),
+                url('../assets/images/1970s/posters/film_poster.jpg');
+            background-size: cover;
+            transform: rotateY(-3deg) rotateZ(1deg);
+            filter: sepia(10%) brightness(0.85);
+            opacity: 0.85;
+        }
+
+        .hindi-writing {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.3);
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            z-index: -5;
+            transform: scale(0.8);
+        }
+
+        .hindi-text-1 {
+            top: 25%;
+            left: 18%;
+            font-size: 1.5rem;
+        }
+
+        .hindi-text-2 {
+            bottom: 40%;
+            right: 15%;
+            font-size: 1.8rem;
+            transform: rotate(-3deg) scale(0.8);
+        }
+
+        /* Railway station furniture */
+        .bench {
+            position: absolute;
+            bottom: 0;
+            width: 300px;
+            height: 100px;
+            z-index: -6;
+            transform-style: preserve-3d;
+        }
+
+        .bench-left {
+            left: -50px;
+            transform: perspective(500px) rotateY(30deg);
+        }
+
+        .bench-right {
+            right: -50px;
+            transform: perspective(500px) rotateY(-30deg);
+        }
+
+        .bench-seat {
+            position: absolute;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(to right, #3B7467, #2A5952);
+            border: 2px solid #1E3F3A;
+            transform: translateZ(50px);
+        }
+
+        .bench-back {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to right, #3B7467, #2A5952);
+            border: 2px solid #1E3F3A;
+            transform: translateY(-40px) translateZ(30px);
+        }
+
+        .bench-leg {
+            position: absolute;
+            width: 8px;
+            height: 50px;
+            background-color: #1E3F3A;
+            bottom: 0;
+        }
+
+        .bench-leg:nth-child(1) {
+            left: 30px;
+            transform: translateZ(50px);
+        }
+
+        .bench-leg:nth-child(2) {
+            left: 270px;
+            transform: translateZ(50px);
+        }
+
+        .bench-leg:nth-child(3) {
+            left: 30px;
+            transform: translateZ(10px);
+        }
+
+        .bench-leg:nth-child(4) {
+            left: 270px;
+            transform: translateZ(10px);
+        }
+
+        .bench-slat {
+            position: absolute;
+            width: 280px;
+            height: 8px;
+            background-color: #2A5952;
+            left: 10px;
+            transform: translateZ(50px);
+        }
+
+        .bench-slat:nth-child(5) {
+            top: 0;
+        }
+
+        .bench-slat:nth-child(6) {
+            top: -16px;
+        }
+
+        .bench-slat:nth-child(7) {
+            top: -32px;
+        }
+
+        /* Tea stall */
+        .tea-stall {
+            position: absolute;
+            right: -80px;
+            bottom: 40px;
+            width: 200px;
+            height: 150px;
+            transform-style: preserve-3d;
+            transform: perspective(500px) rotateY(-15deg);
+            z-index: -5;
+        }
+
+        .tea-stall-counter {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            bottom: 0;
+            background: linear-gradient(to right, #6D4835, #854D3C);
+            transform: translateZ(20px);
+        }
+
+        .tea-stall-side {
+            position: absolute;
+            width: 100px;
+            height: 150px;
+            bottom: 0;
+            background: linear-gradient(to bottom, #854D3C, #6D4835);
+            transform-origin: bottom left;
+            transform: rotateY(90deg);
+        }
+
+        .tea-stall-back {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            bottom: 40px;
+            background: linear-gradient(to top, #6D4835, #854D3C);
+        }
+
+        .tea-pot {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background-color: #C89A73;
+            border-radius: 5px;
+            top: -25px;
+            left: 30px;
+            transform: translateZ(40px);
+        }
+
+        .tea-pot::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #C89A73;
+            border-radius: 50%;
+            top: -8px;
+            left: 10px;
+        }
+
+        .tea-pot::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 5px;
+            background-color: #C89A73;
+            border-radius: 2px;
+            top: 5px;
+            left: -10px;
+            transform: rotate(-20deg);
+        }
+
+        .tea-cups {
+            position: absolute;
+            top: -15px;
+            left: 80px;
+            transform: translateZ(40px);
+        }
+
+        .tea-cup {
+            position: absolute;
+            width: 12px;
+            height: 10px;
+            background-color: #F2E1C6;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .tea-cup:nth-child(1) {
+            left: 0;
+        }
+
+        .tea-cup:nth-child(2) {
+            left: 20px;
+        }
+
+        .tea-cup:nth-child(3) {
+            left: 40px;
+        }
+
+        /* Luggage items */
+        .luggage {
+            position: absolute;
+            bottom: 0;
+            transform-style: preserve-3d;
+            z-index: -5;
+        }
+
+        .luggage-1 {
+            left: 150px;
+            transform: perspective(500px) rotateY(10deg);
+        }
+
+        .luggage-suitcase {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            background: linear-gradient(to right, #2C5D77, #1A4560);
+            border: 2px solid #1A4560;
+            transform: translateZ(30px);
+        }
+
+        .luggage-bundle {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(to right, #D1B78A, #C6AA85);
+            border: 1px solid #6D4835;
+            border-radius: 5px;
+            left: 90px;
+            bottom: 10px;
+            transform: translateZ(20px);
+        }
+
+        .luggage-bundle::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 5px;
+            background-color: #6D4835;
+            top: 15px;
+        }
+
+        /* Railway speaker */
+        .speaker-horn {
+            position: absolute;
+            top: 80px;
+            right: 100px;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(to right, #888, #777);
+            border-radius: 10px 20px 20px 10px;
+            transform: rotateZ(10deg);
+            z-index: -7;
+        }
+
+        .speaker-horn::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #777;
+            border-radius: 50%;
+            top: 10px;
+            left: -10px;
+        }
+
+        .speaker-wire {
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            background-color: #555;
+            top: -50px;
+            right: 20px;
+            transform: rotate(10deg);
+        }
+
+        /* Railway Clock */
+        .station-clock {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #FFF;
+            border: 6px solid #645C51;
+            border-radius: 50%;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -5;
+        }
+
+        .clock-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .clock-hour, .clock-minute, .clock-second {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            background-color: #000;
+        }
+
+        .clock-hour {
+            width: 4px;
+            height: 30%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .clock-minute {
+            width: 3px;
+            height: 40%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .clock-second {
+            width: 2px;
+            height: 45%;
+            background-color: #972618;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .clock-center {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .clock-marking {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background-color: #000;
+            top: 5px;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+        }
+
+        .clock-logo {
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            top: 65%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            text-align: center;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* Platform Sign */
+        .platform-sign {
+            position: absolute;
+            width: 150px;
+            height: 40px;
+            background-color: #3B7467;
+            top: 80px;
+            left: 10%;
+            z-index: -5;
+        }
+
+        .platform-sign-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFF;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .platform-sign-chain {
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background-color: #666;
+            top: -40px;
+        }
+
+        .platform-sign-chain-left {
+            left: 20px;
+        }
+
+        .platform-sign-chain-right {
+            right: 20px;
+        }
+
+        /* Porter silhouette */
+        .porter {
+            position: absolute;
+            width: 60px;
+            height: 150px;
+            bottom: 0;
+            left: 65%;
+            z-index: -6;
+        }
+
+        .porter-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(201, 52, 36, 0.7);
+            clip-path: polygon(30% 0, 70% 0, 80% 30%, 70% 45%, 70% 100%, 30% 100%, 30% 45%, 20% 30%);
+        }
+
+        .porter-head {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(90, 60, 30, 0.7);
+            border-radius: 50%;
+            top: -15px;
+            left: 15px;
+        }
+
+        /* UI Elements - Split-flap display board */
+        .station-board {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            background-color: #222;
+            border: 10px solid #444;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                inset 0 2px 10px rgba(0, 0, 0, 0.8);
+            margin: auto;
+            z-index: 5;
+            transform-style: preserve-3d;
+            transform: rotateX(5deg);
+        }
+
+        .board-frame {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 5px solid #333;
+            background-color: #444;
+            border-radius: 10px;
+            z-index: -1;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.6),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .board-title {
+            color: #FFD700;
+            text-align: center;
+            font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .board-subtitle {
+            color: #FFF;
+            text-align: center;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .flip-display {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .flip-letter {
+            position: relative;
+            width: 40px;
+            height: 60px;
+            margin: 2px;
+            background-color: #111;
+            color: #DDD;
+            font-family: 'Courier Prime', monospace;
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .flip-letter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .flip-letter::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        .flip-top, .flip-bottom {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            overflow: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .flip-top {
+            top: 0;
+            line-height: 60px;
+            transform-origin: bottom center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+            animation: flipTop 0.8s ease-out;
+        }
+
+        .flip-bottom {
+            bottom: 0;
+            line-height: 0;
+            transform-origin: top center;
+            animation: flipBottom 0.8s ease-out;
+        }
+
+        @keyframes flipTop {
+            0% {transform: rotateX(0deg);}
+            50%, 100% {transform: rotateX(-90deg);}
+        }
+
+        @keyframes flipBottom {
+            0%, 50% {transform: rotateX(90deg);}
+            100% {transform: rotateX(0deg);}
+        }
+
+        .board-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .board-btn {
+            position: relative;
+            width: 180px;
+            height: 60px;
+            background-color: #3B7467;
+            color: #FFF;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .board-btn:hover {
+            background-color: #D66C1E;
+        }
+
+        .board-btn::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+        }
+
+        .board-btn:nth-child(2)::before {
+            background-color: #FF4500;
+            box-shadow: 0 0 5px rgba(255, 69, 0, 0.8);
+        }
+
+        .arriving-light {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #972618;
+            border-radius: 50%;
+            top: -35px;
+            right: 30px;
+            box-shadow: 0 0 10px rgba(151, 38, 24, 0.8);
+            animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            from {opacity: 1; box-shadow: 0 0 20px rgba(151, 38, 24, 0.8);}
+            to {opacity: 0.5; box-shadow: 0 0 5px rgba(151, 38, 24, 0.4);}
+        }
+
+        .navigation-tabs {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-tab {
+            position: relative;
+            width: 140px;
+            height: 40px;
+            background-color: #645C51;
+            color: #FFF;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px 5px 0 0;
+            transform-origin: bottom center;
+            transform: perspective(100px) rotateX(-10deg);
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background-color: #3B7467;
+            transform: perspective(100px) rotateX(0deg) translateY(5px);
+        }
+
+        .nav-tab::before, .nav-tab::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 15px;
+            background-color: #888;
+            top: -15px;
+        }
+
+        .nav-tab::before {
+            left: 20px;
+        }
+
+        .nav-tab::after {
+            right: 20px;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../assets/images/film-grain.png');
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .static-noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9997;
+        }
+
+        @media (max-width: 900px) {
+            .navigation-tabs {
+                top: -50px;
+            }
+            
+            .nav-tab {
+                width: 110px;
+                font-size: 0.7rem;
+            }
+            
+            .board-title {
+                font-size: 1.4rem;
+            }
+            
+            .flip-letter {
+                width: 30px;
+                height: 45px;
+                font-size: 1.8rem;
+            }
+            
+            .board-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .station-board {
+                width: 95%;
+                padding: 10px;
+            }
+            
+            .navigation-tabs {
+                top: -40px;
+                gap: 10px;
+            }
+            
+            .nav-tab {
+                width: 90px;
+                height: 30px;
+                font-size: 0.6rem;
+            }
+            
+            .board-title {
+                font-size: 1.2rem;
+            }
+            
+            .flip-letter {
+                width: 20px;
+                height: 30px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="station-scene">
+        <!-- Environment elements -->
+        <div class="station-wall"></div>
+        <div class="ceiling"></div>
+        <div class="station-floor"></div>
+        
+        <!-- Wall details -->
+        <div class="wall-crack"></div>
+        <div class="wall-crack"></div>
+        <div class="wall-crack"></div>
+        <div class="wall-stain"></div>
+        <div class="wall-stain"></div>
+        
+        <!-- Hindi writing on walls -->
+        <div class="hindi-writing hindi-text-1">यात्रियों कृपया ध्यान दें</div>
+        <div class="hindi-writing hindi-text-2">प्लेटफार्म नंबर 3</div>
+        
+        <!-- Posters -->
+        <div class="poster poster-1"></div>
+        <div class="poster poster-2"></div>
+        
+        <!-- Lighting -->
+        <div class="station-light light-1"></div>
+        <div class="station-light light-2"></div>
+        <div class="light-beam"></div>
+        
+        <!-- Ceiling fan -->
+        <div class="ceiling-fan">
+            <div class="fan-rod"></div>
+            <div class="fan-center"></div>
+            <div class="fan-blade"></div>
+            <div class="fan-blade"></div>
+            <div class="fan-blade"></div>
+            <div class="fan-blade"></div>
+        </div>
+        
+        <!-- Station clock -->
+        <div class="station-clock">
+            <div class="clock-face">
+                <div class="clock-hour" id="hour-hand"></div>
+                <div class="clock-minute" id="minute-hand"></div>
+                <div class="clock-second" id="second-hand"></div>
+                <div class="clock-center"></div>
+                <div class="clock-logo">IR</div>
+            </div>
+        </div>
+        
+        <!-- Platform sign -->
+        <div class="platform-sign">
+            <div class="platform-sign-chain platform-sign-chain-left"></div>
+            <div class="platform-sign-chain platform-sign-chain-right"></div>
+            <div class="platform-sign-text">PLATFORM 3</div>
+        </div>
+        
+        <!-- Speaker -->
+        <div class="speaker-horn">
+            <div class="speaker-wire"></div>
+        </div>
+        
+        <!-- Station furniture -->
+        <div class="bench bench-left">
+            <div class="bench-seat"></div>
+            <div class="bench-back"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-slat"></div>
+            <div class="bench-slat"></div>
+            <div class="bench-slat"></div>
+        </div>
+        
+        <div class="bench bench-right">
+            <div class="bench-seat"></div>
+            <div class="bench-back"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-leg"></div>
+            <div class="bench-slat"></div>
+            <div class="bench-slat"></div>
+            <div class="bench-slat"></div>
+        </div>
+        
+        <!-- Tea stall -->
+        <div class="tea-stall">
+            <div class="tea-stall-counter"></div>
+            <div class="tea-stall-side"></div>
+            <div class="tea-stall-back"></div>
+            <div class="tea-pot"></div>
+            <div class="tea-cups">
+                <div class="tea-cup"></div>
+                <div class="tea-cup"></div>
+                <div class="tea-cup"></div>
+            </div>
+        </div>
+        
+        <!-- Luggage -->
+        <div class="luggage luggage-1">
+            <div class="luggage-suitcase"></div>
+            <div class="luggage-bundle"></div>
+        </div>
+        
+        <!-- Porter silhouette -->
+        <div class="porter">
+            <div class="porter-head"></div>
+            <div class="porter-body"></div>
+        </div>
+        
+        <!-- Dust particles -->
+        <div id="dust-container"></div>
+        
+        <!-- Main UI - Split-flap board -->
+        <div class="station-board">
+            <div class="board-frame"></div>
+            <div class="arriving-light"></div>
+            
+            <!-- Navigation tabs -->
+            <div class="navigation-tabs">
+                <div class="nav-tab active">EXPLORE TRAINS</div>
+                <div class="nav-tab">PLATFORM INFO</div>
+                <div class="nav-tab">STATION LIFE</div>
+            </div>
+            
+            <h1 class="board-title">1970s India</h1>
+            <p class="board-subtitle">RAILWAY CHRONICLES</p>
+            
+            <div class="flip-display" id="flipDisplay">
+                <!-- Split-flap letters will be dynamically generated -->
+            </div>
+            
+            <div class="board-buttons">
+                <button class="board-btn" id="exploreBtn">EXPLORE TIMELINE</button>
+                <button class="board-btn" id="experienceBtn">EXPERIENCE CULTURE</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grain-overlay"></div>
+    <div class="static-noise" id="staticNoise"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create dust particles
+            const dustContainer = document.getElementById('dust-container');
+            for (let i = 0; i < 30; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust-particle';
+                dust.style.left = Math.random() * 100 + '%';
+                dust.style.bottom = Math.random() * 50 + '%';
+                dust.style.animationDuration = 10 + Math.random() * 20 + 's';
+                dust.style.animationDelay = Math.random() * 10 + 's';
+                dustContainer.appendChild(dust);
+            }
+            
+            // Clock functionality
+            function updateClock() {
+                const now = new Date();
+                const hours = now.getHours() % 12;
+                const minutes = now.getMinutes();
+                const seconds = now.getSeconds();
+                
+                const hourHand = document.getElementById('hour-hand');
+                const minuteHand = document.getElementById('minute-hand');
+                const secondHand = document.getElementById('second-hand');
+                
+                const hourDeg = (hours * 30) + (minutes * 0.5);
+                const minuteDeg = minutes * 6;
+                const secondDeg = seconds * 6;
+                
+                hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+                minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+                secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+            }
+            
+            // Update clock immediately and then every second
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Film grain effect
+            function addNoise() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = 100;
+                canvas.height = 100;
+                
+                const imageData = ctx.createImageData(100, 100);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    const value = Math.random() * 255;
+                    data[i] = value;
+                    data[i + 1] = value;
+                    data[i + 2] = value;
+                    data[i + 3] = Math.random() * 25; // Alpha for subtle effect
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                
+                document.getElementById('staticNoise').style.backgroundImage = `url(${canvas.toDataURL('image/png')})`;
+            }
+            
+            // Call once on load
+            addNoise();
+            
+            // Periodically refresh noise effect for animation
+            setInterval(addNoise, 100);
+            
+            // Create split-flap display
+            const flipDisplay = document.getElementById('flipDisplay');
+            const message = "Journey through the colorful tapestry of 1970s India";
+            
+            function createFlipLetters(text) {
+                flipDisplay.innerHTML = '';
+                
+                for (let i = 0; i < text.length; i++) {
+                    const flipLetter = document.createElement('div');
+                    flipLetter.className = 'flip-letter';
+                    
+                    const flipTop = document.createElement('div');
+                    flipTop.className = 'flip-top';
+                    flipTop.textContent = text[i];
+                    
+                    const flipBottom = document.createElement('div');
+                    flipBottom.className = 'flip-bottom';
+                    flipBottom.textContent = text[i];
+                    
+                    flipLetter.appendChild(flipTop);
+                    flipLetter.appendChild(flipBottom);
+                    
+                    // Delay animation for cascade effect
+                    flipTop.style.animationDelay = `${i * 0.05}s`;
+                    flipBottom.style.animationDelay = `${i * 0.05}s`;
+                    
+                    flipDisplay.appendChild(flipLetter);
+                    
+                    // Add space after words
+                    if (text[i] === ' ') {
+                        flipLetter.style.backgroundColor = 'transparent';
+                        flipLetter.style.boxShadow = 'none';
+                        flipTop.style.display = 'none';
+                        flipBottom.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Initialize the display
+            createFlipLetters(message);
+            
+            // Button interactions with flip animation
+            document.getElementById('exploreBtn').addEventListener('click', function() {
+                createFlipLetters("Explore the rich history of Indian Railways");
+            });
+            
+            document.getElementById('experienceBtn').addEventListener('click', function() {
+                createFlipLetters("Experience the culture of 1970s train journeys");
+            });
+            
+            // Tab interactions
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabText = this.textContent;
+                    
+                    if (tabText === 'EXPLORE TRAINS') {
+                        createFlipLetters("Journey through the colorful tapestry of 1970s India");
+                    } else if (tabText === 'PLATFORM INFO') {
+                        createFlipLetters("Platform 3: Delhi - Howrah Express arriving soon");
+                    } else if (tabText === 'STATION LIFE') {
+                        createFlipLetters("Tea stalls, porters, and the rhythm of railway life");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

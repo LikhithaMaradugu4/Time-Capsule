@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikhil - GenAI Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1a0b2e;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #b19cd9;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        #galaxy-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: auto;
+            max-width: 90vw;
+            padding: 2rem;
+        }
+
+        .section.active {
+            opacity: 1;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #b19cd9;
+            background: transparent;
+            border-radius: 50%;
+            color: #b19cd9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background: rgba(177, 156, 217, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
+        }
+
+        .nav-btn.active {
+            background: #b19cd9;
+            color: #1a0b2e;
+        }
+
+        .zoom-controls {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .zoom-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #9b59b6;
+            background: rgba(26, 11, 46, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            color: #9b59b6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(155, 89, 182, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+        }
+
+        /* Big Bang Transition Effect Styles */
+        .big-bang-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a0b2e;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .big-bang-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .big-bang-core {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 50px 20px rgba(255, 255, 255, 0.8),
+                        0 0 100px 40px rgba(177, 156, 217, 0.6);
+            transform-origin: center;
+            transform: scale(0);
+        }
+
+        .energy-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(216, 178, 255, 0.8) 30%,
+                rgba(177, 156, 217, 0.6) 50%,
+                rgba(155, 89, 182, 0.4) 70%,
+                transparent 100%
+            );
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        .star-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+        }
+        
+        /* Section Styles */
+        .intro h1 {
+            font-size: clamp(2rem, 8vw, 6rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #b19cd9, #9b59b6, #d8b2ff, #e6e6fa);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: galaxy-gradient 4s ease-in-out infinite;
+        }
+
+        @keyframes galaxy-gradient {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 50% 100%; }
+            75% { background-position: 50% 0%; }
+        }
+
+        .typing-text {
+            font-size: clamp(1rem, 4vw, 2rem);
+            color: #b19cd9;
+            margin-bottom: 3rem;
+            min-height: 3rem;
+            text-shadow: 0 0 10px rgba(177, 156, 217, 0.5);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: rgba(26, 11, 46, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #b19cd9;
+            color: #b19cd9;
+            text-decoration: none;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(177, 156, 217, 0.3);
+            background: rgba(177, 156, 217, 0.1);
+        }
+
+        .about h2, .projects h2, .skills h2, .contact h2 {
+            font-size: clamp(2rem, 6vw, 4rem);
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #9b59b6, #b19cd9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(155, 89, 182, 0.3);
+        }
+
+        .about p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(177, 156, 217, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(177, 156, 217, 0.2);
+            border-color: rgba(177, 156, 217, 0.3);
+        }
+
+        .project-card h3 {
+            color: #b19cd9;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .project-card p {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tech-tag {
+            background: rgba(177, 156, 217, 0.2);
+            color: #b19cd9;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid #b19cd9;
+            backdrop-filter: blur(5px);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(155, 89, 182, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-item:hover::before {
+            opacity: 1;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(155, 89, 182, 0.3);
+            border-color: rgba(155, 89, 182, 0.5);
+        }
+
+        .skill-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #9b59b6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            margin-bottom: 2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            color: #d8b2ff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(216, 178, 255, 0.3);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            background: rgba(216, 178, 255, 0.05);
+        }
+
+        .contact-link:hover {
+            color: #1a0b2e;
+            background: #d8b2ff;
+            box-shadow: 0 0 25px rgba(216, 178, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        /* Custom Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 11, 46, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-content {
+            background: linear-gradient(145deg, rgba(177, 156, 217, 0.25), rgba(155, 89, 182, 0.25));
+            border: 2px solid #b19cd9;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 10px 50px rgba(177, 156, 217, 0.5);
+            backdrop-filter: blur(15px);
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .popup-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-header h2 {            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #d8b2ff, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-body {
+            color: #e1d4ff;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #b19cd9;
+            border-radius: 50%;
+            background: transparent;
+            color: #b19cd9;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .popup-close:hover {
+            background: rgba(177, 156, 217, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .popup-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(177, 156, 217, 0.3);
+            border: 2px solid #b19cd9;
+            border-radius: 30px;
+            color: #e1d4ff;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .popup-btn:hover {
+            background: rgba(155, 89, 182, 0.5);
+            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .popup-icon {
+            font-size: 3rem;
+            color: #b19cd9;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+        }
+
+        .year-selector-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 11, 46, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .year-selector-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .year-selector-content {
+            background: linear-gradient(145deg, rgba(177, 156, 217, 0.25), rgba(155, 89, 182, 0.25));
+            border: 2px solid #b19cd9;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 10px 50px rgba(177, 156, 217, 0.5);
+            backdrop-filter: blur(15px);
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+        }
+
+        .year-selector-overlay.active .year-selector-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .year-selector-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .year-selector-header h3 {
+            font-size: 1.8rem;
+            color: #e1d4ff;
+        }
+
+        .year-input {
+            background: rgba(26, 11, 46, 0.5);
+            border: 2px solid #b19cd9;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            padding: 0.8rem;
+            width: 180px;
+            text-align: center;
+            color: #ffffff;
+            border-radius: 10px;
+            margin: 1rem auto 2rem;
+            display: block;
+        }
+
+        .year-input:focus {
+            outline: none;
+            border-color: #d8b2ff;
+            box-shadow: 0 0 15px rgba(216, 178, 255, 0.5);
+        }
+
+        .year-selector-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .year-selector-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(177, 156, 217, 0.3);
+            border: 2px solid #b19cd9;
+            border-radius: 30px;
+            color: #e1d4ff;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .year-selector-btn:hover {
+            background: rgba(155, 89, 182, 0.5);
+            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .year-validation-error {
+            color: #ff6b9d;
+            font-size: 0.9rem;
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .milky-way-dust {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Time Jump Overlay Styles */
+        .time-jump-starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .time-jump-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .time-vortex {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vh;
+            height: 100vh;
+            background: radial-gradient(
+                circle at center,
+                rgba(155, 89, 182, 0.1) 0%,
+                rgba(155, 89, 182, 0.05) 20%,
+                transparent 70%
+            );
+            border-radius: 50%;
+            z-index: 1;
+            animation: vortexPulse 4s infinite linear;
+            opacity: 0;
+        }
+        
+        @keyframes vortexPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        .time-jump-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            font-family: 'JetBrains Mono', monospace;
+            color: #ffffff;
+            width: 100%;
+            pointer-events: none;
+        }
+        
+        .time-jump-header {
+            color: #d8b2ff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(216, 178, 255, 0.8);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+        
+        .time-jump-year {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.8s, glowPulse 2s infinite 1s;
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(216, 178, 255, 0.9); }
+        }
+        
+        .time-jump-loading {
+            font-size: 1rem;
+            color: #9b59b6;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 1.1s;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: loadingDots 1.5s infinite steps(4, end);
+        }
+        
+        @keyframes loadingDots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+        
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            z-index: 2;
+            transform-origin: left center;
+        }
+        
+        .time-streak {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(to right, rgba(216,178,255,0) 0%, rgba(216,178,255,1) 50%, rgba(216,178,255,0) 100%);
+            opacity: 0;
+            z-index: 2;
+            transform-origin: center;
+        }
+        
+        .time-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #d8b2ff;
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 0 6px 2px rgba(216,178,255,0.8);
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="galaxy-canvas"></canvas>
+
+    <!-- Custom Popup -->
+    <div class="popup-overlay" id="welcomePopup">
+        <div class="popup-content">
+            <button class="popup-close" id="closePopup">×</button>
+            <div class="popup-header">
+                <div class="popup-icon">✨</div>
+                <h2>Welcome to Time Capsule</h2>
+            </div>
+            <div class="popup-body">
+                <p>You've discovered the center of our digital galaxy! This is where memories are stored and preserved across time and space. Create your own capsule to save special moments that can be unlocked in the future.</p>
+            </div>
+            <div class="popup-actions">
+                <button class="popup-btn" id="exploreBtn">Explore the Galaxy</button>
+                <button class="popup-btn" id="createCapsuleBtn">Create a Capsule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Year Selector Popup -->
+    <div class="year-selector-overlay" id="yearSelectorPopup">
+        <div class="year-selector-content">
+            <div class="year-selector-header">
+                <h3>Select a Year</h3>
+            </div>
+            <input type="number" id="yearInput" class="year-input" placeholder="Enter year (e.g., 2025)" />
+            <div class="year-validation-error" id="yearValidationError">Please enter a valid year!</div>
+            <div class="year-selector-actions">
+                <button class="year-selector-btn" id="confirmYearBtn">Confirm Year</button>
+                <button class="year-selector-btn" id="closeYearSelectorBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mouse interaction variables
+        let mouseX = 0, mouseY = 0;
+
+        // Three.js Milky Way Galaxy Background
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('galaxy-canvas'), 
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x1a0b2e, 1);
+
+        // Create realistic Milky Way galaxy structure
+        const galaxyGroup = new THREE.Group();
+        
+        // Central bulge
+        const bulgeGeometry = new THREE.BufferGeometry();
+        const bulgeCount = 3000;
+        const bulgePositions = new Float32Array(bulgeCount * 3);
+        const bulgeColors = new Float32Array(bulgeCount * 3);
+        const bulgeSizes = new Float32Array(bulgeCount);
+
+        for (let i = 0; i < bulgeCount; i++) {
+            const i3 = i * 3;
+            const radius = Math.random() * 30;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            
+            bulgePositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+            bulgePositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
+            bulgePositions[i3 + 2] = radius * Math.cos(phi);
+            
+            // Lavender and purple colors for the bulge
+            const intensity = 0.8 + Math.random() * 0.2;
+            bulgeColors[i3] = intensity * 0.9;     // Red component (lavender/purple)
+            bulgeColors[i3 + 1] = intensity * 0.7; // Green component
+            bulgeColors[i3 + 2] = intensity;       // Blue component (strongest for purple)
+            
+            bulgeSizes[i] = Math.random() * 3 + 2;
+        }
+
+        bulgeGeometry.setAttribute('position', new THREE.BufferAttribute(bulgePositions, 3));
+        bulgeGeometry.setAttribute('color', new THREE.BufferAttribute(bulgeColors, 3));
+        bulgeGeometry.setAttribute('size', new THREE.BufferAttribute(bulgeSizes, 1));
+
+        const bulgeMaterial = new THREE.PointsMaterial({
+            size: 1.5,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        const bulge = new THREE.Points(bulgeGeometry, bulgeMaterial);
+        galaxyGroup.add(bulge);
+
+        // Spiral arms
+        const spiralGeometry = new THREE.BufferGeometry();
+        const spiralCount = 12000;
+        const spiralPositions = new Float32Array(spiralCount * 3);
+        const spiralColors = new Float32Array(spiralCount * 3);
+        const spiralSizes = new Float32Array(spiralCount);
+
+        const arms = 4;
+        const maxRadius = 400;
+        const spiralTightness = 2.5;
+
+        for (let i = 0; i < spiralCount; i++) {
+            const i3 = i * 3;
+            
+            // Determine which arm
+            const armIndex = i % arms;
+            const armOffset = (armIndex / arms) * Math.PI * 2;
+            
+            // Distance from center
+            const radius = 30 + Math.pow(Math.random(), 0.8) * (maxRadius - 30);
+            
+            // Spiral angle
+            const spiralAngle = armOffset + (radius / maxRadius) * Math.PI * spiralTightness;
+            
+            // Add some randomness
+            const randomness = 20 + (radius / maxRadius) * 50;
+            const randomX = (Math.random() - 0.5) * randomness;
+            const randomY = (Math.random() - 0.5) * randomness * 0.1;
+            const randomZ = (Math.random() - 0.5) * randomness;
+            
+            spiralPositions[i3] = Math.cos(spiralAngle) * radius + randomX;
+            spiralPositions[i3 + 1] = randomY;
+            spiralPositions[i3 + 2] = Math.sin(spiralAngle) * radius + randomZ;
+            
+            // Color based on distance and arm
+            const distanceFactor = 1 - (radius / maxRadius);
+            const armBrightness = 0.3 + Math.random() * 0.7;
+            
+            if (armIndex === 0 || armIndex === 2) {
+                // Deeper purple arms
+                spiralColors[i3] = armBrightness * 0.8;
+                spiralColors[i3 + 1] = armBrightness * 0.5;
+                spiralColors[i3 + 2] = armBrightness;
+            } else {
+                // Lavender arms
+                spiralColors[i3] = armBrightness;
+                spiralColors[i3 + 1] = armBrightness * 0.8;
+                spiralColors[i3 + 2] = armBrightness;
+            }
+            
+            spiralSizes[i] = Math.random() * 2 + 0.5;
+        }
+
+        spiralGeometry.setAttribute('position', new THREE.BufferAttribute(spiralPositions, 3));
+        spiralGeometry.setAttribute('color', new THREE.BufferAttribute(spiralColors, 3));
+        spiralGeometry.setAttribute('size', new THREE.BufferAttribute(spiralSizes, 1));
+
+        const spiralMaterial = new THREE.PointsMaterial({
+            size: 0.8,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        const spiral = new THREE.Points(spiralGeometry, spiralMaterial);
+        galaxyGroup.add(spiral);
+
+        // Dust lanes
+        const dustGeometry = new THREE.BufferGeometry();
+        const dustCount = 5000;
+        const dustPositions = new Float32Array(dustCount * 3);
+        const dustColors = new Float32Array(dustCount * 3);
+
+        for (let i = 0; i < dustCount; i++) {
+            const i3 = i * 3;
+            const radius = 50 + Math.random() * 300;
+            const angle = Math.random() * Math.PI * 2;
+            
+            dustPositions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 100;
+            dustPositions[i3 + 1] = (Math.random() - 0.5) * 5;
+            dustPositions[i3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * 100;
+            
+            // Dark purple colors for dust
+            const darkness = Math.random() * 0.4;
+            dustColors[i3] = darkness * 0.9;
+            dustColors[i3 + 1] = darkness * 0.6;
+            dustColors[i3 + 2] = darkness;
+        }
+
+        dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+        dustGeometry.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
+
+        const dustMaterial = new THREE.PointsMaterial({
+            size: 3,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true,
+            opacity: 0.6,
+            transparent: true
+        });
+
+        const dust = new THREE.Points(dustGeometry, dustMaterial);
+        galaxyGroup.add(dust);
+
+        // Background stars
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 8000;
+        const starsPositions = new Float32Array(starsCount * 3);
+        const starsColors = new Float32Array(starsCount * 3);
+
+        for (let i = 0; i < starsCount; i++) {
+            const i3 = i * 3;
+            starsPositions[i3] = (Math.random() - 0.5) * 2000;
+            starsPositions[i3 + 1] = (Math.random() - 0.5) * 2000;
+            starsPositions[i3 + 2] = (Math.random() - 0.5) * 2000;
+            
+            // Various star colors with purple tints
+            const starType = Math.random();
+            if (starType < 0.5) {
+                // Lavender/white stars
+                starsColors[i3] = 0.9 + Math.random() * 0.1;
+                starsColors[i3 + 1] = 0.8 + Math.random() * 0.2;
+                starsColors[i3 + 2] = 1;
+            } else if (starType < 0.8) {
+                // Purple stars
+                starsColors[i3] = 0.8 + Math.random() * 0.2;
+                starsColors[i3 + 1] = 0.5 + Math.random() * 0.3;
+                starsColors[i3 + 2] = 1;
+            } else {
+                // Deep purple stars
+                starsColors[i3] = 0.6 + Math.random() * 0.2;
+                starsColors[i3 + 1] = 0.3 + Math.random() * 0.3;
+                starsColors[i3 + 2] = 0.8 + Math.random() * 0.2;
+            }
+        }
+
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+        starsGeometry.setAttribute('color', new THREE.BufferAttribute(starsColors, 3));
+
+        const starsMaterial = new THREE.PointsMaterial({
+            size: 0.5,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        scene.add(galaxyGroup);        // Create an invisible hitbox for the galaxy core
+        const coreRadius = 30;
+        const coreHitboxGeometry = new THREE.SphereGeometry(coreRadius, 32, 32);
+        const coreHitboxMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0,
+            depthWrite: false
+        });
+        const clickableCore = new THREE.Mesh(coreHitboxGeometry, coreHitboxMaterial);
+        clickableCore.position.set(0, 0, 0);
+        clickableCore.name = "clickableCore";
+        galaxyGroup.add(clickableCore);
+        
+        // Add subtle glow to the core (just enhancing what's already there)
+        const coreLight = new THREE.PointLight(0xb19cd9, 1.2, 150);
+        coreLight.position.set(0, 0, 0);
+        galaxyGroup.add(coreLight);
+
+        // Camera positioning
+        camera.position.set(0, 100, 500);
+        camera.lookAt(0, 0, 0);
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        // Raycaster for ball interactions
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+          // Handle click events
+        document.addEventListener('click', (event) => {
+            // Update mouse position for raycaster
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Cast ray
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects([clickableCore]);
+              // If galaxy core is clicked
+            if (intersects.length > 0) {
+                // Temporarily increase core light intensity for visual feedback
+                const originalIntensity = coreLight.intensity;
+                const originalDistance = coreLight.distance;
+                gsap.to(coreLight, {
+                    intensity: 2.5,
+                    distance: 200,
+                    duration: 0.3,
+                    onComplete: () => {
+                        gsap.to(coreLight, {
+                            intensity: originalIntensity,
+                            distance: originalDistance,
+                            duration: 0.6,
+                            ease: "elastic.out"
+                        });
+                    }
+                });
+                
+                // Emit particles on click
+                createExplosion(clickableCore.position, 80);
+                
+                // Show the popup with animation
+                const welcomePopup = document.getElementById('welcomePopup');
+                welcomePopup.classList.add('active');
+                
+                // Add animation to the popup content
+                const popupContent = welcomePopup.querySelector('.popup-content');
+                gsap.fromTo(popupContent, 
+                    { y: 30, opacity: 0, scale: 0.95 },
+                    { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                );
+            }
+        });
+
+        // Create particle explosion effect
+        function createExplosion(position, particleCount) {
+            const explosionGeometry = new THREE.BufferGeometry();
+            const explosionPositions = new Float32Array(particleCount * 3);
+            const explosionColors = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                explosionPositions[i3] = position.x;
+                explosionPositions[i3 + 1] = position.y;
+                explosionPositions[i3 + 2] = position.z;
+                
+                // Particles in lavender/purple colors
+                explosionColors[i3] = 0.8 + Math.random() * 0.2;
+                explosionColors[i3 + 1] = 0.6 + Math.random() * 0.3;
+                explosionColors[i3 + 2] = 0.9 + Math.random() * 0.1;
+            }
+            
+            explosionGeometry.setAttribute('position', new THREE.BufferAttribute(explosionPositions, 3));
+            explosionGeometry.setAttribute('color', new THREE.BufferAttribute(explosionColors, 3));
+            
+            const explosionMaterial = new THREE.PointsMaterial({
+                size: 3,
+                color: 0xb19cd9,
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+            
+            const explosion = new THREE.Points(explosionGeometry, explosionMaterial);
+            scene.add(explosion);
+            
+            // Animate particles outward
+            const positionAttribute = explosionGeometry.getAttribute('position');
+            
+            // Create random velocities for each particle
+            const velocities = [];
+            for (let i = 0; i < particleCount; i++) {
+                velocities.push(new THREE.Vector3(
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3,
+                    (Math.random() - 0.5) * 3
+                ));
+            }
+            
+            // Animation
+            gsap.to(explosionMaterial, {
+                opacity: 0,
+                duration: 2,
+                onUpdate: () => {
+                    // Update positions based on velocities
+                    for (let i = 0; i < particleCount; i++) {
+                        const i3 = i * 3;
+                        positionAttribute.array[i3] += velocities[i].x;
+                        positionAttribute.array[i3 + 1] += velocities[i].y;
+                        positionAttribute.array[i3 + 2] += velocities[i].z;
+                    }
+                    positionAttribute.needsUpdate = true;
+                },
+                onComplete: () => {
+                    scene.remove(explosion);
+                    explosion.geometry.dispose();
+                    explosion.material.dispose();
+                }
+            });
+        }        // Update core appearance on hover
+        let isHovering = false;
+        document.addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Update the picking ray with the camera and mouse position
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Calculate objects intersecting the picking ray
+            const intersects = raycaster.intersectObjects([clickableCore]);
+            
+            // Change cursor and enhance core appearance on hover
+            if (intersects.length > 0) {
+                if (!isHovering) {
+                    isHovering = true;
+                    document.body.style.cursor = 'pointer';
+                    gsap.to(coreLight, { intensity: 1.8, distance: 180, duration: 0.3 });
+                    
+                    // Slightly brighten the central bulge particles
+                    gsap.to(bulgeMaterial, { size: 2, duration: 0.3 });
+                }
+            } else {
+                if (isHovering) {
+                    isHovering = false;
+                    document.body.style.cursor = 'auto';
+                    gsap.to(coreLight, { intensity: 1.2, distance: 150, duration: 0.3 });
+                    gsap.to(bulgeMaterial, { size: 1.5, duration: 0.3 });
+                }
+            }
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate galaxy slowly
+            galaxyGroup.rotation.y += 0.001;
+            
+            // Subtle mouse interaction
+            galaxyGroup.rotation.x += (mouseY * 0.1 - galaxyGroup.rotation.x) * 0.05;
+            galaxyGroup.rotation.z += (mouseX * 0.1 - galaxyGroup.rotation.z) * 0.05;
+            
+            // Rotate stars independently
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0002;
+            
+            // Camera slight movement based on mouse
+            camera.position.x += (mouseX * 20 - camera.position.x) * 0.01;
+            camera.position.y += (mouseY * 20 - camera.position.y) * 0.01;
+            
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Year selector functionality
+        function createYearSelector() {
+            const yearSelectorPopup = document.getElementById('yearSelectorPopup');
+            yearSelectorPopup.classList.add('active');
+            
+            // Animate year selector content
+            const yearSelectorContent = yearSelectorPopup.querySelector('.year-selector-content');
+            gsap.fromTo(yearSelectorContent, 
+                { y: 30, opacity: 0, scale: 0.95 },
+                { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+            );
+        }
+
+        // Close year selector
+        function closeYearSelector() {
+            const yearSelectorPopup = document.getElementById('yearSelectorPopup');
+            const yearSelectorContent = yearSelectorPopup.querySelector('.year-selector-content');
+            
+            // Animate out
+            gsap.to(yearSelectorContent, {
+                y: 30, 
+                opacity: 0, 
+                scale: 0.95, 
+                duration: 0.3, 
+                onComplete: () => {
+                    yearSelectorPopup.classList.remove('active');
+                }
+            });
+        }
+
+        // Validate year input
+        function validateYear(year) {
+            const currentYear = new Date().getFullYear();
+            return year >= 1900 && year <= currentYear + 10;
+        }
+
+        // Year input confirmation
+        document.getElementById('confirmYearBtn').addEventListener('click', () => {
+            const yearInput = document.getElementById('yearInput');
+            const yearValidationError = document.getElementById('yearValidationError');
+            
+            const year = parseInt(yearInput.value);
+            
+            // Check if year is valid
+            if (!validateYear(year)) {
+                yearValidationError.style.display = 'block';
+                return;
+            } else {
+                yearValidationError.style.display = 'none';
+            }
+            
+            // Close year selector
+            closeYearSelector();
+            
+            // Here you can add the code to handle the selected year (e.g., navigate to a different page or load content)
+            console.log('Selected year:', year);
+
+            // Create a special effect for time travel to the selected year
+            createTimeTravelEffect(year);
+        });
+
+        // Close year selector on button click
+        document.getElementById('closeYearSelectorBtn').addEventListener('click', () => {
+            closeYearSelector();
+        });
+
+        // Create time travel effect
+        function createTimeTravelEffect(year) {
+            // Create a full-screen overlay with enhanced cosmic effects
+            const timeJumpOverlay = document.createElement('div');
+            timeJumpOverlay.style.position = 'fixed';
+            timeJumpOverlay.style.top = '0';
+            timeJumpOverlay.style.left = '0';
+            timeJumpOverlay.style.width = '100%';
+            timeJumpOverlay.style.height = '100%';
+            timeJumpOverlay.style.backgroundColor = '#090413';
+            timeJumpOverlay.style.zIndex = '2000';
+            timeJumpOverlay.style.opacity = '0';
+            timeJumpOverlay.style.overflow = 'hidden';
+            
+            // Add starfield and cosmic effects container
+            timeJumpOverlay.innerHTML = `
+                <div class="time-jump-starfield"></div>
+                <div class="time-vortex"></div>
+                <div class="time-jump-content">
+                    <div class="time-jump-header">TIME JUMP INITIATED</div>
+                    <div class="time-jump-year">TRAVELING TO YEAR ${year}</div>
+                    <div class="time-jump-loading">
+                        <span id="loadingText">Gathering historical data</span>
+                        <span class="loading-dots"></span>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(timeJumpOverlay);
+            
+            // Add styles for the time jump elements
+            const jumpStyle = document.createElement('style');
+            jumpStyle.textContent = `
+                .time-jump-starfield {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 0;
+                }
+                
+                .time-jump-star {
+                    position: absolute;
+                    background: white;
+                    border-radius: 50%;
+                    z-index: 1;
+                }
+                
+                .time-vortex {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 100vh;
+                    height: 100vh;
+                    background: radial-gradient(
+                        circle at center,
+                        rgba(155, 89, 182, 0.1) 0%,
+                        rgba(155, 89, 182, 0.05) 20%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    z-index: 1;
+                    animation: vortexPulse 4s infinite linear;
+                    opacity: 0;
+                }
+                
+                @keyframes vortexPulse {
+                    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+                    50% { transform: translate(-50%, -50%) scale(1.2); }
+                }
+                
+                .time-jump-content {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
+                    z-index: 10;
+                    font-family: 'JetBrains Mono', monospace;
+                    color: #ffffff;
+                    width: 100%;
+                    pointer-events: none;
+                }
+                
+                .time-jump-header {
+                    color: #d8b2ff;
+                    font-size: 1.5rem;
+                    margin-bottom: 1rem;
+                    text-shadow: 0 0 10px rgba(216, 178, 255, 0.8);
+                    opacity: 0;
+                    transform: translateY(20px);
+                    animation: fadeInUp 1s forwards 0.5s;
+                }
+                
+                .time-jump-year {
+                    font-size: 3rem;
+                    margin-bottom: 1.5rem;
+                    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+                    opacity: 0;
+                    transform: translateY(20px);
+                    animation: fadeInUp 1s forwards 0.8s, glowPulse 2s infinite 1s;
+                }
+                
+                @keyframes glowPulse {
+                    0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+                    50% { text-shadow: 0 0 30px rgba(216, 178, 255, 0.9); }
+                }
+                
+                .time-jump-loading {
+                    font-size: 1rem;
+                    color: #9b59b6;
+                    margin-top: 1.5rem;
+                    opacity: 0;
+                    transform: translateY(20px);
+                    animation: fadeInUp 1s forwards 1.1s;
+                }
+                
+                @keyframes fadeInUp {
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .loading-dots::after {
+                    content: '';
+                    animation: loadingDots 1.5s infinite steps(4, end);
+                }
+                
+                @keyframes loadingDots {
+                    0% { content: ''; }
+                    25% { content: '.'; }
+                    50% { content: '..'; }
+                    75% { content: '...'; }
+                    100% { content: ''; }
+                }
+                
+                .shooting-star {
+                    position: absolute;
+                    height: 2px;
+                    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+                    opacity: 0;
+                    z-index: 2;
+                    transform-origin: left center;
+                }
+                
+                .time-streak {
+                    position: absolute;
+                    height: 2px;
+                    background: linear-gradient(to right, rgba(216,178,255,0) 0%, rgba(216,178,255,1) 50%, rgba(216,178,255,0) 100%);
+                    opacity: 0;
+                    z-index: 2;
+                    transform-origin: center;
+                }
+                
+                .time-particle {
+                    position: absolute;
+                    width: 4px;
+                    height: 4px;
+                    background: #d8b2ff;
+                    border-radius: 50%;
+                    z-index: 3;
+                    box-shadow: 0 0 6px 2px rgba(216,178,255,0.8);
+                    opacity: 0;
+                }
+            `;
+            document.head.appendChild(jumpStyle);
+            
+            // Fade in the overlay
+            gsap.to(timeJumpOverlay, {
+                opacity: 1,
+                duration: 1.5,
+                onComplete: () => {
+                    // Generate starfield once overlay is visible
+                    createJumpStarfield(timeJumpOverlay);
+                    
+                    // Create time vortex effect
+                    const vortex = timeJumpOverlay.querySelector('.time-vortex');
+                    gsap.to(vortex, {
+                        opacity: 0.8,
+                        duration: 2,
+                        delay: 0.5
+                    });
+                    
+                    // Create periodic shooting stars
+                    const shootingStarInterval = setInterval(() => {
+                        if (Math.random() > 0.5) {
+                            createShootingStarInJump(timeJumpOverlay);
+                        }
+                    }, 800);
+                    
+                    // Create time streaks (horizontal light beams)
+                    const timeStreakInterval = setInterval(() => {
+                        createTimeStreakEffect(timeJumpOverlay);
+                    }, 400);
+                    
+                    // Create floating particles
+                    const particleInterval = setInterval(() => {
+                        createFloatingParticle(timeJumpOverlay);
+                    }, 200);
+                    
+                    // Show loading animation using the styled element
+                    const loadingText = document.getElementById('loadingText');
+                    
+                    // Fetch year data from the API
+                    fetch(`/api/year?year=${year}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(yearData => {
+                            loadingText.textContent = 'Data retrieved successfully';
+                            
+                            // Store the year data in sessionStorage for use in time-explorer.html
+                            sessionStorage.setItem('yearData', JSON.stringify(yearData));
+                            
+                            // Navigate to time-explorer with appropriate template
+                            setTimeout(() => {
+                                // Determine if year falls into specific decade ranges
+                                const decade = Math.floor(year / 10) * 10;
+                                
+                                // For 1980s, directly use the 1980.html template
+                                if (year >= 1980 && year < 1990) {
+                                    window.location.href = `decades/1980.html?year=${year}`;
+                                }
+                                // For 1950s, directly use the 1950.html template
+                                else if (year >= 1950 && year < 1960) {
+                                    window.location.href = `decades/1950.html?year=${year}`;
+                                } else {
+                                    // Use the standard time-explorer with template parameter
+                                    window.location.href = `time-explorer.html?year=${year}&template=${yearData.template}`;
+                                }
+                            }, 1000);
+                            
+                            // Clear intervals before navigation
+                            clearInterval(shootingStarInterval);
+                            clearInterval(timeStreakInterval);
+                            clearInterval(particleInterval);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching year data:', error);
+                            loadingText.textContent = 'Could not retrieve all data. Continuing journey';
+                            
+                            // Fall back to basic navigation if API fails
+                            setTimeout(() => {
+                                // Even in error case, check for 1980s and 1950s decades
+                                if (year >= 1980 && year < 1990) {
+                                    window.location.href = `decades/1980.html?year=${year}`;
+                                } else if (year >= 1950 && year < 1960) {
+                                    window.location.href = `decades/1950.html?year=${year}`;
+                                } else {
+                                    window.location.href = `time-explorer.html?year=${year}`;
+                                }
+                            }, 2000);
+                            
+                            // Clear intervals before navigation
+                            clearInterval(shootingStarInterval);
+                            clearInterval(timeStreakInterval);
+                            clearInterval(particleInterval);
+                        });
+                }
+            });
+        }
+        
+        // Create starfield for the time jump overlay
+        function createJumpStarfield(overlay) {
+            const starfieldElement = overlay.querySelector('.time-jump-starfield');
+            const starCount = 300;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'time-jump-star';
+                
+                // Random size with occasional larger stars
+                const sizeRandom = Math.random();
+                const size = sizeRandom > 0.97 ? 3 + Math.random() * 2 : 
+                             sizeRandom > 0.85 ? 1.5 + Math.random() * 1 :
+                             0.5 + Math.random() * 1;
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                // Random opacity
+                const opacity = 0.3 + Math.random() * 0.7;
+                
+                // Random subtle color tint
+                const hue = Math.random() > 0.7 ? 270 + Math.random() * 30 : 0; // 70% white stars, 30% purple tinted
+                const saturation = hue > 0 ? 50 + Math.random() * 50 : 0;
+                const lightness = 90 + Math.random() * 10;
+                const color = hue > 0 ? `hsl(${hue}, ${saturation}%, ${lightness}%)` : 'white';
+                
+                star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    top: ${top}%;
+                    opacity: ${opacity};
+                    background: ${color};
+                    box-shadow: 0 0 ${size*2}px ${color.replace('90%', '70%')};
+                    animation: twinkle ${2 + Math.random() * 5}s infinite ${Math.random() * 2}s ease-in-out alternate;
+                `;
+                
+                starfieldElement.appendChild(star);
+            }
+            
+            // Add twinkling animation
+            const twinkleStyle = document.createElement('style');
+            twinkleStyle.textContent = `
+                @keyframes twinkle {
+                    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+                    50% { opacity: 1; transform: scale(1.1); }
+                }
+            `;
+            document.head.appendChild(twinkleStyle);
+        }
+        
+        // Create shooting stars in time jump
+        function createShootingStarInJump(overlay) {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            
+            // Randomize position, size and angle
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 60; // Keep in upper part of screen
+            const length = 50 + Math.random() * 150;
+            const angle = -15 - Math.random() * 40; // Angle downward
+            const duration = 0.6 + Math.random() * 0.8;
+            
+            star.style.cssText = `
+                left: ${startX}%;
+                top: ${startY}%;
+                width: ${length}px;
+                transform: rotate(${angle}deg);
+            `;
+            
+            overlay.appendChild(star);
+            
+            // Animate the shooting star
+            gsap.fromTo(star, 
+                { opacity: 0, x: 0 },
+                { 
+                    opacity: 1, 
+                    x: length * 2,
+                    duration: duration,
+                    ease: "power1.in",
+                    onComplete: () => {
+                        gsap.to(star, {
+                            opacity: 0,
+                            duration: 0.3,
+                            onComplete: () => {
+                                if (overlay.contains(star)) {
+                                    overlay.removeChild(star);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+        
+        // Create horizontal time streak effect
+        function createTimeStreakEffect(overlay) {
+            const streak = document.createElement('div');
+            streak.className = 'time-streak';
+            
+            // Always go through center, vary the angle slightly
+            const angle = 90 + (Math.random() - 0.5) * 10; // Almost horizontal
+            const length = 100 + Math.random() * 300;
+            const thickness = 1 + Math.random() * 2;
+            const speed = 0.5 + Math.random() * 0.5;
+            
+            streak.style.cssText = `
+                left: 50%;
+                top: 50%;
+                width: ${length}px;
+                height: ${thickness}px;
+                transform: translate(-50%, -50%) rotate(${angle}deg);
+            `;
+            
+            overlay.appendChild(streak);
+            
+            // Animate the time streak
+            gsap.fromTo(streak,
+                { opacity: 0, scaleX: 0 },
+                { 
+                    opacity: 0.7, 
+                    scaleX: 1,
+                    duration: speed,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        gsap.to(streak, {
+                            opacity: 0,
+                            duration: 0.3,
+                            onComplete: () => {
+                                if (overlay.contains(streak)) {
+                                    overlay.removeChild(streak);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+        
+        // Create floating particles
+        function createFloatingParticle(overlay) {
+            const particle = document.createElement('div');
+            particle.className = 'time-particle';
+            
+            // Position near the center
+            const centerDistance = Math.random() * 150;
+            const angle = Math.random() * Math.PI * 2;
+            const x = Math.cos(angle) * centerDistance + 50; // 50% is center
+            const y = Math.sin(angle) * centerDistance + 50;
+            
+            // Random duration
+            const duration = 2 + Math.random() * 3;
+            
+            particle.style.cssText = `
+                left: ${x}%;
+                top: ${y}%;
+            `;
+            
+            overlay.appendChild(particle);
+            
+            // Animate floating movement
+            const destX = x + (Math.random() - 0.5) * 20;
+            const destY = y + (Math.random() - 0.5) * 20;
+            
+            gsap.fromTo(particle,
+                { opacity: 0, scale: 0 },
+                { 
+                    opacity: 0.8, 
+                    scale: 1,
+                    duration: 0.5,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        gsap.to(particle, {
+                            x: destX - x,
+                            y: destY - y,
+                            opacity: 0,
+                            duration: duration,
+                            ease: "power1.inOut",
+                            onComplete: () => {
+                                if (overlay.contains(particle)) {
+                                    overlay.removeChild(particle);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+
+        // Popup functionality
+        document.getElementById('closePopup').addEventListener('click', () => {
+            const welcomePopup = document.getElementById('welcomePopup');
+            const popupContent = welcomePopup.querySelector('.popup-content');
+            
+            // Animate out
+            gsap.to(popupContent, {
+                y: 30, 
+                opacity: 0, 
+                scale: 0.95, 
+                duration: 0.3, 
+                onComplete: () => {
+                    welcomePopup.classList.remove('active');
+                }
+            });
+        });
+          document.getElementById('exploreBtn').addEventListener('click', () => {
+            // Close popup
+            document.getElementById('closePopup').click();
+            
+            // Move camera to explore the galaxy
+            gsap.to(camera.position, {
+                x: 100,
+                y: 50,
+                z: 300,
+                duration: 2,
+                ease: "power2.inOut"
+            });
+            
+            // Rotate galaxy to showcase spiral arms
+            gsap.to(galaxyGroup.rotation, {
+                x: -0.3,
+                y: Math.PI * 0.25,
+                duration: 2,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    // After camera movement, show year input prompt
+                    setTimeout(() => {
+                        createYearSelector();
+                    }, 500);
+                }
+            });
+        });
+          document.getElementById('createCapsuleBtn').addEventListener('click', () => {
+            // Close popup
+            document.getElementById('closePopup').click();
+            
+            // Create Big Bang effect - first zoom into the core
+            gsap.to(camera.position, {
+                x: 0,
+                y: 0,
+                z: 20,
+                duration: 1.5,
+                ease: "power2.in"
+            });
+            
+            // Increase core light intensity dramatically
+            gsap.to(coreLight, {
+                intensity: 5,
+                distance: 500,
+                color: 0xffffff,
+                duration: 1
+            });
+            
+            // Create expanding explosion with many particles
+            createExplosion(new THREE.Vector3(0, 0, 0), 500);
+            
+            // After zooming in, trigger second phase of the big bang
+            setTimeout(() => {
+                // Flash the screen white
+                const flashOverlay = document.createElement('div');
+                flashOverlay.style.position = 'fixed';
+                flashOverlay.style.top = '0';
+                flashOverlay.style.left = '0';
+                flashOverlay.style.width = '100%';
+                flashOverlay.style.height = '100%';
+                flashOverlay.style.backgroundColor = 'white';
+                flashOverlay.style.zIndex = '2000';
+                flashOverlay.style.opacity = '0';
+                document.body.appendChild(flashOverlay);
+                
+                // Flash and fade
+                gsap.to(flashOverlay, {
+                    opacity: 1,
+                    duration: 0.2,
+                    onComplete: () => {
+                        // Create more explosions across the scene
+                        for (let i = 0; i < 10; i++) {
+                            const randomPos = new THREE.Vector3(
+                                (Math.random() - 0.5) * 100,
+                                (Math.random() - 0.5) * 100,
+                                (Math.random() - 0.5) * 100
+                            );
+                            createExplosion(randomPos, 200);
+                        }
+                                  // Start fading out while navigating
+                        gsap.to(flashOverlay, {
+                            opacity: 0,
+                            duration: 0.8,
+                            delay: 0.2,
+                            onComplete: () => {
+                                document.body.removeChild(flashOverlay);
+                                // Redirect to time explorer with a delay
+                                // Use the current year when creating a new capsule
+                                const currentYear = new Date().getFullYear();
+                                window.location.href = `time-explorer.html?year=${currentYear}`;
+                            }
+                        });
+                    }
+                });
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

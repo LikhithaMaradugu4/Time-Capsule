@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Time Capsule</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1a0b2e;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        h1 {
+            font-size: clamp(2rem, 8vw, 5rem);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #b19cd9, #9b59b6, #d8b2ff, #e6e6fa);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 10s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #b19cd9;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(155, 89, 182, 0.2);
+            border: 2px solid #9b59b6;
+            border-radius: 30px;
+            color: #e1d4ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(155, 89, 182, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(155, 89, 182, 0.3);
+        }
+
+        /* Time Capsule Form Styles */
+        .time-capsule-form-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(177, 156, 217, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                0 5px 15px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(155, 89, 182, 0.1) inset;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transform: translateZ(0);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+        
+        .time-capsule-form-container:hover {
+            box-shadow: 
+                0 20px 45px rgba(0, 0, 0, 0.4),
+                0 10px 25px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(155, 89, 182, 0.2) inset;
+            transform: translateY(-5px) translateZ(10px);
+        }
+
+        h2 {
+            position: relative;
+            transform: translateZ(20px);
+            text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: #b19cd9;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            position: relative;
+            transform: translateZ(10px);
+        }
+        
+        .time-capsule-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            transform-style: preserve-3d;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            transform-style: preserve-3d;
+        }
+        
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b19cd9;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(26, 11, 46, 0.5);
+            border: 2px solid #9b59b6;
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 3px 10px rgba(0, 0, 0, 0.2) inset,
+                0 2px 5px rgba(155, 89, 182, 0.1);
+            transform: translateZ(0);
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #d8b2ff;
+            box-shadow: 
+                0 3px 15px rgba(0, 0, 0, 0.3) inset,
+                0 0 15px rgba(216, 178, 255, 0.5);
+            transform: translateZ(5px);
+        }
+        
+        .media-upload {
+            margin-bottom: 2rem;
+        }
+        
+        .media-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .media-option {
+            text-align: center;
+            position: relative;
+        }
+        
+        .media-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border: 2px dashed #9b59b6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .media-label:hover {
+            background: rgba(155, 89, 182, 0.1);
+            transform: translateY(-5px) translateZ(20px) scale(1.05);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(155, 89, 182, 0.4);
+        }
+        
+        .media-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+            transform: translateZ(5px);
+            transition: transform 0.3s ease;
+        }
+        
+        .media-label:hover .media-icon {
+            transform: translateZ(15px) scale(1.2);
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+        }
+        
+        .file-input {
+            position: absolute;
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .selected-file {
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: #b19cd9;
+            min-height: 1.5rem;
+            word-break: break-all;
+            max-width: 100%;
+            padding: 0 0.5rem;
+        }
+        
+        /* File upload status indicator */
+        .upload-status {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .has-file .upload-status {
+            background: linear-gradient(to right, #9b59b6, #b19cd9);
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+        }
+        
+        .file-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .has-file .file-preview.image-preview {
+            opacity: 0.3;
+        }
+        
+        /* Audio and video file indicators */
+        .media-uploaded-icon {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: rgba(155, 89, 182, 0.7);
+            border-radius: 50%;
+            color: white;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 20px;
+        }
+        
+        .has-file .media-uploaded-icon {
+            display: block;
+        }
+
+        /* Success/Error message styles */
+        .form-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+        }
+        
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        /* Background effect */
+        .bg-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Cosmic portal effect behind the form */
+        .cosmic-portal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(-50px);
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(155, 89, 182, 0.2) 0%,
+                rgba(155, 89, 182, 0.1) 40%,
+                rgba(26, 11, 46, 0) 70%
+            );
+            box-shadow: 0 0 100px 20px rgba(155, 89, 182, 0.3);
+            z-index: -1;
+            filter: blur(10px);
+            animation: portalPulse 8s infinite ease-in-out;
+        }
+
+        @keyframes portalPulse {
+            0%, 100% { transform: translate(-50%, -50%) translateZ(-50px) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) translateZ(-50px) scale(1.1); opacity: 1; }
+        }
+
+        /* Improved Send to Future button and bottom section styling */
+        .send-capsule-btn {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            margin-top: 3rem;
+            background: linear-gradient(45deg, #9b59b6, #b19cd9, #8e44ad, #9b59b6);
+            background-size: 300% 300%;
+            border: none;
+            border-radius: 30px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.3),
+                0 6px 10px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(155, 89, 182, 0.3),
+                0 0 0 1px rgba(155, 89, 182, 0.2) inset;
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(20px);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            animation: gradientFlow 8s ease infinite;
+            letter-spacing: 1px;
+        }
+        
+        .send-capsule-btn:hover {
+            transform: translateY(-5px) translateZ(30px) scale(1.03);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(177, 156, 217, 0.5),
+                0 0 0 1px rgba(155, 89, 182, 0.3) inset;
+            animation: gradientFlow 3s ease infinite;
+        }
+
+        .send-capsule-btn:active {
+            transform: translateY(-2px) translateZ(15px);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.4),
+                0 0 15px rgba(177, 156, 217, 0.4);
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .send-capsule-btn::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shineEffect 6s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes shineEffect {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .btn-icon {
+            display: inline-block;
+            margin-right: 0.7rem;
+            font-size: 1.3rem;
+            transform: translateZ(5px);
+            animation: sparkle 2s infinite ease-in-out;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        /* Create a special effect container around the button */
+        .send-button-container {
+            position: relative;
+            margin-top: 3rem;
+            padding: 0.5rem;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .button-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(-30px);
+            width: 90%;
+            height: 80%;
+            border-radius: 30px;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(155, 89, 182, 0.3) 0%,
+                rgba(155, 89, 182, 0.1) 40%,
+                rgba(26, 11, 46, 0) 70%
+            );
+            filter: blur(20px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .form-group:last-of-type {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-stars"></div>
+    <div class="container">
+        <header>
+            <h1>Digital Time Capsule</h1>
+            <p class="subtitle">Create memories today that will be revealed in the future</p>
+        </header>
+        
+        <!-- Time Capsule Creation Form -->
+        <div class="time-capsule-form-container parallax-wrapper">
+            <div class="cosmic-portal"></div>
+            <h2>Create Your Time Capsule</h2>
+            <p class="form-intro">
+                Preserve your memories, thoughts, or messages to be opened in the future. 
+                Send it to yourself or someone special - we'll keep it safe until the time comes.
+            </p>
+            
+            <form id="timeCapsuleForm" class="time-capsule-form">
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Write a message to the future..." required></textarea>
+                </div>
+                
+                <div class="form-group media-upload">
+                    <label>Add Media (Optional)</label>
+                    
+                    <div class="media-options">
+                        <div class="media-option">
+                            <label for="audioFile" class="media-label" id="audioLabel">
+                                <span class="media-icon">🎵</span>
+                                <span>Audio</span>
+                                <div class="upload-status"></div>
+                                <span class="media-uploaded-icon">✓</span>
+                            </label>
+                            <input type="file" id="audioFile" name="audioFile" accept="audio/*" class="file-input">
+                            <div class="selected-file" id="audioFileSelected"></div>
+                        </div>
+                        
+                        <div class="media-option">
+                            <label for="videoFile" class="media-label" id="videoLabel">
+                                <span class="media-icon">🎬</span>
+                                <span>Video</span>
+                                <div class="upload-status"></div>
+                                <span class="media-uploaded-icon">✓</span>
+                            </label>
+                            <input type="file" id="videoFile" name="videoFile" accept="video/*" class="file-input">
+                            <div class="selected-file" id="videoFileSelected"></div>
+                        </div>
+                        
+                        <div class="media-option">
+                            <label for="imageFile" class="media-label" id="imageLabel">
+                                <span class="media-icon">🖼️</span>
+                                <span>Image</span>
+                                <div class="upload-status"></div>
+                                <span class="media-uploaded-icon">✓</span>
+                                <img class="file-preview image-preview" id="imagePreview" src="" alt="">
+                            </label>
+                            <input type="file" id="imageFile" name="imageFile" accept="image/*" class="file-input">
+                            <div class="selected-file" id="imageFileSelected"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recipientType">Send To</label>
+                        <select id="recipientType" name="recipientType" required>
+                            <option value="" disabled selected>Choose recipient...</option>
+                            <option value="self">Future Me</option>
+                            <option value="other">Someone Else</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group recipient-details" style="display: none;">
+                        <label for="recipientEmail">Recipient's Email</label>
+                        <input type="email" id="recipientEmail" name="recipientEmail" placeholder="email@example.com">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="openYear">When to Open (Year)</label>
+                    <input type="number" id="openYear" name="openYear" min="2024" max="2100" required 
+                           placeholder="Enter a future year (e.g., 2030)">
+                    <div class="year-hint">Must be at least one year in the future</div>
+                </div>
+                
+                <div class="send-button-container">
+                    <div class="button-glow"></div>
+                    <button type="submit" class="send-capsule-btn">
+                        <span class="btn-icon">✨</span> Send to the Future
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="index.html" class="back-btn">Return to Time Capsule</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create stars for background
+            createStars();
+            
+            // Time Capsule Form Functionality
+            const timeCapsuleForm = document.getElementById('timeCapsuleForm');
+            const recipientType = document.getElementById('recipientType');
+            const recipientDetails = document.querySelector('.recipient-details');
+            const recipientEmail = document.getElementById('recipientEmail');
+            const openYear = document.getElementById('openYear');
+            
+            // File input handling
+            const fileInputs = document.querySelectorAll('.file-input');
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const selectedFileElement = document.getElementById(`${this.id}Selected`);
+                    const mediaLabel = document.querySelector(`label[for="${this.id}"]`);
+                    
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        const fileName = file.name;
+                        const fileSize = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
+                        selectedFileElement.textContent = `${fileName} (${fileSize}MB)`;
+                        
+                        // Add visual indicator that file is selected
+                        mediaLabel.classList.add('has-file');
+                        
+                        // If it's an image, show preview
+                        if (this.id === 'imageFile' && file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            const imagePreview = document.getElementById('imagePreview');
+                            
+                            reader.onload = function(e) {
+                                imagePreview.src = e.target.result;
+                            };
+                            
+                            reader.readAsDataURL(file);
+                        }
+                    } else {
+                        selectedFileElement.textContent = '';
+                        mediaLabel.classList.remove('has-file');
+                        
+                        // Clear image preview if it exists
+                        if (this.id === 'imageFile') {
+                            document.getElementById('imagePreview').src = '';
+                        }
+                    }
+                });
+            });
+            
+            // Make file labels clickable with ripple effect
+            document.querySelectorAll('.media-label').forEach(label => {
+                label.addEventListener('click', function(e) {
+                    // Create ripple effect
+                    const ripple = document.createElement('div');
+                    ripple.className = 'ripple';
+                    
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    
+                    ripple.style.width = ripple.style.height = `${size}px`;
+                    ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+                    ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        background: rgba(255, 255, 255, 0.2);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+            
+            // Add ripple animation keyframes
+            const rippleStyle = document.createElement('style');
+            rippleStyle.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(2);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(rippleStyle);
+            
+            // Form reset should also reset all visual file indicators
+            timeCapsuleForm.addEventListener('reset', function() {
+                document.querySelectorAll('.media-label').forEach(label => {
+                    label.classList.remove('has-file');
+                });
+                document.getElementById('imagePreview').src = '';
+            });
+            
+            // Show/hide recipient email based on selection
+            recipientType.addEventListener('change', function() {
+                if (this.value === 'other') {
+                    recipientDetails.style.display = 'block';
+                    recipientEmail.setAttribute('required', 'required');
+                } else {
+                    recipientDetails.style.display = 'none';
+                    recipientEmail.removeAttribute('required');
+                }
+            });
+            
+            // Set minimum year to next year
+            const nextYear = new Date().getFullYear() + 1;
+            openYear.setAttribute('min', nextYear);
+            openYear.setAttribute('placeholder', `Enter a future year (e.g., ${nextYear})`);
+            
+            // Form submission
+            timeCapsuleForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Validate year
+                const selectedYear = parseInt(openYear.value);
+                if (selectedYear < nextYear) {
+                    alert(`Please select a year at least ${nextYear} or later.`);
+                    return false;
+                }
+                
+                // Validate recipient email if "someone else" is selected
+                if (recipientType.value === 'other' && !recipientEmail.value) {
+                    alert('Please enter the recipient\'s email address.');
+                    return false;
+                }
+                
+                // Here you would normally send the data to your server
+                // For demonstration, we'll show a success message
+                
+                // Create a success message
+                let formMessage = document.querySelector('.form-message');
+                if (!formMessage) {
+                    formMessage = document.createElement('div');
+                    formMessage.className = 'form-message success-message';
+                    timeCapsuleForm.after(formMessage);
+                }
+                
+                // Set success message text
+                formMessage.innerHTML = `
+                    <p>🎉 Your time capsule has been created and scheduled to open in ${selectedYear}!</p>
+                    <p>We'll send ${recipientType.value === 'self' ? 'you' : 'the recipient'} an email when it's time to open it.</p>
+                `;
+                formMessage.style.display = 'block';
+                
+                // Clear form
+                timeCapsuleForm.reset();
+                document.querySelectorAll('.selected-file').forEach(el => el.textContent = '');
+                recipientDetails.style.display = 'none';
+                
+                // Scroll to the message
+                formMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                console.log('Time Capsule created for year:', selectedYear);
+            });
+            
+            // Create enhanced star background with more stars and improved twinkling
+            function createStars() {
+                const starField = document.querySelector('.bg-stars');
+                const starCount = 350; // Increased from 100 to 350 stars
+                
+                // Add a subtle galaxy glow
+                const galaxyGlow = document.createElement('div');
+                galaxyGlow.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 70%;
+                    height: 60%;
+                    background: radial-gradient(ellipse at center, rgba(155, 89, 182, 0.1) 0%, transparent 70%);
+                    z-index: 0;
+                    border-radius: 50%;
+                `;
+                starField.appendChild(galaxyGlow);
+                
+                // Create stars with varying sizes, colors and animations
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Random positioning across the entire screen
+                    const left = Math.floor(Math.random() * 100);
+                    const top = Math.floor(Math.random() * 100);
+                    
+                    // Varied star sizes with occasional larger stars
+                    const sizeVariation = Math.random();
+                    const size = sizeVariation > 0.97 ? 3 + Math.random() * 2 : // Occasional larger stars (3%)
+                               sizeVariation > 0.85 ? 1.5 + Math.random() * 1 : // Medium stars (12%)
+                               0.5 + Math.random() * 1; // Small stars (85%)
+                    
+                    // Random opacity
+                    const opacity = 0.4 + Math.random() * 0.6;
+                    
+                    // Slight color variation
+                    const hue = Math.random() > 0.8 ? 
+                                Math.floor(Math.random() * 30) + 240 : // Occasional blue/purple tint
+                                Math.floor(Math.random() * 60) + 200; // White to light purple
+                    const saturation = Math.floor(Math.random() * 30);
+                    const color = `hsl(${hue}, ${saturation}%, 90%)`;
+                    
+                    star.style.cssText = `
+                        position: absolute;
+                        left: ${left}%;
+                        top: ${top}%;
+                        width: ${size}px;
+                        height: ${size}px;
+                        background: ${color};
+                        border-radius: 50%;
+                        opacity: ${opacity};
+                        box-shadow: 0 0 ${size * 3}px ${color.replace('90%', '70%')};
+                        z-index: ${Math.floor(size)};
+                    `;
+                    
+                    // Add staggered animation with random duration and delay
+                    const duration = 3 + Math.random() * 7;
+                    const delay = Math.random() * 5;
+                    star.style.animation = `twinkle ${duration}s infinite ${delay}s ease-in-out`;
+                    
+                    starField.appendChild(star);
+                }
+                
+                // Add shooting stars that appear occasionally
+                setInterval(() => {
+                    if (Math.random() > 0.7) { // 30% chance of shooting star appearing
+                        createShootingStar(starField);
+                    }
+                }, 8000);
+                
+                // Add keyframes for enhanced twinkling animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes twinkle {
+                        0%, 100% { opacity: 0.2; transform: scale(0.8); }
+                        50% { opacity: 0.9; transform: scale(1.1); }
+                    }
+                    
+                    @keyframes shooting {
+                        0% { transform: translate(0, 0) rotate(-35deg) scale(0.5); opacity: 0; }
+                        15% { opacity: 1; }
+                        60% { transform: translate(-100vw, 100vh) rotate(-35deg) scale(0.5); opacity: 0; }
+                        100% { transform: translate(-100vw, 100vh) rotate(-35deg) scale(0.5); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Function to create occasional shooting stars
+            function createShootingStar(starField) {
+                const shootingStar = document.createElement('div');
+                
+                // Random position at top-right area
+                const startX = 70 + Math.random() * 30; // 70-100% of screen width
+                const startY = Math.random() * 30; // 0-30% of screen height
+                
+                shootingStar.style.cssText = `
+                    position: fixed;
+                    top: ${startY}vh;
+                    right: ${100 - startX}vw;
+                    width: 100px;
+                    height: 2px;
+                    background: linear-gradient(to right, transparent, #fff, transparent);
+                    border-radius: 50%;
+                    filter: drop-shadow(0 0 6px rgba(255,255,255,0.8));
+                    animation: shooting 3s ease-in-out forwards;
+                    z-index: 1;
+                    pointer-events: none;
+                `;
+                
+                starField.appendChild(shootingStar);
+                
+                // Remove the shooting star element after animation completes
+                setTimeout(() => {
+                    if (starField.contains(shootingStar)) {
+                        starField.removeChild(shootingStar);
+                    }
+                }, 3000);
+            }
+
+            // Add parallax 3D effect based on mouse movement
+            document.addEventListener('mousemove', function(e) {
+                const formContainer = document.querySelector('.time-capsule-form-container');
+                if (!formContainer) return;
+                
+                // Only apply 3D effect if we're hovering over or near the form container
+                const rect = formContainer.getBoundingClientRect();
+                
+                // Skip effect if mouse is far from the form container
+                const padding = 100; // Extra area around the form to consider
+                if (e.clientX < rect.left - padding || e.clientX > rect.right + padding ||
+                    e.clientY < rect.top - padding || e.clientY > rect.bottom + padding) {
+                    return;
+                }
+                
+                // Calculate mouse position relative to the center of the container
+                const containerCenterX = rect.left + rect.width / 2;
+                const containerCenterY = rect.top + rect.height / 2;
+                
+                // Calculate mouse distance from center (normalized to -1 to 1)
+                const mouseX = (e.clientX - containerCenterX) / (rect.width / 2);
+                const mouseY = (e.clientY - containerCenterY) / (rect.height / 2);
+
+                // Apply subtle rotation based on mouse position
+                const maxRotation = 1.5; // degrees
+                const rotateX = -mouseY * maxRotation;
+                const rotateY = mouseX * maxRotation;
+                formContainer.style.transform = `
+                    translateZ(0px)
+                    rotateX(${rotateX}deg)
+                    rotateY(${rotateY}deg)
+                `;
+
+                // Move elements inside the container for parallax effect
+                const elements = {
+                    'h2': 15,
+                    '.media-label': 10,
+                    '.send-capsule-btn': 8,
+                    'input, select, textarea': 5
+                };
+                for (const selector in elements) {
+                    const depth = elements[selector];
+                    const items = formContainer.querySelectorAll(selector);
+                    items.forEach(item => {
+                        const moveX = mouseX * depth * 0.5;
+                        const moveY = mouseY * depth * 0.5;
+                        item.style.transform = `translateX(${moveX}px) translateY(${moveY}px) translateZ(${depth}px)`;
+                    });
+                }
+
+                // Move the cosmic portal in opposite direction for depth effect
+                const portal = document.querySelector('.cosmic-portal');
+                if (portal) {
+                    const portalShift = 20;
+                    portal.style.transform = `
+                        translate(-50%, -50%)
+                        translateZ(-50px)
+                        translate(calc(-50% + ${-mouseX * portalShift}px), calc(-50% + ${-mouseY * portalShift}px))
+                    `;
+                }
+            });
+
+            // Reset transform when mouse leaves the form
+            document.addEventListener('mouseleave', function() {
+                const formContainer = document.querySelector('.time-capsule-form-container');
+                if (formContainer) {
+                    formContainer.style.transform = 'translateZ(0px) rotateX(0deg) rotateY(0deg)';
+                    const elements = formContainer.querySelectorAll('h2, .media-label, .send-capsule-btn, input, select, textarea');
+                    elements.forEach(item => {
+                        item.style.transform = '';
+                    });
+                    const portal = document.querySelector('.cosmic-portal');
+                    if (portal) {
+                        portal.style.transform = 'translate(-50%, -50%) translateZ(-50px)';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
