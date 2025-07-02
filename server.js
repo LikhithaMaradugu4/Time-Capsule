@@ -3,6 +3,9 @@ import path from 'path';
 import fs from 'fs/promises';
 import chatbotRoutes from './backend/routes/chatbot.js'
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +16,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+
+// Mount chatbot routes with explicit logging
+console.log("Mounting chatbot routes...");
+app.use('/', chatbotRoutes);
+console.log("Chatbot routes mounted successfully");
 
 // API endpoint to get year data
 app.get('/api/year', async (req, res) => {

@@ -36,15 +36,13 @@
       "title": "A morning in 1952",
       "text": "Radha woke up to the rooster crowing. The smell of boiling milk filled the courtyard as her father read the newspaper aloud."
     }
-  ]
+  ],
   "phrases": [
-  {
-    "text": "Arre bhaiya, mobile kya hota hai? Hum toh chitthiyan likhte hain!"
-  },
-  {
-    "text": "Bazar se doodh lana mat bhoolna."
-  }
-]
-
+    {
+      "text": "Arre bhaiya, mobile kya hota hai? Hum toh chitthiyan likhte hain!"
+    },
+    {
+      "text": "Bazar se doodh lana mat bhoolna."
+    }
+  ]
 }
-

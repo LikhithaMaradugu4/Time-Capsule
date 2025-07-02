@@ -394,6 +394,11 @@
             chatInput.focus();
             scrollToBottom();
 
+            // Debug input field
+            console.log("Input field found:", chatInput);
+            chatInput.addEventListener('focus', () => console.log('Input field focused'));
+            chatInput.addEventListener('input', () => console.log('Input detected:', chatInput.value));
+
             // Event listeners
             sendBtn.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', function(e) {
@@ -406,16 +411,21 @@
                 const message = chatInput.value.trim();
                 if (!message) return;
 
+                console.log("Sending message:", message);
+                
                 // Add user message to chat
                 addMessage(message, 'user');
                 chatInput.value = '';
+                
+                // Ensure input is still focusable after sending
+                setTimeout(() => chatInput.focus(), 0);
 
                 // Show typing indicator
                 typingIndicator.classList.add('visible');
                 scrollToBottom();
 
                 // Send to backend API - updated to use the correct endpoint
-                fetch('http://localhost:3000/api/chat', {
+                fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -439,7 +449,7 @@
                 .catch(error => {
                     console.error('Error:', error);
                     typingIndicator.classList.remove('visible');
-                    addMessage("I'm sorry, I couldn't connect to the 1950s right now. Please try again later.", 'bot');>(Check browser console for details)</small>", 'bot');
+                    addMessage("I'm sorry, I couldn't connect to the 1950s right now. Please try again later.", 'bot');
                 });
             }
 
@@ -481,22 +491,12 @@
                 }
             }, 3000);
 
-            // Debug function to test API connectivity
-            function debugConnection() {
-                console.log("Testing backend connection...");
-                
-                // Test if server is reachable
-                fetch('http://localhost:3000/api/chat', {
-                    method: 'HEAD'
-                })
-                .then(response => {
-                    console.log("Server reachable:", response.status);
-                })
-                .catch(err => {
-                    console.error("Server connection error:", err);
-                    console.log("POSSIBLE SOLUTIONS:");
-                    console.log("1. Make sure your backend server is running");
-                    console.log("2. Check if the server is running on port 3000");
+            // Comment out the auto-debug that might be interfering
+            // setTimeout(debugConnection, 1000);
+        });
+    </script>
+</body>
+</html>
                     console.log("3. Verify there are no CORS issues (check server logs)");
                     console.log("4. Ensure the /api/chat endpoint is correctly set up");
                 });
