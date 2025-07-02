@@ -9,6 +9,7 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "express": "^4.18.2",
     "node-fetch": "^2.6.7"
   },

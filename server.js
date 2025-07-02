@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs/promises';
+import chatbotRoutes from './backend/routes/chatbot.js'
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);

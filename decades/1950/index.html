@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 1950s - Vintage TV</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            .video-player {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                height: 90%;
+                background: #000;
+                border-radius: 15px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+                display: none;
+                z-index: 20;
+                overflow: hidden;
+            }
+
+            .video-player iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            .video-player .close-btn {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #d4c4a8;
+                color: #3a2a18;
+                font-size: 1rem;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .video-player .close-btn:hover {
+                background: #6b5538;
+                color: #f4e6d0;
+            }
+
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2d1f15 0%, #1a0f08 50%, #0f0704 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Crimson Text', serif;
+            overflow: hidden;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        .room-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 70% 30%, rgba(139, 111, 71, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(74, 58, 40, 0.3) 0%, transparent 50%),
+                linear-gradient(180deg, #2d1f15 0%, #1a0f08 70%, #0f0704 100%);
+            z-index: -2;
+        }
+
+        .wallpaper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background-image: repeating-linear-gradient(90deg,
+                    rgba(139, 111, 71, 0.2) 0px,
+                    rgba(139, 111, 71, 0.2) 1px,
+                    rgba(74, 58, 40, 0.1) 1px,
+                    rgba(74, 58, 40, 0.1) 20px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .floor {
+            position: fixed;
+            bottom: -10%;
+            left: -20%;
+            width: 140%;
+            height: 60%;
+            background:
+                repeating-linear-gradient(90deg,
+                    #3a2a18 0px,
+                    #3a2a18 80px,
+                    #2d1f15 80px,
+                    #2d1f15 82px),
+                linear-gradient(0deg, #2d1f15 0%, #3a2a18 100%);
+            transform: rotateX(75deg) translateZ(-50px);
+            z-index: -1;
+            opacity: 0.8;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3) inset;
+        }
+
+        .carpet {
+            position: fixed;
+            bottom: -10%;
+            left: 50%;
+            width: 800px;
+            height: 500px;
+            transform: translate(-50%, -50px) rotateX(75deg) translateZ(-49px);
+            background: radial-gradient(ellipse at center,
+                    rgba(165, 124, 82, 0.8) 0%,
+                    rgba(139, 111, 71, 0.6) 70%);
+            border-radius: 50%;
+            filter: blur(2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .background-twinkles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .twinkle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #8b6f47;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        .twinkle:nth-child(2n) {
+            background: #a67c52;
+            animation-duration: 4s;
+            animation-delay: 0.5s;
+        }
+
+        .twinkle:nth-child(3n) {
+            background: #d4c4a8;
+            animation-duration: 2.5s;
+            animation-delay: 1s;
+        }
+
+        .twinkle:nth-child(4n) {
+            background: #6b5538;
+            animation-duration: 3.5s;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.2);
+            }
+        }
+
+        .tv-setup {
+            position: relative;
+            z-index: 10;
+            transform: scale(0.95);
+            margin: 30px 0;
+        }
+
+        .tv-cabinet {
+            width: 900px;
+            height: 220px;
+            background:
+                linear-gradient(145deg, #8b6f47 0%, #6b5538 50%, #4a3a28 100%);
+            border-radius: 15px 15px 8px 8px;
+            position: relative;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                0 15px 30px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(139, 111, 71, 0.3),
+                inset 0 -2px 4px rgba(26, 15, 8, 0.6);
+            margin-bottom: -50px;
+            z-index: 1;
+        }
+
+        .tv-cabinet::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background:
+                repeating-linear-gradient(90deg,
+                    rgba(107, 85, 56, 0.4) 0px,
+                    rgba(107, 85, 56, 0.4) 2px,
+                    transparent 2px,
+                    transparent 10px),
+                repeating-linear-gradient(0deg,
+                    rgba(107, 85, 56, 0.1) 0px,
+                    rgba(107, 85, 56, 0.1) 1px,
+                    transparent 1px,
+                    transparent 4px);
+            border-radius: 8px;
+            opacity: 0.6;
+        }
+
+        .cabinet-doors {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 70%;
+            display: flex;
+            gap: 20px;
+        }
+
+        .cabinet-door {
+            flex: 1;
+            height: 100%;
+            background: linear-gradient(145deg, #8b6f47 0%, #6b5538 100%);
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(139, 111, 71, 0.3),
+                inset 0 -1px 3px rgba(26, 15, 8, 0.4);
+        }
+
+        .cabinet-door::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3d2817;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .cabinet-door:first-child::after {
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        .cabinet-door:last-child::after {
+            left: 10px;
+            transform: translateY(-50%);
+        }
+
+        .cabinet-legs {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .cabinet-leg {
+            width: 15px;
+            height: 40px;
+            background: linear-gradient(180deg, #6b5538 0%, #4a3a28 100%);
+            border-radius: 0 0 8px 8px;
+            box-shadow:
+                2px 4px 8px rgba(0, 0, 0, 0.6),
+                inset 1px 0 2px rgba(139, 111, 71, 0.2);
+            transform: perspective(100px) rotateX(5deg);
+        }
+
+        .cabinet-shadow {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            width: 850px;
+            height: 60px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 80%);
+            filter: blur(15px);
+            z-index: 0;
+        }
+
+        .tv-container {
+            width: 820px;
+            height: 520px;
+            background: linear-gradient(145deg, #3d2817, #2a1810);
+            border-radius: 35px 35px 25px 25px;
+            padding: 30px;
+            box-shadow:
+                0 40px 80px rgba(0, 0, 0, 0.9),
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                0 10px 20px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 6px solid #1a0f08;
+            z-index: 2;
+            transform: translateY(-30px);
+        }
+
+        .tv-frame-wood {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 35px 35px 25px 25px;
+            background-image:
+                linear-gradient(90deg, rgba(139, 111, 71, 0.1) 0px, rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 10px),
+                linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 10px);
+            pointer-events: none;
+            opacity: 0.8;
+            z-index: 3;
+        }
+
+        .tv-top-vent {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 60%;
+            height: 10px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #2a1810, #3d2817, #2a1810);
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+            z-index: 4;
+        }
+
+        .tv-top-vent::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-image: repeating-linear-gradient(90deg,
+                    rgba(0, 0, 0, 0.5) 0px,
+                    rgba(0, 0, 0, 0.5) 1px,
+                    transparent 1px,
+                    transparent 3px);
+        }
+
+        .ambient-light {
+            position: absolute;
+            top: -150px;
+            left: -200px;
+            width: 400px;
+            height: 300px;
+            background: radial-gradient(ellipse at 70% 30%,
+                    rgba(139, 111, 71, 0.5) 0%,
+                    rgba(139, 111, 71, 0.3) 20%,
+                    rgba(139, 111, 71, 0.1) 50%,
+                    transparent 80%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 0;
+            animation: ambientPulse 8s ease-in-out infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes ambientPulse {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.85;
+                transform: scale(1.05);
+            }
+        }
+
+        .room-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(ellipse at 30% 40%,
+                    rgba(212, 196, 168, 0.15) 0%,
+                    rgba(212, 196, 168, 0.08) 40%,
+                    transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            filter: blur(30px);
+            opacity: 0.8;
+        }
+
+        .wall-shadow {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 800px;
+            height: 100%;
+            background: radial-gradient(ellipse at 50% 50%,
+                    rgba(0, 0, 0, 0.3) 0%,
+                    transparent 70%);
+            transform: translateX(-50%);
+            filter: blur(40px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .tv-frame {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #1a0f08, #0f0704);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .screen-area {
+            flex: 1;
+            background: radial-gradient(ellipse at center, #4a3a28 0%, #2a1f15 100%);
+            border-radius: 200px / 150px;
+            padding: 40px;
+            position: relative;
+            box-shadow:
+                inset 0 0 30px rgba(0, 0, 0, 0.9),
+                inset 0 0 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        /* TV glitch effects */
+        .screen-glitches {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 7;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0.6;
+            mix-blend-mode: screen;
+            border-radius: 200px / 150px;
+        }
+
+        .horizontal-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            z-index: 8;
+            animation: horizontalGlitch 15s infinite linear;
+        }
+
+        .vertical-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            z-index: 8;
+            animation: verticalGlitch 17s infinite linear;
+        }
+
+        .noise-band {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.2) 20%,
+                    rgba(255, 255, 255, 0.3) 50%,
+                    rgba(255, 255, 255, 0.2) 80%,
+                    rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            z-index: 8;
+            transform: skewY(-3deg);
+            animation: noiseBand 12s infinite ease-in-out;
+        }
+
+        .static-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgbnVtT2N0YXZlcz0iMyIvPjxmZUNvbG9yTWF0cml4IHR5cGU9InNhdHVyYXRlIiB2YWx1ZXM9IjAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 8;
+            border-radius: 200px / 150px;
+            mix-blend-mode: overlay;
+            animation: staticFlicker 8s infinite ease-in-out;
+        }
+
+        @keyframes horizontalGlitch {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+
+            10%,
+            14% {
+                opacity: 0.6;
+                transform: translateY(30%);
+            }
+
+            12% {
+                opacity: 0.6;
+                transform: translateY(40%);
+            }
+
+            55%,
+            59% {
+                opacity: 0.6;
+                transform: translateY(75%);
+            }
+
+            57% {
+                opacity: 0.6;
+                transform: translateY(85%);
+            }
+
+            82%,
+            84% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes verticalGlitch {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            20%,
+            24% {
+                opacity: 0.4;
+                transform: translateX(30%);
+            }
+
+            22% {
+                opacity: 0.4;
+                transform: translateX(35%);
+            }
+
+            65%,
+            69% {
+                opacity: 0.4;
+                transform: translateX(70%);
+            }
+
+            67% {
+                opacity: 0.4;
+                transform: translateX(75%);
+            }
+
+            92%,
+            94% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes noiseBand {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: translateY(-100%) skewY(-3deg);
+            }
+
+            15%,
+            18% {
+                opacity: 0.3;
+                transform: translateY(30%) skewY(-3deg);
+            }
+
+            16% {
+                opacity: 0.3;
+                transform: translateY(35%) skewY(-3deg);
+            }
+
+            70%,
+            73% {
+                opacity: 0.3;
+                transform: translateY(70%) skewY(-3deg);
+            }
+
+            71% {
+                opacity: 0.3;
+                transform: translateY(75%) skewY(-3deg);
+            }
+        }
+
+        @keyframes staticFlicker {
+
+            0%,
+            100% {
+                opacity: 0.05;
+            }
+
+            50% {
+                opacity: 0.03;
+            }
+
+            25%,
+            75% {
+                opacity: 0.04;
+            }
+
+            3%,
+            9%,
+            15%,
+            23%,
+            76%,
+            82%,
+            90% {
+                opacity: 0.06;
+            }
+        }
+
+        .screen-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            color: #f4e6d0;
+            animation: flicker 8s ease-in-out infinite, screenJitter 15s infinite linear;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: #d4c4a8;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        .description {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #c8b899;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin: 0 auto;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            background: #3a2a18;
+            border: 1px solid #d4c4a8;
+            color: #d4c4a8;
+            font-family: 'Crimson Text', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 3px;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0.13) 0%,
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        .btn:hover {
+            background: #6b5538;
+            color: #f4e6d0;
+            box-shadow:
+                0 0 20px rgba(212, 196, 168, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow:
+                0 0 10px rgba(212, 196, 168, 0.2),
+                inset 0 1px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .controls {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        .knob {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 30%,
+                    #a67c52 0%,
+                    #8b6f47 40%,
+                    #4a3a28 100%);
+            border: 4px solid #2a1810;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .knob:hover {
+            transform: scale(1.05);
+        }
+
+        .knob::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: conic-gradient(from 0deg,
+                    #8b6f47,
+                    #6b5538,
+                    #4a3a28,
+                    #6b5538,
+                    #8b6f47);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .knob::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            width: 4px;
+            height: 20px;
+            background: #2a1810;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .knob-labels {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: -10px;
+            left: -10px;
+            border-radius: 50%;
+        }
+
+        .knob-label {
+            position: absolute;
+            font-size: 0.7rem;
+            color: #8b6f47;
+            font-weight: bold;
+        }
+
+        .knob-label:nth-child(1) {
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .knob-label:nth-child(2) {
+            top: 50%;
+            right: 5px;
+            transform: translateY(-50%);
+        }
+
+        .knob-label:nth-child(3) {
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .knob-label:nth-child(4) {
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+        }
+
+        .small-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .small-knob {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #6b5538, #3a2a18);
+            border: 2px solid #2a1810;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .small-knob:hover {
+            transform: scale(1.1);
+        }
+
+        .glow-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(ellipse at center, rgba(212, 196, 168, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.98;
+            }
+        }
+
+        @keyframes screenJitter {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            5.2%,
+            5.4% {
+                transform: translateX(-2px);
+            }
+
+            10.8%,
+            11% {
+                transform: translateX(2px);
+            }
+
+            26.2%,
+            26.4% {
+                transform: translateX(-1px);
+            }
+
+            54%,
+            54.1% {
+                transform: translateX(1px);
+            }
+
+            86.4%,
+            86.5% {
+                transform: translateX(-2px);
+            }
+
+            93.6%,
+            93.9% {
+                transform: translateX(2px);
+            }
+        }
+
+        .screen-content {
+            animation: flicker 8s ease-in-out infinite, screenJitter 15s infinite linear;
+            position: relative;
+            z-index: 2;
+        }
+
+        .grain-overlay {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            opacity: 0.18;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+            mix-blend-mode: multiply;
+        }
+
+        .tv-shadow {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 600px;
+            height: 80px;
+            transform: translate(-50%, -30px) scaleX(1.1);
+            background: radial-gradient(ellipse at center, rgba(40, 20, 10, 0.45) 0%, rgba(40, 20, 10, 0.12) 70%, transparent 100%);
+            filter: blur(6px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .tv-back-shadow {
+            position: absolute;
+            left: 50%;
+            top: 30px;
+            width: 820px;
+            height: 120px;
+            transform: translate(-50%, -100px) scaleX(1.05);
+            background: radial-gradient(ellipse at 60% 40%, rgba(60, 30, 10, 0.18) 0%, transparent 80%);
+            filter: blur(16px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .lamp-setup {
+            position: absolute;
+            left: -120px;
+            bottom: 60px;
+            z-index: 12;
+            width: 120px;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .lamp-base {
+            width: 32px;
+            height: 18px;
+            background: linear-gradient(90deg, #6b5538 0%, #a67c52 100%);
+            border-radius: 0 0 16px 16px;
+            margin-top: 0;
+            box-shadow: 0 4px 12px 2px rgba(60, 30, 10, 0.25);
+        }
+
+        .lamp-pole {
+            width: 8px;
+            height: 240px;
+            background: linear-gradient(180deg, #a67c52 0%, #8b6f47 100%);
+            margin-top: 0;
+            border-radius: 6px;
+            box-shadow: 0 0 6px 1px rgba(139, 111, 71, 0.12);
+        }
+
+        .lamp-shade {
+            width: 90px;
+            height: 70px;
+            background: linear-gradient(180deg, #ffe6b3 0%, #e6b87a 100%);
+            border-radius: 50% 50% 38% 38%/60% 60% 100% 100%;
+            margin-bottom: -12px;
+            margin-top: 0;
+            box-shadow: 0 16px 32px 0 rgba(255, 220, 120, 0.18);
+            border: 3px solid #c8b899;
+            position: relative;
+            z-index: 2;
+        }
+
+        .lamp-glow {
+            position: absolute;
+            left: 50%;
+            top: 38px;
+            width: 170px;
+            height: 140px;
+            transform: translate(-50%, 0);
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 230, 180, 0.45) 0%, rgba(255, 230, 180, 0.13) 60%, transparent 100%);
+            filter: blur(2px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .lamp-cord {
+            width: 2px;
+            height: 40px;
+            background: #6b5538;
+            margin-top: -6px;
+            border-radius: 2px;
+        }
+
+        .lamp-knob {
+            width: 10px;
+            height: 10px;
+            background: #a67c52;
+            border-radius: 50%;
+            margin-top: 2px;
+            box-shadow: 0 1px 2px rgba(60, 30, 10, 0.18);
+        }
+
+        .table-lamp {
+            position: absolute;
+            right: 50px;
+            top: -80px;
+            width: 60px;
+            height: 100px;
+            z-index: 3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .table-lamp:hover {
+            transform: scale(1.05);
+        }
+
+        .table-lamp-base {
+            width: 40px;
+            height: 15px;
+            background: linear-gradient(145deg, #8b6f47, #6b5538);
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.4),
+                inset 0 1px 2px rgba(139, 111, 71, 0.3);
+        }
+
+        .table-lamp-stem {
+            width: 6px;
+            height: 35px;
+            background: linear-gradient(180deg, #a67c52, #8b6f47);
+            margin: 0 auto;
+            border-radius: 3px;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-lamp-shade {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(180deg, #f5e6d3, #e6d4c1);
+            border-radius: 50% 50% 30% 30%/60% 60% 100% 100%;
+            margin: -5px auto 0;
+            border: 2px solid #d4c4a8;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .table-lamp.on .table-lamp-shade {
+            background: linear-gradient(180deg, #fffaef, #f5e6d3);
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                0 0 25px rgba(255, 245, 220, 0.6),
+                inset 0 0 15px rgba(255, 245, 220, 0.4);
+        }
+
+        .table-lamp-glow {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 60px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 245, 220, 0.6) 0%, rgba(255, 245, 220, 0.2) 50%, transparent 100%);
+            filter: blur(3px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .table-lamp.on .table-lamp-glow {
+            opacity: 1;
+        }
+
+        .table-lamp-switch {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #6b5538;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .table-lamp.on .table-lamp-switch {
+            background: #d4c4a8;
+            box-shadow: 0 0 6px rgba(212, 196, 168, 0.5);
+        }
+
+        .table-lamp-reflection {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: radial-gradient(ellipse at center, rgba(255, 245, 220, 0.15) 0%, transparent 70%);
+            filter: blur(2px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .table-lamp.on .table-lamp-reflection {
+            opacity: 1;
+        }
+
+        .tv-extras-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .rotary-phone {
+            position: absolute;
+            top: -80px;
+            right: -100px;
+            width: 80px;
+            height: 50px;
+            background: #2a1810;
+            border-radius: 40px 40px 10px 10px;
+            transform: perspective(500px) rotateX(60deg) rotateZ(-10deg);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .rotary-phone::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 25px;
+            background: #3d2817;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .rotary-phone::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 20px;
+            height: 10px;
+            background: #3d2817;
+            border-radius: 5px;
+        }
+
+        .phone-handset {
+            position: absolute;
+            width: 90px;
+            height: 25px;
+            background: #2a1810;
+            top: -30px;
+            left: -25px;
+            border-radius: 12px;
+            transform: rotate(-20deg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-stack {
+            position: absolute;
+            bottom: 10px;
+            left: -130px;
+            width: 100px;
+            height: 60px;
+            transform: perspective(500px) rotateY(20deg);
+            filter: blur(1px);
+        }
+
+        .book {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: #8b6f47;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book:nth-child(1) {
+            bottom: 0;
+            background: #6b5538;
+        }
+
+        .book:nth-child(2) {
+            bottom: 15px;
+            background: #8b6f47;
+        }
+
+        .book:nth-child(3) {
+            bottom: 30px;
+            background: #a67c52;
+        }
+
+        .book:nth-child(4) {
+            bottom: 45px;
+            background: #3d2817;
+        }
+
+        .ceramic-vase {
+            position: absolute;
+            bottom: 20px;
+            right: -80px;
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(180deg, #a3c9e2 0%, #2c5d77 100%);
+            border-radius: 20px 20px 10px 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: perspective(500px) rotateY(-10deg);
+        }
+
+        .ceramic-vase::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            height: 10px;
+            background: #c8e1f0;
+            border-radius: 10px;
+            opacity: 0.6;
+        }
+
+        .dust-particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.5;
+        }
+
+        .dust-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) rotate(0);
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) translateX(50px) rotate(360deg);
+            }
+        }
+
+        .film-grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9Ii4wNSIvPjwvc3ZnPg==');
+            pointer-events: none;
+            z-index: 2000;
+            opacity: 0.08;
+            mix-blend-mode: overlay;
+        }
+
+        @media (max-width: 1200px) {
+            .tv-setup {
+                transform: scale(0.8);
+            }
+            
+            .tv-cabinet {
+                width: 750px;
+            }
+
+            .tv-container {
+                width: 700px;
+                height: 460px;
+            }
+            
+            .buttons {
+                flex-direction: row;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tv-setup {
+                transform: scale(0.6);
+            }
+            
+            .tv-cabinet {
+                width: 550px;
+            }
+
+            .tv-container {
+                width: 500px;
+                height: 400px;
+            }
+
+            .screen-area {
+                padding: 30px;
+            }
+            
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .description {
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .tv-setup {
+                transform: scale(0.5);
+                margin: 20px 0;
+            }
+        }
+
+        .chat-button-container {
+            position: relative;
+            text-align: center;
+            margin-top: 30px;
+            z-index: 100;
+        }
+        
+        .chat-button-container .btn {
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            box-shadow: 
+                0 8px 16px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .chat-button-container {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="room-background"></div>
+    <div class="wallpaper"></div>
+    <div class="floor"></div>
+    <div class="carpet"></div>
+    <div class="room-glow"></div>
+    <div class="wall-shadow"></div>
+    <div class="background-twinkles" id="twinkles"></div>
+    <div class="film-grain"></div>
+    <div class="dust-particles-container" id="dust-container"></div>
+
+    <div class="lamp-setup">
+        <div class="lamp-glow"></div>
+        <div class="lamp-shade"></div>
+        <div class="lamp-cord"></div>
+        <div class="lamp-pole"></div>
+        <div class="lamp-base"></div>
+        <div class="lamp-knob"></div>
+    </div>
+
+    <div class="tv-setup">
+        <div class="tv-back-shadow"></div>
+        <div class="tv-cabinet">
+            <div class="cabinet-doors">
+                <div class="cabinet-door"></div>
+                <div class="cabinet-door"></div>
+            </div>
+            <div class="cabinet-shadow"></div>
+            <div class="table-lamp" id="tableLamp">
+                <div class="table-lamp-glow"></div>
+                <div class="table-lamp-shade"></div>
+                <div class="table-lamp-stem"></div>
+                <div class="table-lamp-base"></div>
+                <div class="table-lamp-switch"></div>
+                <div class="table-lamp-reflection"></div>
+            </div>
+            <div class="cabinet-legs">
+                <div class="cabinet-leg"></div>
+                <div class="cabinet-leg"></div>
+                <div class="cabinet-leg"></div>
+                <div class="cabinet-leg"></div>
+            </div>
+
+            <div class="tv-extras-container">
+                <div class="rotary-phone">
+                    <div class="phone-handset"></div>
+                </div>
+                <div class="book-stack">
+                    <div class="book"></div>
+                    <div class="book"></div>
+                    <div class="book"></div>
+                    <div class="book"></div>
+                </div>
+                <div class="ceramic-vase"></div>
+            </div>
+        </div>
+
+        <div class="ambient-light"></div>
+        <div class="tv-container">
+            <div class="tv-frame-wood"></div>
+            <div class="tv-top-vent"></div>
+            <div class="tv-shadow"></div>
+            <div class="tv-frame">
+                <div class="screen-area">
+                    <div class="screen-glass"></div>
+                    <div class="screen-reflection"></div>
+                    <div class="screen-highlight"></div>
+                    <div class="screen-glow"></div>
+                    <div class="glow-effect"></div>
+                    <!-- TV Glitch Elements -->
+                    <div class="screen-glitches">
+                        <div class="horizontal-line"></div>
+                        <div class="horizontal-line" style="animation-delay: 7.3s;"></div>
+                        <div class="vertical-line"></div>
+                        <div class="vertical-line" style="animation-delay: 8.7s;"></div>
+                        <div class="noise-band"></div>
+                        <div class="noise-band" style="animation-delay: 5.2s;"></div>
+                        <div class="static-overlay"></div>
+                    </div>
+                    <div class="screen-content">
+                        <h1 class="title">The 1950s</h1>
+                        <p class="subtitle">Post-War Prosperity & Indian Dream</p>
+                        <p class="description">
+                            Step back in time to an era of economic boom, cultural renaissance, and
+                            newfound national identity. The 1950s saw India navigate independence,
+                            establishing itself as a young democracy while building its future.
+                        </p>
+                        <div class="buttons">
+                            <a href="#" class="btn" onclick="alert('Exploring the timeline...')">Explore the
+                                Timeline</a>
+                            <a href="#" class="btn" onclick="alert('Experiencing the culture...')">Experience the
+                                Culture</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="knob">
+                        <div class="knob-labels">
+                            <div class="knob-label">12</div>
+                            <div class="knob-label">3</div>
+                            <div class="knob-label">6</div>
+                            <div class="knob-label">9</div>
+                        </div>
+                    </div>
+
+                    <div class="knob">
+                        <div class="knob-labels">
+                            <div class="knob-label">10</div>
+                            <div class="knob-label">5</div>
+                            <div class="knob-label">0</div>
+                            <div class="knob-label">15</div>
+                        </div>
+                    </div>
+
+                    <div class="small-controls">
+                        <div class="small-knob"></div>
+                        <div class="small-knob"></div>
+                        <div class="small-knob"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-button-container">
+        <a href="chatbot.html" class="btn">Talk to a Person in 1950s</a>
+    </div>
+
+    <script>
+        // Create background twinkles
+        function createTwinkles() {
+            const twinklesContainer = document.getElementById('twinkles');
+            const twinkleCount = 300;
+
+            for (let i = 0; i < twinkleCount; i++) {
+                const twinkle = document.createElement('div');
+                twinkle.className = 'twinkle';
+
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+
+                // Random size variation
+                const size = 1 + Math.random() * 2;
+
+                twinkle.style.left = x + '%';
+                twinkle.style.top = y + '%';
+                twinkle.style.width = size + 'px';
+                twinkle.style.height = size + 'px';
+                twinkle.style.animationDelay = Math.random() * 3 + 's';
+
+                twinklesContainer.appendChild(twinkle);
+            }
+        }
+
+        // Create dust particles
+        function createDustParticles() {
+            const dustContainer = document.getElementById('dust-container');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'dust-particle';
+                dust.style.left = Math.random() * 100 + '%';
+                dust.style.top = Math.random() * 60 + '%';
+                dust.style.opacity = Math.random() * 0.3;
+                dust.style.width = Math.random() * 2 + 1 + 'px';
+                dust.style.height = dust.style.width;
+                dust.style.animationDuration = 10 + Math.random() * 20 + 's';
+                dust.style.animationDelay = Math.random() * 10 + 's';
+                dustContainer.appendChild(dust);
+            }
+        }
+
+        // Add randomized TV glitches
+        function createRandomGlitches() {
+            const screenGlitches = document.querySelector('.screen-glitches');
+
+            // Create random horizontal interference lines
+            for (let i = 0; i < 3; i++) {
+                const line = document.createElement('div');
+                line.className = 'horizontal-line';
+                line.style.animationDelay = (Math.random() * 10) + 's';
+                line.style.top = (Math.random() * 100) + '%';
+                line.style.height = (1 + Math.random() * 2) + 'px';
+                line.style.opacity = (Math.random() * 0.2) + 0.1;
+                screenGlitches.appendChild(line);
+            }
+
+            // Create occasional screen roll effect
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    const content = document.querySelector('.screen-content');
+                    content.style.transform = `translateY(${Math.random() * 8 - 4}px)`;
+
+                    setTimeout(() => {
+                        content.style.transform = 'translateY(0)';
+                    }, 250);
+                }
+            }, 5000);
+        }
+
+        // Initialize elements when page loads
+        window.addEventListener('load', function () {
+            createTwinkles();
+            createDustParticles();
+            createRandomGlitches();
+
+            // Initialize with TV lamp on
+            document.getElementById('tableLamp').classList.add('on');
+        });
+
+        // Add interactive knob rotation
+        document.querySelectorAll('.knob').forEach(knob => {
+            let rotation = 0;
+            knob.addEventListener('click', () => {
+                rotation += 30;
+                knob.style.transform = `rotate(${rotation}deg)`;
+            });
+        });
+
+        // Add vintage TV static effect on button hover
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                document.querySelector('.screen-content').style.filter = 'contrast(1.1) brightness(1.05)';
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                document.querySelector('.screen-content').style.filter = 'none';
+            });
+        });
+
+        // Table lamp on/off functionality
+        document.getElementById('tableLamp').addEventListener('click', function () {
+            this.classList.toggle('on');
+
+            // Add a subtle click sound effect (optional)
+            const clickSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaBS2O0vPReCUFJXfH8N+QQQsUXbPq66hWFAlFn+HyvmEaBS2O0vPReSU=');
+            if (clickSound) {
+                clickSound.volume = 0.1;
+                clickSound.play().catch(() => { }); // Ignore if audio fails
+            }
+        });
+
+        // Add subtle screen interaction
+        document.querySelector('.screen-area').addEventListener('mousemove', function (e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const offsetX = (x - centerX) / centerX * 3;
+            const offsetY = (y - centerY) / centerY * 2;
+
+            document.querySelector('.screen-reflection').style.transform = `translateY(${offsetY}px)`;
+            document.querySelector('.screen-highlight').style.transform = `translateX(${offsetX}px)`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "lifestyle": [
+    {
+      "topic": "communication",
+      "text": "In the 1950s, people mostly wrote letters to stay in touch. Telephones were rare and mainly in big offices."
+    },
+    {
+      "topic": "morning routine",
+      "text": "Most families woke up early. Women swept courtyards, men read newspapers or went to fetch milk in steel cans."
+    }
+  ],
+  "culture": [
+    {
+      "topic": "clothing",
+      "text": "Men wore dhotis and kurtas, women wore cotton sarees with large prints."
+    },
+    {
+      "topic": "festivals",
+      "text": "Diwali was celebrated with oil lamps, sweets made at home, and small local fireworks."
+    }
+  ],
+  "currency": [
+    {
+      "topic": "cost of living",
+      "text": "A cup of tea cost about 10 paise. Gold was around ₹100 per 10 grams."
+    }
+  ],
+  "food": [
+    {
+      "topic": "popular dishes",
+      "text": "People ate rice, dal, seasonal vegetables. Sweets like jalebi were common in markets."
+    }
+  ],
+  "stories": [
+    {
+      "title": "A morning in 1952",
+      "text": "Radha woke up to the rooster crowing. The smell of boiling milk filled the courtyard as her father read the newspaper aloud."
+    }
+  ]
+  "phrases": [
+  {
+    "text": "Arre bhaiya, mobile kya hota hai? Hum toh chitthiyan likhte hain!"
+  },
+  {
+    "text": "Bazar se doodh lana mat bhoolna."
+  }
+]
+
+}
+

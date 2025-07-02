@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to the 1950s - Time Capsule</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2d1f15 0%, #1a0f08 50%, #0f0704 100%);
+            min-height: 100vh;
+            font-family: 'Crimson Text', serif;
+            color: #f4e6d0;
+            position: relative;
+        }
+
+        .room-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 70% 30%, rgba(139, 111, 71, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(74, 58, 40, 0.3) 0%, transparent 50%),
+                linear-gradient(180deg, #2d1f15 0%, #1a0f08 70%, #0f0704 100%);
+            z-index: -2;
+        }
+
+        .wallpaper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background-image: repeating-linear-gradient(90deg,
+                rgba(139, 111, 71, 0.2) 0px,
+                rgba(139, 111, 71, 0.2) 1px,
+                rgba(74, 58, 40, 0.1) 1px,
+                rgba(74, 58, 40, 0.1) 20px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .grain-overlay {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            opacity: 0.18;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+            mix-blend-mode: multiply;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            color: #d4c4a8;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #a67c52;
+            letter-spacing: 1px;
+        }
+
+        .chatbox {
+            flex: 1;
+            background: linear-gradient(145deg, #3d2817, #2a1810);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+            border: 4px solid #1a0f08;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chat-message {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+
+        .chat-message.bot {
+            text-align: left;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 80%;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .chat-message.user .message-bubble {
+            background: #6b5538;
+            color: #f4e6d0;
+            border-top-right-radius: 4px;
+            text-align: left;
+        }
+
+        .chat-message.bot .message-bubble {
+            background: #d4c4a8;
+            color: #2d1f15;
+            border-top-left-radius: 4px;
+            text-align: left;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .chat-message.user .message-time {
+            margin-right: 10px;
+            text-align: right;
+        }
+
+        .chat-message.bot .message-time {
+            margin-left: 10px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            background: rgba(58, 42, 24, 0.6);
+            border-radius: 30px;
+            padding: 5px;
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 0, 0, 0.3),
+                0 2px 3px rgba(139, 111, 71, 0.2);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #f4e6d0;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            padding: 12px 20px;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(244, 230, 208, 0.5);
+        }
+
+        .send-btn {
+            background: #8b6f47;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #f4e6d0;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .send-btn:hover {
+            background: #a67c52;
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            background: #3a2a18;
+            border: 1px solid #d4c4a8;
+            color: #d4c4a8;
+            border-radius: 5px;
+            font-family: 'Crimson Text', serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-btn:hover {
+            background: #6b5538;
+            color: #f4e6d0;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(139, 111, 71, 0.3);
+            border-radius: 20px;
+            margin-bottom: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .typing-indicator.visible {
+            opacity: 1;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #d4c4a8;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .crt-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(0, 0, 0, 0.05) 0%,
+                    rgba(0, 0, 0, 0) 50%,
+                    rgba(0, 0, 0, 0.05) 100%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.1;
+        }
+
+        .static-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgbnVtT2N0YXZlcz0iMyIvPjxmZUNvbG9yTWF0cml4IHR5cGU9InNhdHVyYXRlIiB2YWx1ZXM9IjAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="room-background"></div>
+    <div class="wallpaper"></div>
+    <div class="grain-overlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-btn">← Back to 1950s</a>
+            <h1 class="title">Talk to the 1950s</h1>
+            <p class="subtitle">Experience conversations from a different era</p>
+        </div>
+
+        <div class="chatbox">
+            <div class="static-overlay"></div>
+            <div class="crt-lines"></div>
+            
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-message bot">
+                    <div class="message-bubble">
+                        Hello there! I'm a person from the 1950s. What would you like to know about life in my time?
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask something about the 1950s..." autocomplete="off">
+                <button class="send-btn" id="sendBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chatContainer');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            // Initialize when the page loads
+            chatInput.focus();
+            scrollToBottom();
+
+            // Event listeners
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                // Add user message to chat
+                addMessage(message, 'user');
+                chatInput.value = '';
+
+                // Show typing indicator
+                typingIndicator.classList.add('visible');
+                scrollToBottom();
+
+                // Send to backend API - updated to use the correct endpoint
+                fetch('http://localhost:3000/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ question: message })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Hide typing indicator and add bot response
+                    setTimeout(() => {
+                        typingIndicator.classList.remove('visible');
+                        addMessage(data.answer, 'bot');
+                    }, 1000); // Simulate typing delay
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    typingIndicator.classList.remove('visible');
+                    addMessage("I'm sorry, I couldn't connect to the 1950s right now. Please try again later.", 'bot');>(Check browser console for details)</small>", 'bot');
+                });
+            }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${sender}`;
+
+                const bubbleDiv = document.createElement('div');
+                bubbleDiv.className = 'message-bubble';
+                bubbleDiv.textContent = text;
+
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'message-time';
+                timeDiv.textContent = 'Just now';
+
+                messageDiv.appendChild(bubbleDiv);
+                messageDiv.appendChild(timeDiv);
+
+                // Insert before typing indicator
+                chatContainer.insertBefore(messageDiv, typingIndicator);
+                
+                scrollToBottom();
+            }
+
+            function scrollToBottom() {
+                setTimeout(() => {
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 100);
+            }
+
+            // Add vintage effect - random static glitches
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    const staticOverlay = document.querySelector('.static-overlay');
+                    staticOverlay.style.opacity = '0.15';
+                    setTimeout(() => {
+                        staticOverlay.style.opacity = '0.05';
+                    }, 100);
+                }
+            }, 3000);
+
+            // Debug function to test API connectivity
+            function debugConnection() {
+                console.log("Testing backend connection...");
+                
+                // Test if server is reachable
+                fetch('http://localhost:3000/api/chat', {
+                    method: 'HEAD'
+                })
+                .then(response => {
+                    console.log("Server reachable:", response.status);
+                })
+                .catch(err => {
+                    console.error("Server connection error:", err);
+                    console.log("POSSIBLE SOLUTIONS:");
+                    console.log("1. Make sure your backend server is running");
+                    console.log("2. Check if the server is running on port 3000");
+                    console.log("3. Verify there are no CORS issues (check server logs)");
+                    console.log("4. Ensure the /api/chat endpoint is correctly set up");
+                });
+                
+                // Add debug info to chat
+                addMessage("Debugging backend connection. Please check your browser console (F12) for details.", "bot");
+            }
+            
+            // Run debug automatically
+            setTimeout(debugConnection, 1000);
+        });
+    </script>
+</body>
+</html>

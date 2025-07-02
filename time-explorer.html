@@ -711,9 +711,17 @@
                     return false;
                 }
                 
-                // Here you would normally send the data to your server
-                // For demonstration, we'll show a success message
+                // For time-travel functionality - redirect to the corresponding decade
+                if (selectedYear >= 1950 && selectedYear <= 2019) {
+                    // Calculate the decade (e.g., 1953 → 1950, 1973 → 1970)
+                    const decade = Math.floor(selectedYear / 10) * 10;
+                    
+                    // Redirect to the appropriate decade page
+                    window.location.href = `decades/${decade}/index.html`;
+                    return;
+                }
                 
+                // If year is outside our decade range, continue with normal form submission
                 // Create a success message
                 let formMessage = document.querySelector('.form-message');
                 if (!formMessage) {

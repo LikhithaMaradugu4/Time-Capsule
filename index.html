@@ -1549,15 +1549,11 @@
                                 // Determine if year falls into specific decade ranges
                                 const decade = Math.floor(year / 10) * 10;
                                 
-                                // For 1980s, directly use the 1980.html template
-                                if (year >= 1980 && year < 1990) {
-                                    window.location.href = `decades/1980.html?year=${year}`;
-                                }
-                                // For 1950s, directly use the 1950.html template
-                                else if (year >= 1950 && year < 1960) {
-                                    window.location.href = `decades/1950.html?year=${year}`;
+                                // Check if year is between 1950 and 2019 to use decade-specific templates
+                                if (year >= 1950 && year <= 2019) {
+                                    window.location.href = `decades/${decade}/index.html?year=${year}`;
                                 } else {
-                                    // Use the standard time-explorer with template parameter
+                                    // Use the standard time-explorer with template parameter for years outside our decade folders
                                     window.location.href = `time-explorer.html?year=${year}&template=${yearData.template}`;
                                 }
                             }, 1000);
@@ -1885,7 +1881,7 @@
                             delay: 0.2,
                             onComplete: () => {
                                 document.body.removeChild(flashOverlay);
-                                // Redirect to time explorer with a delay
+                                // Redirect to time-explorer with a delay
                                 // Use the current year when creating a new capsule
                                 const currentYear = new Date().getFullYear();
                                 window.location.href = `time-explorer.html?year=${currentYear}`;
