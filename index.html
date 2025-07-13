@@ -113,6 +113,196 @@
             color: #1a0b2e;
         }
 
+        /* Auth Navigation */
+        .auth-nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .auth-nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(26, 11, 46, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #b19cd9;
+            border-radius: 25px;
+            color: #b19cd9;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .auth-nav-btn:hover {
+            background: rgba(177, 156, 217, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(177, 156, 217, 0.3);
+        }
+
+        .auth-nav-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Auth Modal Styles */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 11, 46, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .auth-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .auth-modal-content {
+            background: linear-gradient(145deg, rgba(177, 156, 217, 0.25), rgba(155, 89, 182, 0.25));
+            border: 2px solid #b19cd9;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 10px 50px rgba(177, 156, 217, 0.5);
+            backdrop-filter: blur(15px);
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .auth-modal.active .auth-modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .auth-modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-modal-header h2 {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #d8b2ff, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #b19cd9;
+            border-radius: 50%;
+            background: transparent;
+            color: #b19cd9;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-modal-close:hover {
+            background: rgba(177, 156, 217, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .auth-input-group label {
+            color: #e1d4ff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .auth-input-group input {
+            padding: 0.8rem;
+            background: rgba(26, 11, 46, 0.5);
+            border: 2px solid #b19cd9;
+            border-radius: 10px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input-group input:focus {
+            outline: none;
+            border-color: #d8b2ff;
+            box-shadow: 0 0 15px rgba(216, 178, 255, 0.5);
+        }
+
+        .auth-submit-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(177, 156, 217, 0.3);
+            border: 2px solid #b19cd9;
+            border-radius: 30px;
+            color: #e1d4ff;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .auth-submit-btn:hover {
+            background: rgba(155, 89, 182, 0.5);
+            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .auth-switch a {
+            color: #d8b2ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-switch a:hover {
+            color: #b19cd9;
+        }
+
         .zoom-controls {
             position: fixed;
             right: 2rem;
@@ -638,6 +828,67 @@
 <body>
     <canvas id="galaxy-canvas"></canvas>
 
+    <!-- Auth Navigation -->
+    <div class="auth-nav">
+        <button class="auth-nav-btn" id="loginNavBtn">Login</button>
+        <button class="auth-nav-btn" id="signupNavBtn">Sign Up</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="closeLoginModal">×</button>
+            <div class="auth-modal-header">
+                <h2>Welcome Back, Explorer</h2>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="auth-input-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Login to Galaxy</button>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" id="switchToSignup">Join the expedition</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="auth-modal" id="signupModal">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="closeSignupModal">×</button>
+            <div class="auth-modal-header">
+                <h2>Join the Cosmic Journey</h2>
+            </div>
+            <form class="auth-form" id="signupForm">
+                <div class="auth-input-group">
+                    <label for="signupName">Explorer Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Begin Exploration</button>
+                <div class="auth-switch">
+                    Already exploring? <a href="#" id="switchToLogin">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Custom Popup -->
     <div class="popup-overlay" id="welcomePopup">
@@ -1544,6 +1795,354 @@
                 });
             }, 1500);
         });
+        
+        // Authentication functionality
+        document.getElementById('loginNavBtn').addEventListener('click', () => {
+            const loginModal = document.getElementById('loginModal');
+            loginModal.classList.add('active');
+            
+            // Animate modal content
+            const modalContent = loginModal.querySelector('.auth-modal-content');
+            gsap.fromTo(modalContent, 
+                { y: 30, opacity: 0, scale: 0.95 },
+                { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+            );
+        });
+
+        document.getElementById('signupNavBtn').addEventListener('click', () => {
+            const signupModal = document.getElementById('signupModal');
+            signupModal.classList.add('active');
+            
+            // Animate modal content
+            const modalContent = signupModal.querySelector('.auth-modal-content');
+            gsap.fromTo(modalContent, 
+                { y: 30, opacity: 0, scale: 0.95 },
+                { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+            );
+        });
+
+        // Close modal functions
+        function closeAuthModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalContent = modal.querySelector('.auth-modal-content');
+            
+            gsap.to(modalContent, {
+                y: 30, 
+                opacity: 0, 
+                scale: 0.95, 
+                duration: 0.3, 
+                onComplete: () => {
+                    modal.classList.remove('active');
+                }
+            });
+        }
+
+        document.getElementById('closeLoginModal').addEventListener('click', () => {
+            closeAuthModal('loginModal');
+        });
+
+        document.getElementById('closeSignupModal').addEventListener('click', () => {
+            closeAuthModal('signupModal');
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('auth-modal')) {
+                closeAuthModal('loginModal');
+            }
+        });
+
+        document.getElementById('signupModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('auth-modal')) {
+                closeAuthModal('signupModal');
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const loginModal = document.getElementById('loginModal');
+                const signupModal = document.getElementById('signupModal');
+                
+                if (loginModal.classList.contains('active')) {
+                    closeAuthModal('loginModal');
+                }
+                if (signupModal.classList.contains('active')) {
+                    closeAuthModal('signupModal');
+                }
+            }
+        });
+
+        // Switch between login and signup
+        document.getElementById('switchToSignup').addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAuthModal('loginModal');
+            setTimeout(() => {
+                document.getElementById('signupNavBtn').click();
+            }, 400);
+        });
+
+        document.getElementById('switchToLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAuthModal('signupModal');
+            setTimeout(() => {
+                document.getElementById('loginNavBtn').click();
+            }, 400);
+        });
+
+        // Form submissions
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                showCosmicMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitBtn = e.target.querySelector('.auth-submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Logging in...';
+                submitBtn.disabled = true;
+                
+                // Make API call to backend
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Store token in localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Create particle explosion for successful login
+                    createExplosion(new THREE.Vector3(0, 0, 0), 50);
+                    
+                    // Close modal and show success
+                    closeAuthModal('loginModal');
+                    
+                    // Update UI to show logged in state
+                    updateAuthUI(data.user);
+                    
+                    // Show cosmic success message
+                    setTimeout(() => {
+                        showCosmicMessage(`Welcome back, ${data.user.name}! 🚀`, 'success');
+                    }, 500);
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showCosmicMessage(error.message || 'Login failed. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                const submitBtn = e.target.querySelector('.auth-submit-btn');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            // Basic validation
+            if (!name || !email || !password || !confirmPassword) {
+                showCosmicMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showCosmicMessage('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showCosmicMessage('Password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitBtn = e.target.querySelector('.auth-submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Creating account...';
+                submitBtn.disabled = true;
+                
+                // Make API call to backend
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Store token in localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Create particle explosion for successful signup
+                    createExplosion(new THREE.Vector3(0, 0, 0), 80);
+                    
+                    // Close modal and show success
+                    closeAuthModal('signupModal');
+                    
+                    // Update UI to show logged in state
+                    updateAuthUI(data.user);
+                    
+                    // Show cosmic success message
+                    setTimeout(() => {
+                        showCosmicMessage(`Welcome to the galaxy, ${data.user.name}! ✨`, 'success');
+                    }, 500);
+                } else {
+                    throw new Error(data.error || 'Signup failed');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                const errorMessage = Array.isArray(error.message) ? error.message.join(', ') : error.message;
+                showCosmicMessage(errorMessage || 'Signup failed. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                const submitBtn = e.target.querySelector('.auth-submit-btn');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Show cosmic success message
+        function showCosmicMessage(message, type = 'success') {
+            const messageEl = document.createElement('div');
+            messageEl.style.position = 'fixed';
+            messageEl.style.top = '20px';
+            messageEl.style.left = '50%';
+            messageEl.style.transform = 'translateX(-50%)';
+            messageEl.style.background = type === 'error' 
+                ? 'linear-gradient(145deg, rgba(255, 107, 157, 0.3), rgba(220, 20, 60, 0.3))'
+                : 'linear-gradient(145deg, rgba(177, 156, 217, 0.3), rgba(155, 89, 182, 0.3))';
+            messageEl.style.backdropFilter = 'blur(15px)';
+            messageEl.style.border = type === 'error' ? '2px solid #ff6b9d' : '2px solid #b19cd9';
+            messageEl.style.borderRadius = '20px';
+            messageEl.style.padding = '1rem 2rem';
+            messageEl.style.color = '#e1d4ff';
+            messageEl.style.fontFamily = "'JetBrains Mono', monospace";
+            messageEl.style.zIndex = '3000';
+            messageEl.style.boxShadow = type === 'error' 
+                ? '0 10px 30px rgba(255, 107, 157, 0.5)'
+                : '0 10px 30px rgba(177, 156, 217, 0.5)';
+            messageEl.style.opacity = '0';
+            messageEl.style.transition = 'all 0.5s ease';
+            messageEl.style.maxWidth = '400px';
+            messageEl.style.textAlign = 'center';
+            
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            // Animate in
+            setTimeout(() => {
+                messageEl.style.opacity = '1';
+                messageEl.style.transform = 'translateX(-50%) translateY(10px)';
+            }, 10);
+            
+            // Animate out after delay
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(-50%) translateY(-10px)';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Update auth UI after login/signup
+        function updateAuthUI(user) {
+            const authNav = document.querySelector('.auth-nav');
+            authNav.innerHTML = `
+                <div class="auth-nav-btn" style="cursor: default; background: rgba(177, 156, 217, 0.2);">
+                    Welcome, ${user.name}
+                </div>
+                <button class="auth-nav-btn" id="logoutBtn">Logout</button>
+            `;
+            
+            // Add logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            
+            // Reset auth UI
+            const authNav = document.querySelector('.auth-nav');
+            authNav.innerHTML = `
+                <button class="auth-nav-btn" id="loginNavBtn">Login</button>
+                <button class="auth-nav-btn" id="signupNavBtn">Sign Up</button>
+            `;
+            
+            // Re-add event listeners
+            document.getElementById('loginNavBtn').addEventListener('click', () => {
+                const loginModal = document.getElementById('loginModal');
+                loginModal.classList.add('active');
+                
+                const modalContent = loginModal.querySelector('.auth-modal-content');
+                gsap.fromTo(modalContent, 
+                    { y: 30, opacity: 0, scale: 0.95 },
+                    { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                );
+            });
+
+            document.getElementById('signupNavBtn').addEventListener('click', () => {
+                const signupModal = document.getElementById('signupModal');
+                signupModal.classList.add('active');
+                
+                const modalContent = signupModal.querySelector('.auth-modal-content');
+                gsap.fromTo(modalContent, 
+                    { y: 30, opacity: 0, scale: 0.95 },
+                    { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                );
+            });
+            
+            showCosmicMessage('Successfully logged out! 👋', 'success');
+        }
+
+        // Check if user is already logged in
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    updateAuthUI(userData);
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+        }
+
+        // Check auth status on page load
+        checkAuthStatus();
         
         }); // Close DOMContentLoaded
     </script>
