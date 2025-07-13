@@ -7,8 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- Add Authentication Styles -->
-    <link rel="stylesheet" href="/css/auth-styles.css">
+
     <style>
         * {
             margin: 0;
@@ -267,183 +266,7 @@
             background: rgba(177, 156, 217, 0.1);
         }
 
-        .about h2, .projects h2, .skills h2, .contact h2 {
-            font-size: clamp(2rem, 6vw, 4rem);
-            margin-bottom: 2rem;
-            background: linear-gradient(45deg, #9b59b6, #b19cd9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(155, 89, 182, 0.3);
-        }
 
-        .about p {
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            line-height: 1.8;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        .project-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(177, 156, 217, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(177, 156, 217, 0.2);
-            border-color: rgba(177, 156, 217, 0.3);
-        }
-
-        .project-card h3 {
-            color: #b19cd9;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .project-card p {
-            color: #cccccc;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tech-tag {
-            background: rgba(177, 156, 217, 0.2);
-            color: #b19cd9;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid #b19cd9;
-            backdrop-filter: blur(5px);
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 2rem;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .skill-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            padding: 1.5rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .skill-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle, rgba(155, 89, 182, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .skill-item:hover::before {
-            opacity: 1;
-        }
-
-        .skill-item:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(155, 89, 182, 0.3);
-            border-color: rgba(155, 89, 182, 0.5);
-        }
-
-        .skill-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #9b59b6;
-            position: relative;
-            z-index: 2;
-        }
-
-        .contact p {
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            margin-bottom: 2rem;
-            color: #cccccc;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .contact-links {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .contact-link {
-            color: #d8b2ff;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            padding: 0.8rem 1.5rem;
-            border: 1px solid rgba(216, 178, 255, 0.3);
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            background: rgba(216, 178, 255, 0.05);
-        }
-
-        .contact-link:hover {
-            color: #1a0b2e;
-            background: #d8b2ff;
-            box-shadow: 0 0 25px rgba(216, 178, 255, 0.5);
-            transform: translateY(-3px);
-        }
 
         /* Custom Popup Styles */
         .popup-overlay {
@@ -809,266 +632,12 @@
             opacity: 0;
         }
 
-        /* Authentication Styles */
-        .auth-buttons {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 1000;
-            display: flex;
-            gap: 1rem;
-        }
 
-        .auth-btn {
-            padding: 0.8rem 1.5rem;
-            background: rgba(177, 156, 217, 0.3);
-            border: 2px solid #b19cd9;
-            border-radius: 30px;
-            color: #e1d4ff;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            background: rgba(155, 89, 182, 0.5);
-            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-
-        .auth-modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .auth-modal-content {
-            background: linear-gradient(145deg, rgba(177, 156, 217, 0.25), rgba(155, 89, 182, 0.25));
-            border: 2px solid #b19cd9;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 90%;
-            width: 400px;
-            box-shadow: 0 10px 50px rgba(177, 156, 217, 0.5);
-            backdrop-filter: blur(15px);
-            transform: translateY(30px) scale(0.95);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-
-        .auth-modal.active .auth-modal-content {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .auth-close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 30px;
-            height: 30px;
-            border: 2px solid #b19cd9;
-            border-radius: 50%;
-            background: transparent;
-            color: #b19cd9;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-close-btn:hover {
-            background: rgba(177, 156, 217, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .auth-modal-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-modal-header h2 {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            margin-bottom: 0.5rem;
-            background: linear-gradient(45deg, #d8b2ff, #9b59b6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .auth-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .auth-input-group label {
-            font-size: 0.9rem;
-            color: #e1d4ff;
-        }
-
-        .auth-input-group input {
-            padding: 0.8rem;
-            border: 2px solid #b19cd9;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .auth-input-group input:focus {
-            outline: none;
-            border-color: #d8b2ff;
-            box-shadow: 0 0 15px rgba(216, 178, 255, 0.5);
-        }
-
-        .auth-forgot {
-            text-align: right;
-            margin-top: -0.5rem;
-        }
-
-        .auth-forgot a {
-            color: #d8b2ff;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .auth-forgot a:hover {
-            color: #b19cd9;
-        }
-
-        .auth-submit-btn {
-            padding: 0.8rem;
-            background: rgba(177, 156, 217, 0.3);
-            border: 2px solid #b19cd9;
-            border-radius: 30px;
-            color: #e1d4ff;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: block;
-            width: 100%;
-        }
-
-        .auth-submit-btn:hover {
-            background: rgba(155, 89, 182, 0.5);
-            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .auth-alt-action {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #cccccc;
-        }
-
-        .auth-alt-action a {
-            color: #d8b2ff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .auth-alt-action a:hover {
-            color: #b19cd9;
-        }
     </style>
 </head>
 <body>
     <canvas id="galaxy-canvas"></canvas>
-    
-    <!-- Auth Buttons -->
-    <div class="auth-buttons">
-        <button id="loginBtn" class="auth-btn">Login</button>
-        <button id="signupBtn" class="auth-btn">Sign Up</button>
-    </div>
 
-    <!-- Login Modal -->
-    <div class="auth-modal" id="loginModal">
-        <div class="auth-modal-content">
-            <button class="auth-close-btn">&times;</button>
-            <div class="auth-modal-header">
-                <h2>Login</h2>
-            </div>
-            <form id="loginForm" class="auth-form">
-                <div class="auth-input-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="auth-input-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <div class="auth-forgot">
-                    <a href="#" id="forgotPassword">Forgot password?</a>
-                </div>
-                <button type="submit" class="auth-submit-btn">Login</button>
-                <div class="auth-alt-action">
-                    Don't have an account? <a href="#" id="switchToSignup">Sign up</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div class="auth-modal" id="signupModal">
-        <div class="auth-modal-content">
-            <button class="auth-close-btn">&times;</button>
-            <div class="auth-modal-header">
-                <h2>Create Account</h2>
-            </div>
-            <form id="signupForm" class="auth-form">
-                <div class="auth-input-group">
-                    <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" required>
-                </div>
-                <div class="auth-input-group">
-                    <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" required>
-                </div>
-                <div class="auth-input-group">
-                    <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" required>
-                </div>
-                <div class="auth-input-group">
-                    <label for="signupConfirmPassword">Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" required>
-                </div>
-                <button type="submit" class="auth-submit-btn">Create Account</button>
-                <div class="auth-alt-action">
-                    Already have an account? <a href="#" id="switchToLogin">Login</a>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Custom Popup -->
     <div class="popup-overlay" id="welcomePopup">
@@ -1104,19 +673,32 @@
     </div>
 
     <script>
-        // Mouse interaction variables
-        let mouseX = 0, mouseY = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, starting script...');
+            
+            // Mouse interaction variables
+            let mouseX = 0, mouseY = 0;
 
-        // Three.js Milky Way Galaxy Background
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-        const renderer = new THREE.WebGLRenderer({ 
-            canvas: document.getElementById('galaxy-canvas'), 
-            alpha: true,
-            antialias: true
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x1a0b2e, 1);
+            // Three.js Milky Way Galaxy Background
+            console.log('Initializing Three.js...');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+            
+            const canvas = document.getElementById('galaxy-canvas');
+            if (!canvas) {
+                console.error('Canvas element not found!');
+                return;
+            }
+            
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas, 
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x1a0b2e, 1);
+            
+            console.log('Three.js initialized successfully');
 
         // Create realistic Milky Way galaxy structure
         const galaxyGroup = new THREE.Group();
@@ -1368,6 +950,8 @@
                             distance: originalDistance,
                             duration: 0.6,
                             ease: "elastic.out"
+                        });
+                    }
                 });
                 
                 // Emit particles on click
@@ -1583,6 +1167,10 @@
 
         // Create time travel effect
         function createTimeTravelEffect(year) {
+            // Calculate the decade folder name
+            const decade = Math.floor(year / 10) * 10;
+            const decadeFolderName = `${decade}`; // Just the decade number, no 's'
+            
             // Create a full-screen overlay with enhanced cosmic effects
             const timeJumpOverlay = document.createElement('div');
             timeJumpOverlay.style.position = 'fixed';
@@ -1603,13 +1191,42 @@
                     <div class="time-jump-header">TIME JUMP INITIATED</div>
                     <div class="time-jump-year">TRAVELING TO YEAR ${year}</div>
                     <div class="time-jump-loading">
-                        <span id="loadingText">Gathering historical data</span>
+                        <span id="loadingText">Gathering historical data from the ${decade}s</span>
                         <span class="loading-dots"></span>
                     </div>
                 </div>
             `;
             
             document.body.appendChild(timeJumpOverlay);
+            
+            // Animate the overlay appearing
+            gsap.to(timeJumpOverlay, {
+                opacity: 1,
+                duration: 0.5,
+                onComplete: () => {
+                    // Activate the time vortex
+                    const vortex = timeJumpOverlay.querySelector('.time-vortex');
+                    if (vortex) {
+                        vortex.style.opacity = '1';
+                    }
+                    
+                    // Create cosmic effects
+                    createCosmicEffects(timeJumpOverlay);
+                    
+                    // After 3 seconds, redirect to the decade folder
+                    setTimeout(() => {
+                        // Fade out the overlay
+                        gsap.to(timeJumpOverlay, {
+                            opacity: 0,
+                            duration: 1,
+                            onComplete: () => {
+                                // Redirect to the decade folder's index.html
+                                window.location.href = `decades/${decadeFolderName}/index.html`;
+                            }
+                        });
+                    }, 3000);
+                }
+            });
             
             // Add styles for the time jump elements
             const jumpStyle = document.createElement('style');
@@ -1634,11 +1251,47 @@
                     position: absolute;
                     top: 50%;
                     left: 50%;
-                    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-                    50% { opacity: 1; transform: scale(1.1); }
+                    transform: translate(-50%, -50%);
+                    width: 100vh;
+                    height: 100vh;
+                    background: radial-gradient(
+                        circle at center,
+                        rgba(155, 89, 182, 0.1) 0%,
+                        rgba(155, 89, 182, 0.05) 20%,
+                        transparent 70%
+                    );
+                    border-radius: 50%;
+                    z-index: 1;
+                    animation: vortexPulse 4s infinite linear;
+                    opacity: 0;
+                    transition: opacity 1s ease;
                 }
             `;
-            document.head.appendChild(twinkleStyle);
+            document.head.appendChild(jumpStyle);
+        }
+        
+        // Create cosmic effects for time travel
+        function createCosmicEffects(overlay) {
+            // Create multiple shooting stars
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    createShootingStarInJump(overlay);
+                }, i * 200);
+            }
+            
+            // Create time streaks
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createTimeStreakEffect(overlay);
+                }, i * 300 + 500);
+            }
+            
+            // Create floating particles
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    createFloatingParticle(overlay);
+                }, i * 100 + 1000);
+            }
         }
         
         // Create shooting stars in time jump
@@ -1891,236 +1544,8 @@
                 });
             }, 1500);
         });
+        
+        }); // Close DOMContentLoaded
     </script>
-    <script>
-    // Authentication UI functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get modal elements
-        const loginModal = document.getElementById('loginModal');
-        const signupModal = document.getElementById('signupModal');
-        
-        // Get buttons
-        const loginBtn = document.getElementById('loginBtn');
-        const signupBtn = document.getElementById('signupBtn');
-        const switchToLoginBtn = document.getElementById('switchToLogin');
-        const switchToSignupBtn = document.getElementById('switchToSignup');
-        
-        // Get close buttons
-        const closeButtons = document.querySelectorAll('.auth-close-btn');
-        
-        // Login button click
-        loginBtn.addEventListener('click', () => {
-            loginModal.classList.add('active');
-        });
-        
-        // Signup button click
-        signupBtn.addEventListener('click', () => {
-            signupModal.classList.add('active');
-        });
-        
-        // Switch between forms
-        switchToLoginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            signupModal.classList.remove('active');
-            loginModal.classList.add('active');
-        });
-        
-        switchToSignupBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginModal.classList.remove('active');
-            signupModal.classList.add('active');
-        });
-        
-        // Close modals
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                loginModal.classList.remove('active');
-                signupModal.classList.remove('active');
-            });
-        });
-        
-        // Handle form submissions
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            // Form validation
-            if (!email || !password) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            // Here you would normally send the data to your backend API
-            console.log('Login attempt:', { email });
-            
-            // For demo purposes, simulate successful login
-            setTimeout(() => {
-                // Create particle explosion for successful login
-                createExplosion(new THREE.Vector3(0, 0, 0), 50);
-                
-                // Close modal
-                loginModal.classList.remove('active');
-                
-                // Show success message
-                createSuccessMessage('Login successful!');
-                
-                // Update UI to show logged-in state
-                showLoggedInState(email);
-            }, 1000);
-        });
-        
-        signupForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('signupConfirmPassword').value;
-            
-            // Form validation
-            if (!name || !email || !password || !confirmPassword) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-            
-            // Here you would normally send the data to your backend API
-            console.log('Signup attempt:', { name, email });
-            
-            // For demo purposes, simulate successful signup
-            setTimeout(() => {
-                // Create particle explosion for successful signup
-                createExplosion(new THREE.Vector3(0, 0, 0), 80);
-                
-                // Close modal
-                signupModal.classList.remove('active');
-                
-                // Show success message
-                createSuccessMessage('Account created successfully!');
-                
-                // Update UI to show logged-in state
-                showLoggedInState(email);
-            }, 1000);
-        });
-        
-        // Forgot password handler
-        document.getElementById('forgotPassword').addEventListener('click', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            
-            if (!email) {
-                alert('Please enter your email address');
-                return;
-            }
-            
-            alert(`Password reset link would be sent to: ${email}`);
-        });
-        
-        // Show success message with cosmic styling
-        function createSuccessMessage(message) {
-            const messageEl = document.createElement('div');
-            messageEl.style.position = 'fixed';
-            messageEl.style.top = '20px';
-            messageEl.style.left = '50%';
-            messageEl.style.transform = 'translateX(-50%)';
-            messageEl.style.background = 'rgba(177, 156, 217, 0.2)';
-            messageEl.style.backdropFilter = 'blur(10px)';
-            messageEl.style.border = '2px solid #b19cd9';
-            messageEl.style.borderRadius = '10px';
-            messageEl.style.padding = '1rem 2rem';
-            messageEl.style.color = '#d8b2ff';
-            messageEl.style.fontFamily = "'JetBrains Mono', monospace";
-            messageEl.style.zIndex = '3000';
-            messageEl.style.boxShadow = '0 0 20px rgba(216, 178, 255, 0.5)';
-            messageEl.style.opacity = '0';
-            messageEl.style.transition = 'all 0.3s ease';
-            
-            messageEl.textContent = message;
-            document.body.appendChild(messageEl);
-            
-            // Animate in
-            setTimeout(() => {
-                messageEl.style.opacity = '1';
-            }, 10);
-            
-            // Animate out after a delay
-            setTimeout(() => {
-                messageEl.style.opacity = '0';
-                setTimeout(() => {
-                    document.body.removeChild(messageEl);
-                }, 300);
-            }, 3000);
-        }
-        
-        // Update UI for logged in state
-        function showLoggedInState(email) {
-            // Remove login/signup buttons
-            const authButtons = document.querySelector('.auth-buttons');
-            authButtons.innerHTML = '';
-            
-            // Create user profile element
-            const userProfile = document.createElement('div');
-            userProfile.style.display = 'flex';
-            userProfile.style.alignItems = 'center';
-            userProfile.style.gap = '10px';
-            
-            // Avatar
-            const avatar = document.createElement('div');
-            avatar.style.width = '40px';
-            avatar.style.height = '40px';
-            avatar.style.borderRadius = '50%';
-            avatar.style.background = 'linear-gradient(135deg, #9b59b6, #b19cd9)';
-            avatar.style.display = 'flex';
-            avatar.style.alignItems = 'center';
-            avatar.style.justifyContent = 'center';
-            avatar.style.color = 'white';
-            avatar.style.fontWeight = 'bold';
-            avatar.textContent = email.substring(0, 1).toUpperCase();
-            
-            // Username
-            const username = document.createElement('div');
-            username.style.color = '#b19cd9';
-            username.textContent = email.split('@')[0];
-            
-            // Logout button
-            const logoutBtn = document.createElement('button');
-            logoutBtn.className = 'auth-btn';
-            logoutBtn.style.marginLeft = '10px';
-            logoutBtn.textContent = 'Logout';
-            logoutBtn.addEventListener('click', () => {
-                // Reset UI
-                authButtons.innerHTML = `
-                    <button id="loginBtn" class="auth-btn">Login</button>
-                    <button id="signupBtn" class="auth-btn">Sign Up</button>
-                `;
-                
-                // Re-initialize the auth buttons
-                document.getElementById('loginBtn').addEventListener('click', () => {
-                    loginModal.classList.add('active');
-                });
-                
-                document.getElementById('signupBtn').addEventListener('click', () => {
-                    signupModal.classList.add('active');
-                });
-                
-                // Show logout message
-                createSuccessMessage('You have been logged out');
-            });
-            
-            // Assemble and add to DOM
-            userProfile.appendChild(avatar);
-            userProfile.appendChild(username);
-            userProfile.appendChild(logoutBtn);
-            authButtons.appendChild(userProfile);
-        }
-    });
-</script>
 </body>
-</html>at
+</html>
