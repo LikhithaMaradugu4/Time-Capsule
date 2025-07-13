@@ -1,10 +1,14 @@
 import express from 'express';
 import path from 'path';
+import mongoose from 'mongoose';
 import fs from 'fs/promises';
 import chatbotRoutes from './backend/routes/chatbot.js'
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.log("MongoDB connection error:", err));
 
 
 const __filename = fileURLToPath(import.meta.url);

@@ -1,25 +1,25 @@
 import express from 'express';
-import { getContextFrom1950 } from '../utils/ragHelper.js';
+import { getContextFromDecade } from '../utils/ragHelper.js';
 import { generateChatResponse } from '../utils/llmClient.js';
 import dotenv from 'dotenv';
 dotenv.config();
+
 const router = express.Router();
 
 router.post('/api/chat', async (req, res) => {
     try {
         console.log("Chat API request received:", req.body);
-        
-        // Validate request body
-        if (!req.body.question) {
+
+        const userQuestion = req.body.question;
+        const decade = req.body.decade || 1950;
+
+        if (!userQuestion) {
             return res.status(400).json({ error: "Missing question in request body" });
         }
 
-        const userQuestion = req.body.question;
-        
-        // Try to get context with proper error handling
         let context;
         try {
-            context = getContextFrom1950();
+            context = getContextFromDecade(decade);
             console.log("Context retrieved successfully");
         } catch (contextError) {
             console.error("Error getting context:", contextError);
@@ -28,11 +28,14 @@ router.post('/api/chat', async (req, res) => {
                 details: contextError.message 
             });
         }
+        // Always stringify to ensure LLM-readable
+        const safeContext = JSON.stringify(context, null, 2);
+        console.log("Prepared context for prompt:\n", safeContext);
+
         
-        // Try to generate response with proper error handling
         let answer;
         try {
-            answer = await generateChatResponse(context, userQuestion);
+            answer = await generateChatResponse(safeContext, userQuestion, decade);
             console.log("Response generated successfully");
         } catch (generationError) {
             console.error("Error generating response:", generationError);
@@ -41,9 +44,9 @@ router.post('/api/chat', async (req, res) => {
                 details: generationError.message 
             });
         }
-        
-        // Send successful response
+
         res.json({ answer });
+
     } catch (err) {
         console.error("Unexpected error in chat API:", err);
         res.status(500).json({ 
@@ -53,9 +56,10 @@ router.post('/api/chat', async (req, res) => {
     }
 });
 
-// Add a test endpoint to verify the router is working
+// Simple health check
 router.get('/api/chat/test', (req, res) => {
     res.json({ status: "Chatbot API is working" });
 });
 
 export default router;
+

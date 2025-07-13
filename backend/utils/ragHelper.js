@@ -1,16 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
-export function getContextFrom1950() {
-    const filePath = path.join(process.cwd(), 'data', '1950.json');
+export function getContextFromDecade(decade) {
+    const filePath = path.join(process.cwd(), 'data', `${decade}.json`);
     const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
-    // combine a few fields for prompt
-    const combined = [
-        ...data.stories.slice(0, 1),
-        ...data.currency.slice(0, 1),
-        ...data.phrases.slice(0, 1)
-    ].join('\n');
+    const stories = data.stories.slice(0,1).map(s => `Story: ${s.text}`).join('\n');
+    const currency = data.currency.slice(0,1).map(c => `Currency: ${c.name}`).join('\n');
+    const phrases = data.phrases.slice(0,1).map(p => `Popular phrase: ${p.phrase}`).join('\n');
 
-    return combined;
+    return `${stories}\n${currency}\n${phrases}`;
 }

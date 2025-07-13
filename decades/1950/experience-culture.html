@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experience 1950s Culture | Time Capsule</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2d1f15 0%, #1a0f08 50%, #0f0704 100%);
+            min-height: 100vh;
+            font-family: 'Crimson Text', serif;
+            color: #f4e6d0;
+            position: relative;
+        }
+
+        .room-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 70% 30%, rgba(139, 111, 71, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(74, 58, 40, 0.3) 0%, transparent 50%),
+                linear-gradient(180deg, #2d1f15 0%, #1a0f08 70%, #0f0704 100%);
+            z-index: -2;
+        }
+
+        .wallpaper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background-image: repeating-linear-gradient(90deg,
+                rgba(139, 111, 71, 0.2) 0px,
+                rgba(139, 111, 71, 0.2) 1px,
+                rgba(74, 58, 40, 0.1) 1px,
+                rgba(74, 58, 40, 0.1) 20px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .grain-overlay {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            opacity: 0.18;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+            mix-blend-mode: multiply;
+        }
+
+        .static-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgbnVtT2N0YXZlcz0iMyIvPjxmZUNvbG9yTWF0cml4IHR5cGU9InNhdHVyYXRlIiB2YWx1ZXM9IjAiLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(166, 124, 82, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-left: 1rem;
+            color: #d4c4a8;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: #a67c52;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #d4c4a8;
+        }
+
+        nav a.active {
+            color: #d4c4a8;
+            border-bottom: 2px solid #d4c4a8;
+            padding-bottom: 3px;
+        }
+
+        .section-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #d4c4a8;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            height: 3px;
+            width: 80px;
+            background: linear-gradient(90deg, #a67c52, transparent);
+        }
+
+        .section {
+            margin-bottom: 5rem;
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #3d2817, #2a1810);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(166, 124, 82, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 30px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(20%) contrast(110%) brightness(90%);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 50%);
+            pointer-events: none;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #d4c4a8;
+        }
+
+        .card-subtitle {
+            color: #a67c52;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: #c8b899;
+            line-height: 1.6;
+        }
+
+        .card-button {
+            display: inline-block;
+            background: #6b5538;
+            color: #f4e6d0;
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .card-button:hover {
+            background: #8b6f47;
+        }
+
+        .music-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .music-card {
+                flex-direction: row;
+            }
+            
+            .music-card .card-image {
+                width: 40%;
+                height: auto;
+            }
+            
+            .music-card .card-content {
+                width: 60%;
+            }
+        }
+
+        .coming-soon {
+            background: linear-gradient(145deg, #3d2817, #2a1810);
+            border-radius: 10px;
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 1px solid rgba(166, 124, 82, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .coming-soon svg {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            color: #8b6f47;
+        }
+
+        .coming-soon h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #d4c4a8;
+        }
+
+        .coming-soon p {
+            color: #c8b899;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #1a0f08;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(166, 124, 82, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-column h3 {
+            font-family: 'Playfair Display', serif;
+            color: #d4c4a8;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-column p {
+            color: #a67c52;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: #a67c52;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: #d4c4a8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(166, 124, 82, 0.2);
+            color: #8b6f47;
+            font-size: 0.9rem;
+        }
+
+        .crt-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(0, 0, 0, 0.05) 0%,
+                    rgba(0, 0, 0, 0) 50%,
+                    rgba(0, 0, 0, 0.05) 100%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.1;
+        }
+
+        .hero {
+            position: relative;
+            padding: 5rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/assets/images/1950/culture-hero-bg.jpg') center/cover;
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #c8b899;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-heading {
+                font-size: 2rem;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="room-background"></div>
+    <div class="wallpaper"></div>
+    <div class="grain-overlay"></div>
+    <div class="static-overlay"></div>
+    <div class="crt-lines"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="/assets/images/logo.png" alt="Time Capsule Logo" height="40">
+                <div class="logo-text">Time Capsule</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/decades/1950/index.html">1950s Home</a></li>
+                    <li><a href="/decades/1950/explore-timeline.html">Timeline</a></li>
+                    <li><a href="/decades/1950/experience-culture.html" class="active">Culture</a></li>
+                    <li><a href="/decades/1950/chatbot.html">Talk to 1950s</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Experience 1950s Culture</h1>
+                <p class="hero-subtitle">Immerse yourself in the vibrant cultural tapestry of 1950s India, from currency and music to newspapers and cuisine.</p>
+            </div>
+        </div>
+
+        <!-- Currency Section -->
+        <section class="section" id="currency">
+            <h2 class="section-heading">Currency of the Era</h2>
+            <div class="card-grid" id="currency-container">
+                <!-- Currency cards will be loaded here -->
+                <div class="card" style="opacity: 0.5;">
+                    <div class="card-image" style="background-color: #3a2a18;"></div>
+                    <div class="card-content">
+                        <div style="height: 1.5rem; width: 70%; background-color: #3a2a18; margin-bottom: 0.5rem;"></div>
+                        <div style="height: 1rem; width: 40%; background-color: #3a2a18; margin-bottom: 1rem;"></div>
+                        <div style="height: 0.8rem; width: 90%; background-color: #3a2a18; margin-bottom: 0.3rem;"></div>
+                        <div style="height: 0.8rem; width: 85%; background-color: #3a2a18;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Music Section -->
+        <section class="section" id="music">
+            <h2 class="section-heading">Songs & Music</h2>
+            <div class="card-grid" id="music-container">
+                <!-- Music entries will be loaded here -->
+                <div class="card" style="opacity: 0.5;">
+                    <div class="card-image" style="background-color: #3a2a18;"></div>
+                    <div class="card-content">
+                        <div style="height: 1.5rem; width: 70%; background-color: #3a2a18; margin-bottom: 0.5rem;"></div>
+                        <div style="height: 1rem; width: 40%; background-color: #3a2a18; margin-bottom: 1rem;"></div>
+                        <div style="height: 0.8rem; width: 90%; background-color: #3a2a18; margin-bottom: 0.3rem;"></div>
+                        <div style="height: 0.8rem; width: 85%; background-color: #3a2a18;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newspapers Section -->
+        <section class="section" id="newspapers">
+            <h2 class="section-heading">Newspapers & Magazines</h2>
+            <div class="card-grid" id="newspaper-container">
+                <!-- Newspaper entries will be loaded here -->
+                <div class="card" style="opacity: 0.5;">
+                    <div class="card-image" style="background-color: #3a2a18;"></div>
+                    <div class="card-content">
+                        <div style="height: 1.5rem; width: 70%; background-color: #3a2a18; margin-bottom: 0.5rem;"></div>
+                        <div style="height: 1rem; width: 40%; background-color: #3a2a18; margin-bottom: 1rem;"></div>
+                        <div style="height: 0.8rem; width: 90%; background-color: #3a2a18; margin-bottom: 0.3rem;"></div>
+                        <div style="height: 0.8rem; width: 85%; background-color: #3a2a18;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Food Section (Placeholder) -->
+        <section class="section" id="food">
+            <h2 class="section-heading">Food & Cuisine</h2>
+            <div class="coming-soon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h3>Coming Soon</h3>
+                <p>Our culinary journey through 1950s India is being prepared. Check back soon for a taste of the era's most beloved dishes and food culture.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Time Capsule</h3>
+                <p>Journey through the decades and experience India's rich cultural history.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Explore Other Decades</h3>
+                <ul>
+                    <li><a href="/decades/1960/index.html">1960s</a></li>
+                    <li><a href="/decades/1970/index.html">1970s</a></li>
+                    <li><a href="/decades/1980/index.html">1980s</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <p>Share your stories and memories from these eras.</p>
+                <a href="/contact.html" class="card-button">Contact Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Time Capsule. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch culture data for the 1950s decade
+            fetch('/data/culture/1950.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayCurrency(data.currency);
+                    displayMusic(data.music);
+                    displayNewspapers(data.newspapers);
+                })
+                .catch(error => {
+                    console.error('Error loading culture data:', error);
+                    document.querySelectorAll('.card[style*="opacity: 0.5"]').forEach(el => {
+                        el.innerHTML = `<div class="card-content" style="text-align: center; padding: 3rem;">
+                            <p style="color: #a67c52;">Failed to load data. Please try again later.</p>
+                        </div>`;
+                    });
+                });
+            
+            function displayCurrency(currencyItems) {
+                const container = document.getElementById('currency-container');
+                container.innerHTML = '';
+                
+                currencyItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-image">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${item.name}</h3>
+                            <p class="card-subtitle">${item.value}</p>
+                            <p class="card-text">${item.description}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            
+            function displayMusic(musicItems) {
+                const container = document.getElementById('music-container');
+                container.innerHTML = '';
+                
+                musicItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card music-card';
+                    card.innerHTML = `
+                        <div class="card-image">
+                            <img src="${item.image}" alt="${item.title}">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-subtitle">${item.artist} (${item.year})</p>
+                            <p class="card-text">${item.description}</p>
+                            <!-- TODO: Integrate Spotify API to play song previews -->
+                            <a href="#" class="card-button" data-spotify-id="${item.embed}">Listen Preview</a>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                // Add event listeners for music playback (placeholder)
+                document.querySelectorAll('[data-spotify-id]').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const spotifyId = this.getAttribute('data-spotify-id');
+                        alert(`TODO: Play music with ID: ${spotifyId}`);
+                    });
+                });
+            }
+            
+            function displayNewspapers(newspaperItems) {
+                const container = document.getElementById('newspaper-container');
+                container.innerHTML = '';
+                
+                newspaperItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-image">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${item.name}</h3>
+                            <p class="card-subtitle">${item.headline}</p>
+                            <p class="card-text">${item.description}</p>
+                            <!-- TODO: Add link to full newspaper archive API -->
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            // Add vintage TV static/flicker effects
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    document.querySelector('.static-overlay').style.opacity = '0.15';
+                    setTimeout(() => {
+                        document.querySelector('.static-overlay').style.opacity = '0.05';
+                    }, 100);
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

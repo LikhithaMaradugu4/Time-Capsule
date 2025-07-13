@@ -399,6 +399,13 @@
             chatInput.addEventListener('focus', () => console.log('Input field focused'));
             chatInput.addEventListener('input', () => console.log('Input detected:', chatInput.value));
 
+            // Extract decade from URL (e.g., /decades/1950/chatbot.html)
+            function getDecadeFromPath() {
+                const match = window.location.pathname.match(/\/decades\/(\d{4})\//);
+                return match ? parseInt(match[1], 10) : 1950;
+            }
+            const decade = getDecadeFromPath();
+
             // Event listeners
             sendBtn.addEventListener('click', sendMessage);
             chatInput.addEventListener('keypress', function(e) {
@@ -424,14 +431,17 @@
                 typingIndicator.classList.add('visible');
                 scrollToBottom();
 
-                // Send to backend API - updated to use the correct endpoint
+                // Send to backend API with decade
                 fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ question: message })
+                    body: JSON.stringify({ 
+                        question: message,
+                        decade: decade
+                    })
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -497,16 +507,6 @@
     </script>
 </body>
 </html>
-                    console.log("3. Verify there are no CORS issues (check server logs)");
-                    console.log("4. Ensure the /api/chat endpoint is correctly set up");
-                });
-                
-                // Add debug info to chat
-                addMessage("Debugging backend connection. Please check your browser console (F12) for details.", "bot");
-            }
-            
-            // Run debug automatically
-            setTimeout(debugConnection, 1000);
         });
     </script>
 </body>

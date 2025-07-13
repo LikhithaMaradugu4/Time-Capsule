@@ -1,0 +1,86 @@
+{
+  "currency": [
+    {
+      "name": "Indian Rupee (₹)",
+      "value": "1 Rupee",
+      "description": "The first series of coins of Republic India was introduced in 1950. These coins featured the Lion Capital of Ashoka and were minted in denominations of 1 pice to 1 rupee.",
+      "image": "/assets/images/1950/currency/rupee_1950.jpg"
+    },
+    {
+      "name": "1 Anna Coin",
+      "value": "1/16 of a Rupee",
+      "description": "The Anna was a currency unit formerly used in British India. 16 annas made one rupee. The anna continued to be used until decimalization in 1957.",
+      "image": "/assets/images/1950/currency/anna_coin.jpg"
+    },
+    {
+      "name": "Government of India Note",
+      "value": "10 Rupees",
+      "description": "Early notes from the 1950s featured the Ashoka Lion Capital. These notes were larger in size compared to modern currency and featured intricate designs.",
+      "image": "/assets/images/1950/currency/ten_rupee_note.jpg"
+    }
+  ],
+  "music": [
+    {
+      "title": "Awaara Hoon",
+      "artist": "Raj Kapoor",
+      "year": 1951,
+      "description": "An iconic song from the film 'Awaara', composed by Shankar Jaikishan and sung by Mukesh. It became an anthem of the common man in post-independent India.",
+      "image": "/assets/images/1950/music/awaara_hoon.jpg",
+      "embed": "spotify:track:123456"
+    },
+    {
+      "title": "Pyar Hua Ikrar Hua",
+      "artist": "Manna Dey & Lata Mangeshkar",
+      "year": 1955,
+      "description": "A romantic duet from 'Shree 420' that captured the essence of love in the 1950s. The umbrella scene became one of the most iconic moments in Indian cinema.",
+      "image": "/assets/images/1950/music/pyar_hua_ikrar_hua.jpg",
+      "embed": "spotify:track:234567"
+    },
+    {
+      "title": "Mera Joota Hai Japani",
+      "artist": "Mukesh",
+      "year": 1955,
+      "description": "A patriotic song from 'Shree 420' that symbolized the blend of Western influence with Indian values and national identity in the post-independence era.",
+      "image": "/assets/images/1950/music/mera_joota_hai_japani.jpg",
+      "embed": "spotify:track:345678"
+    },
+    {
+      "title": "Ajeeb Dastan Hai Yeh",
+      "artist": "Lata Mangeshkar",
+      "year": 1960,
+      "description": "A melancholic song from 'Dil Apna Aur Preet Parai' that showcases the golden era of Indian film music with its poetic lyrics and haunting melody.",
+      "image": "/assets/images/1950/music/ajeeb_dastan.jpg",
+      "embed": "spotify:track:456789"
+    }
+  ],
+  "newspapers": [
+    {
+      "name": "The Times of India",
+      "headline": "India Becomes Republic",
+      "date": "January 26, 1950",
+      "description": "Historic front page announcing India's transition to a Republic as the Constitution came into effect, with Dr. Rajendra Prasad taking oath as the first President.",
+      "image": "/assets/images/1950/newspapers/toi_republic.jpg"
+    },
+    {
+      "name": "The Hindustan Times",
+      "headline": "First Five Year Plan Announced",
+      "date": "December 8, 1952",
+      "description": "Coverage of India's first Five-Year Plan (1951-1956) which focused on agricultural development to combat food crises and build economic self-sufficiency.",
+      "image": "/assets/images/1950/newspapers/hindustan_times_plan.jpg"
+    },
+    {
+      "name": "The Hindu",
+      "headline": "India's First General Elections Begin",
+      "date": "October 25, 1951",
+      "description": "Front page covering the world's largest democratic exercise as India held its first general elections, featuring 176 million voters across the nation.",
+      "image": "/assets/images/1950/newspapers/hindu_elections.jpg"
+    }
+  ],
+  "food": [
+    {
+      "name": "Traditional Indian Thali",
+      "description": "The typical 1950s Indian meal featured regional specialties with an emphasis on locally grown produce and traditional preparation methods.",
+      "image": "/assets/images/1950/food/traditional_thali.jpg"
+    }
+  ]
+}
