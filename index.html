@@ -1801,6 +1801,10 @@
             const loginModal = document.getElementById('loginModal');
             loginModal.classList.add('active');
             
+            // Clear the login form and reset button state
+            document.getElementById('loginForm').reset();
+            resetModalButtonStates('loginModal');
+            
             // Animate modal content
             const modalContent = loginModal.querySelector('.auth-modal-content');
             gsap.fromTo(modalContent, 
@@ -1812,6 +1816,10 @@
         document.getElementById('signupNavBtn').addEventListener('click', () => {
             const signupModal = document.getElementById('signupModal');
             signupModal.classList.add('active');
+            
+            // Clear the signup form and reset button state
+            document.getElementById('signupForm').reset();
+            resetModalButtonStates('signupModal');
             
             // Animate modal content
             const modalContent = signupModal.querySelector('.auth-modal-content');
@@ -1826,6 +1834,9 @@
             const modal = document.getElementById(modalId);
             const modalContent = modal.querySelector('.auth-modal-content');
             
+            // Reset button states before closing
+            resetModalButtonStates(modalId);
+            
             gsap.to(modalContent, {
                 y: 30, 
                 opacity: 0, 
@@ -1835,6 +1846,23 @@
                     modal.classList.remove('active');
                 }
             });
+        }
+
+        // Reset button states in modals
+        function resetModalButtonStates(modalId) {
+            const modal = document.getElementById(modalId);
+            const submitBtn = modal.querySelector('.auth-submit-btn');
+            
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                
+                // Reset button text based on modal type
+                if (modalId === 'loginModal') {
+                    submitBtn.textContent = 'Login to Galaxy';
+                } else if (modalId === 'signupModal') {
+                    submitBtn.textContent = 'Begin Exploration';
+                }
+            }
         }
 
         document.getElementById('closeLoginModal').addEventListener('click', () => {
@@ -1918,7 +1946,13 @@
                     body: JSON.stringify({ email, password })
                 });
                 
-                const data = await response.json();
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    console.error('JSON parse error:', jsonError);
+                    throw new Error('Server response error. Please try again.');
+                }
                 
                 if (response.ok && data.success) {
                     // Store token in localStorage
@@ -1934,16 +1968,27 @@
                     // Update UI to show logged in state
                     updateAuthUI(data.user);
                     
+                    // Clear form
+                    document.getElementById('loginForm').reset();
+                    
                     // Show cosmic success message
                     setTimeout(() => {
                         showCosmicMessage(`Welcome back, ${data.user.name}! 🚀`, 'success');
                     }, 500);
                 } else {
-                    throw new Error(data.error || 'Login failed');
+                    // Handle error responses - use the message from the server
+                    const errorMessage = data.message || data.error || `Error ${response.status}: ${response.statusText}`;
+                    throw new Error(errorMessage);
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showCosmicMessage(error.message || 'Login failed. Please try again.', 'error');
+                
+                // If it's a network error or JSON parsing error, show generic message
+                if (error.name === 'SyntaxError' || error.message.includes('fetch')) {
+                    showCosmicMessage('Connection error. Please check your internet connection.', 'error');
+                } else {
+                    showCosmicMessage(error.message || 'Login failed. Please try again.', 'error');
+                }
             } finally {
                 // Reset button state
                 const submitBtn = e.target.querySelector('.auth-submit-btn');
@@ -2007,12 +2052,15 @@
                     // Update UI to show logged in state
                     updateAuthUI(data.user);
                     
+                    // Clear form
+                    document.getElementById('signupForm').reset();
+                    
                     // Show cosmic success message
                     setTimeout(() => {
                         showCosmicMessage(`Welcome to the galaxy, ${data.user.name}! ✨`, 'success');
                     }, 500);
                 } else {
-                    throw new Error(data.error || 'Signup failed');
+                    throw new Error(data.message || data.error || 'Signup failed');
                 }
             } catch (error) {
                 console.error('Signup error:', error);
@@ -2103,6 +2151,10 @@
                 const loginModal = document.getElementById('loginModal');
                 loginModal.classList.add('active');
                 
+                // Clear the login form and reset button state
+                document.getElementById('loginForm').reset();
+                resetModalButtonStates('loginModal');
+                
                 const modalContent = loginModal.querySelector('.auth-modal-content');
                 gsap.fromTo(modalContent, 
                     { y: 30, opacity: 0, scale: 0.95 },
@@ -2113,6 +2165,10 @@
             document.getElementById('signupNavBtn').addEventListener('click', () => {
                 const signupModal = document.getElementById('signupModal');
                 signupModal.classList.add('active');
+                
+                // Clear the signup form and reset button state
+                document.getElementById('signupForm').reset();
+                resetModalButtonStates('signupModal');
                 
                 const modalContent = signupModal.querySelector('.auth-modal-content');
                 gsap.fromTo(modalContent, 

@@ -49,31 +49,44 @@ export const signup = async (req, res) => {
 };
 
 // Login user
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     
     // Validate required fields
     if (!email || !password) {
-      return res.status(400).json({ error: 'Please provide email and password' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide email and password' 
+      });
     }
     
-    // Find user
-    const user = await User.findOne({ email });
+    // Find user by email
+    const user = await User.findOne({ email }).select('+password');
+    
+    // Check if user exists
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(404).json({ 
+        success: false, 
+        message: "Account does not exist." 
+      });
     }
     
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    // Check password using the comparePassword method
+    const isPasswordValid = await user.comparePassword(password);
+    
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid credentials. Please check your password." 
+      });
     }
     
-    // Generate token
+    // Generate token for successful login
     const token = generateToken(user._id);
     
-    res.json({
+    // Return success response
+    res.status(200).json({
       success: true,
       token,
       user: {
@@ -82,9 +95,9 @@ export const login = async (req, res) => {
         name: user.name
       }
     });
+    
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Server error during login process' });
+    next(error);
   }
 };
 
