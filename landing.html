@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaal Sethu | Bridge Through Time</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0c0621;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #b19cd9;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Canvas style during hyperspace */
+        #spaceCanvas.hyperspace-active {
+            z-index: 9998; /* Just below hyperspace container but above other UI */
+            position: relative;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0c0621;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #b19cd9;
+            margin-top: 1.5rem;
+            letter-spacing: 3px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            position: relative;
+        }
+
+        .loading-spinner:before, .loading-spinner:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+        }
+
+        .loading-spinner:before {
+            border-top-color: #b19cd9;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-spinner:after {
+            border-right-color: #9b59b6;
+            animation: spin 1.5s linear reverse infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Hyperspace transition effect */
+        .hyperspace-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999; /* Above everything except the white flash */
+            perspective: 800px;
+            perspective-origin: 50% 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hyperspace-container.active {
+            opacity: 1;
+        }
+
+        .warp-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            transform: translateZ(0);
+        }
+
+        /* Wormhole tunnel effect */
+        .wormhole {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 10vmin;
+            height: 10vmin;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, 
+                #9b59b6 0%, 
+                #8e44ad 40%, 
+                #6c3483 60%, 
+                #4a235a 80%, 
+                #1a0a2e 100%);
+            box-shadow: 0 0 100px 50px rgba(155, 89, 182, 0.8);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 10000;
+            transition: transform 2s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        opacity 2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .wormhole.active {
+            transform: translate(-50%, -50%) scale(15);
+            opacity: 1;
+        }
+
+        .ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #b19cd9, #9b59b6, #d8b2ff, #e6e6fa);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: galaxy-gradient 8s ease-in-out infinite;
+            text-align: center;
+            letter-spacing: 10px;
+            text-shadow: 0 0 30px rgba(177, 156, 217, 0.7);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .main-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #b19cd9;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(177, 156, 217, 0.5);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+        }
+
+        .subtitle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes galaxy-gradient {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 50% 100%; }
+            75% { background-position: 50% 0%; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease 0.6s, transform 1s ease 0.6s;
+            margin-top: 2rem;
+        }
+
+        .cta-buttons.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes button-pulse {
+            0% { box-shadow: 0 0 25px rgba(177, 156, 217, 0.5); }
+            50% { box-shadow: 0 0 35px rgba(177, 156, 217, 0.8), 0 0 15px rgba(216, 178, 255, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(177, 156, 217, 0.5); }
+        }
+
+        .cta-button {
+            position: relative;
+            padding: 1.8rem 5rem;
+            background: rgba(26, 11, 46, 0.3);
+            backdrop-filter: blur(10px);
+            border: 3px solid #b19cd9;
+            border-radius: 50px;
+            color: #d8b2ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 25px rgba(177, 156, 217, 0.5);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: button-pulse 2s infinite;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 0 20px 60px rgba(177, 156, 217, 0.8), 0 0 40px rgba(216, 178, 255, 0.6);
+            background: rgba(177, 156, 217, 0.3);
+            color: #ffffff;
+            border-color: #d8b2ff;
+            text-shadow: 0 0 15px #ffffff, 0 0 30px rgba(216, 178, 255, 0.8);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                rgba(177, 156, 217, 0) 0%,
+                rgba(177, 156, 217, 0.4) 50%,
+                rgba(177, 156, 217, 0) 100%
+            );
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .auth-nav {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 1s ease 0.9s, transform 1s ease 0.9s;
+        }
+
+        .auth-nav.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .auth-nav-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(26, 11, 46, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #b19cd9;
+            border-radius: 25px;
+            color: #b19cd9;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        .auth-nav-btn:hover {
+            background: rgba(177, 156, 217, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(177, 156, 217, 0.3);
+        }
+
+        /* Year Selector Styles */
+        .year-selector-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 2, 34, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .year-selector-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .decade-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: rgba(26, 11, 46, 0.5);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 2px solid #b19cd9;
+            box-shadow: 0 0 30px rgba(177, 156, 217, 0.4);
+            position: relative;
+            max-width: 90%;
+            width: 500px;
+        }
+        
+        .year-selector-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #d8b2ff;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #b19cd9, #d8b2ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: galaxy-gradient 8s ease-in-out infinite;
+        }
+        
+        .decade-button {
+            padding: 1rem;
+            background: rgba(177, 156, 217, 0.1);
+            border: 1px solid #b19cd9;
+            border-radius: 10px;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .decade-button:hover {
+            background: rgba(177, 156, 217, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(177, 156, 217, 0.4);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #b19cd9;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .close-button:hover {
+            background: rgba(177, 156, 217, 0.2);
+            color: #ffffff;
+        }
+
+        /* Auth Modals */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 11, 46, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .auth-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .auth-modal-content {
+            background: linear-gradient(145deg, rgba(177, 156, 217, 0.25), rgba(155, 89, 182, 0.25));
+            border: 2px solid #b19cd9;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 10px 50px rgba(177, 156, 217, 0.5);
+            backdrop-filter: blur(15px);
+            transform: translateY(30px) scale(0.95);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .auth-modal.active .auth-modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .auth-modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-modal-header h2 {
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #d8b2ff, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #b19cd9;
+            border-radius: 50%;
+            background: transparent;
+            color: #b19cd9;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-modal-close:hover {
+            background: rgba(177, 156, 217, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .auth-input-group label {
+            color: #e1d4ff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .auth-input-group input {
+            padding: 0.8rem;
+            background: rgba(26, 11, 46, 0.5);
+            border: 2px solid #b19cd9;
+            border-radius: 10px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-input-group input:focus {
+            outline: none;
+            border-color: #d8b2ff;
+            box-shadow: 0 0 15px rgba(216, 178, 255, 0.5);
+        }
+
+        .auth-submit-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(177, 156, 217, 0.3);
+            border: 2px solid #b19cd9;
+            border-radius: 30px;
+            color: #e1d4ff;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .auth-submit-btn:hover {
+            background: rgba(155, 89, 182, 0.5);
+            box-shadow: 0 0 20px rgba(177, 156, 217, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .auth-switch a {
+            color: #d8b2ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-switch a:hover {
+            color: #b19cd9;
+        }
+
+        /* Full screen white flash for transition */
+        .white-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 10001; /* Above everything */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+        
+        .white-flash.active {
+            opacity: 1;
+        }
+
+        /* Smooth fade and blur for transition */
+        .hyperspace-container.smooth-fade {
+            opacity: 0 !important;
+            filter: blur(30px);
+            transition: opacity 0.8s cubic-bezier(0.77,0,0.175,1), filter 0.8s cubic-bezier(0.77,0,0.175,1);
+        }
+        .wormhole.smooth-fade {
+            opacity: 0 !important;
+            filter: blur(40px);
+            transition: opacity 0.8s cubic-bezier(0.77,0,0.175,1), filter 0.8s cubic-bezier(0.77,0,0.175,1);
+        }
+        .white-flash.smooth-fade {
+            opacity: 1 !important;
+            filter: blur(0px);
+            transition: opacity 0.8s cubic-bezier(0.77,0,0.175,1), filter 0.8s cubic-bezier(0.77,0,0.175,1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">MANIFESTING KAAL SETHU</div>
+    </div>
+
+    <!-- Hyperspace transition elements -->
+    <div class="hyperspace-container" id="hyperspaceContainer"></div>
+    <div class="wormhole" id="wormhole"></div>
+    <div class="white-flash" id="whiteFlash"></div>
+
+    <div class="cursor" id="customCursor"></div>
+    <canvas id="spaceCanvas"></canvas>
+
+    <div class="ui-layer">
+        <h1 class="main-title" id="mainTitle">KAAL SETHU</h1>
+        <div class="cta-buttons" id="ctaButtons">
+            <button class="cta-button" id="getStartedBtn">GET STARTED</button>
+        </div>
+    </div>
+
+    <div class="auth-nav" id="authNav">
+        <button class="auth-nav-btn" id="loginNavBtn">Login</button>
+        <button class="auth-nav-btn" id="signupNavBtn">Sign Up</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <h2>Welcome Back</h2>
+                <p>Enter your credentials to continue your journey</p>
+            </div>
+            <button class="auth-modal-close" id="loginModalClose">&times;</button>
+            <form class="auth-form" id="loginForm">
+                <div class="auth-input-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Login</button>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" id="switchToSignup">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="auth-modal" id="signupModal">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <h2>Join The Journey</h2>
+                <p>Create an account to start your time travel experience</p>
+            </div>
+            <button class="auth-modal-close" id="signupModalClose">&times;</button>
+            <form class="auth-form" id="signupForm">
+                <div class="auth-input-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Sign Up</button>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" id="switchToLogin">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Year Selector Popup -->
+    <div class="year-selector-overlay" id="yearSelectorPopup"></div>
+
+    <script>
+        // Initialize main scene variables
+        let scene, camera, renderer, composer;
+        let bridge, particles, starField, portal, milkyWay;
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        let clock = new THREE.Clock();
+        let loadingManager = new THREE.LoadingManager();
+        
+        // Custom cursor tracking
+        const cursor = document.getElementById('customCursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            // Custom cursor follows mouse
+            if (cursor) {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+            }
+            
+            // Track mouse position for 3D scene interaction
+            mouseX = (e.clientX - windowHalfX) / 100;
+            mouseY = (e.clientY - windowHalfY) / 100;
+        });
+        
+        // Handle loading
+        loadingManager.onLoad = () => {
+            showUI();
+        };
+
+        loadingManager.onError = (url) => {
+            console.error('Error loading resource:', url);
+            showUI(); // Show UI even if there's an error
+        };
+        
+        // Force loading completion after timeout (backup)
+        setTimeout(showUI, 3500);
+
+        function showUI() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay && loadingOverlay.style.opacity !== '0') {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    
+                    // Animate in UI elements
+                    document.getElementById('mainTitle').classList.add('visible');
+                    document.getElementById('ctaButtons').classList.add('visible');
+                    document.getElementById('authNav').classList.add('visible');
+                }, 1000);
+            }
+        }
+        
+        // Initialize scene
+        function init() {
+            try {
+                // Setup Three.js scene
+                scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x070222, 0.0007);
+                
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+                camera.position.z = 1000;
+                
+                renderer = new THREE.WebGLRenderer({ 
+                    canvas: document.getElementById('spaceCanvas'),
+                    antialias: true,
+                    alpha: true
+                });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
+                
+                // Create scene elements - note the revised order for better visuals
+                createStarfield(); // Background stars first
+                milkyWay = createMilkyWay(); // Add the Milky Way galaxy in the background
+                createCosmicDust(); // Cosmic dust particles
+                createTimeBridge(); // Energy flow and cosmic rings (without cylinder)
+                createPortals(); // Central portal effect
+                
+                // Add lighting
+                const ambientLight = new THREE.AmbientLight(0x332255, 0.5);
+                scene.add(ambientLight);
+                
+                const light1 = new THREE.PointLight(0xb19cd9, 2, 1500);
+                light1.position.set(300, 200, 400);
+                scene.add(light1);
+                
+                const light2 = new THREE.PointLight(0x9b59b6, 1.5, 1200);
+                light2.position.set(-300, -150, 300);
+                scene.add(light2);
+                
+                // Handle window resize
+                window.addEventListener('resize', onWindowResize);
+                
+                // Start animation loop
+                animate();
+                
+                // Setup UI interactions
+                setupUIInteractions();
+            } catch(error) {
+                console.error("Error initializing scene:", error);
+                // Show UI even if scene initialization fails
+                showUI();
+            }
+        }
+        
+        function createTimeBridge() {
+            // We're not creating the cylindrical bridge object anymore
+            // Instead, we'll just have the energy flow and portal elements
+            
+            // Add energy flow along bridge
+            const energyCount = 200;
+            const energyGeometry = new THREE.BufferGeometry();
+            const energyVertices = [];
+            
+            for (let i = 0; i < energyCount; i++) {
+                // Create a more scattered energy particle effect
+                const x = THREE.MathUtils.randFloatSpread(1000);
+                const y = THREE.MathUtils.randFloatSpread(1000);
+                const z = THREE.MathUtils.randFloatSpread(500);
+                energyVertices.push(x, y, z);
+            }
+            
+            energyGeometry.setAttribute('position', new THREE.Float32BufferAttribute(energyVertices, 3));
+            
+            const energyMaterial = new THREE.PointsMaterial({
+                size: 4,
+                color: 0xd8b2ff,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const energyParticles = new THREE.Points(energyGeometry, energyMaterial);
+            // Spread the energy particles throughout the scene instead of aligning with the bridge
+            energyParticles.position.z = -800;
+            scene.add(energyParticles);
+            
+            // Create floating cosmic rings in a more scattered arrangement
+            const ringCount = 15;
+            for (let i = 0; i < ringCount; i++) {
+                const ringGeometry = new THREE.TorusGeometry(40 + Math.random() * 20, 1, 16, 100);
+                const ringMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xb19cd9,
+                    transparent: true,
+                    opacity: 0.5,
+                    emissive: 0x9b59b6,
+                    emissiveIntensity: 0.3
+                });
+                
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                // Position rings more randomly throughout the scene
+                const x = THREE.MathUtils.randFloatSpread(800);
+                const y = THREE.MathUtils.randFloatSpread(800);
+                const z = -800 - Math.random() * 500;
+                ring.position.set(x, y, z);
+                // Random rotation
+                ring.rotation.x = Math.random() * Math.PI;
+                ring.rotation.y = Math.random() * Math.PI;
+                scene.add(ring);
+            }
+        }
+        
+        function createMilkyWay() {
+            // Create a smaller version of the Milky Way galaxy
+            const galaxyGroup = new THREE.Group();
+            
+            // Central bulge
+            const bulgeGeometry = new THREE.BufferGeometry();
+            const bulgeCount = 1500; // Smaller count than index.html
+            const bulgePositions = new Float32Array(bulgeCount * 3);
+            const bulgeColors = new Float32Array(bulgeCount * 3);
+            const bulgeSizes = new Float32Array(bulgeCount);
+
+            for (let i = 0; i < bulgeCount; i++) {
+                const i3 = i * 3;
+                const radius = Math.random() * 20; // Smaller radius
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                
+                bulgePositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+                bulgePositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
+                bulgePositions[i3 + 2] = radius * Math.cos(phi);
+                
+                // More intense purple colors for the bulge
+                const intensity = 0.8 + Math.random() * 0.2;
+                bulgeColors[i3] = intensity * 0.6;     // Red component (deeper purple)
+                bulgeColors[i3 + 1] = intensity * 0.3; // Green component (less for more purple)
+                bulgeColors[i3 + 2] = intensity;       // Blue component (strongest for purple)
+                
+                bulgeSizes[i] = Math.random() * 2 + 1;
+            }
+
+            bulgeGeometry.setAttribute('position', new THREE.BufferAttribute(bulgePositions, 3));
+            bulgeGeometry.setAttribute('color', new THREE.BufferAttribute(bulgeColors, 3));
+            bulgeGeometry.setAttribute('size', new THREE.BufferAttribute(bulgeSizes, 1));
+
+            const bulgeMaterial = new THREE.PointsMaterial({
+                size: 1.8,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+
+            const bulge = new THREE.Points(bulgeGeometry, bulgeMaterial);
+            galaxyGroup.add(bulge);
+
+            // Spiral arms
+            const spiralGeometry = new THREE.BufferGeometry();
+            const spiralCount = 6000; // Smaller count than index.html
+            const spiralPositions = new Float32Array(spiralCount * 3);
+            const spiralColors = new Float32Array(spiralCount * 3);
+            const spiralSizes = new Float32Array(spiralCount);
+
+            const arms = 4;
+            const maxRadius = 200; // Smaller radius than index.html
+            const spiralTightness = 2.5;
+
+            for (let i = 0; i < spiralCount; i++) {
+                const i3 = i * 3;
+                
+                // Determine which arm
+                const armIndex = i % arms;
+                const armOffset = (armIndex / arms) * Math.PI * 2;
+                
+                // Distance from center
+                const radius = 20 + Math.pow(Math.random(), 0.8) * (maxRadius - 20);
+                
+                // Spiral angle
+                const spiralAngle = armOffset + (radius / maxRadius) * Math.PI * spiralTightness;
+                
+                // Add some randomness
+                const randomness = 10 + (radius / maxRadius) * 25; // Less randomness for smaller galaxy
+                const randomX = (Math.random() - 0.5) * randomness;
+                const randomY = (Math.random() - 0.5) * randomness * 0.1;
+                const randomZ = (Math.random() - 0.5) * randomness;
+                
+                spiralPositions[i3] = Math.cos(spiralAngle) * radius + randomX;
+                spiralPositions[i3 + 1] = randomY;
+                spiralPositions[i3 + 2] = Math.sin(spiralAngle) * radius + randomZ;
+                
+                // Color based on distance and arm
+                const distanceFactor = 1 - (radius / maxRadius);
+                const armBrightness = 0.3 + Math.random() * 0.7;
+                
+                if (armIndex === 0 || armIndex === 2) {
+                    // Deep violet purple arms
+                    spiralColors[i3] = armBrightness * 0.5;      // Less red
+                    spiralColors[i3 + 1] = armBrightness * 0.2;  // Very little green
+                    spiralColors[i3 + 2] = armBrightness;        // Full blue
+                } else {
+                    // Brighter purple arms
+                    spiralColors[i3] = armBrightness * 0.7;      // More red for brighter purple
+                    spiralColors[i3 + 1] = armBrightness * 0.3;  // Less green
+                    spiralColors[i3 + 2] = armBrightness;        // Full blue
+                }
+                
+                spiralSizes[i] = Math.random() * 1.5 + 0.3; // Smaller particles
+            }
+
+            spiralGeometry.setAttribute('position', new THREE.BufferAttribute(spiralPositions, 3));
+            spiralGeometry.setAttribute('color', new THREE.BufferAttribute(spiralColors, 3));
+            spiralGeometry.setAttribute('size', new THREE.BufferAttribute(spiralSizes, 1));
+
+            const spiralMaterial = new THREE.PointsMaterial({
+                size: 1.0,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+
+            const spiral = new THREE.Points(spiralGeometry, spiralMaterial);
+            galaxyGroup.add(spiral);
+
+            // Dust lanes
+            const dustGeometry = new THREE.BufferGeometry();
+            const dustCount = 2500; // Smaller count than index.html
+            const dustPositions = new Float32Array(dustCount * 3);
+            const dustColors = new Float32Array(dustCount * 3);
+
+            for (let i = 0; i < dustCount; i++) {
+                const i3 = i * 3;
+                const radius = 25 + Math.random() * 150; // Smaller radius
+                const angle = Math.random() * Math.PI * 2;
+                
+                dustPositions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 50;
+                dustPositions[i3 + 1] = (Math.random() - 0.5) * 3;
+                dustPositions[i3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * 50;
+                
+                // Dark purple colors for dust with more intense purple
+                const darkness = Math.random() * 0.4;
+                dustColors[i3] = darkness * 0.5;       // Less red
+                dustColors[i3 + 1] = darkness * 0.2;   // Much less green
+                dustColors[i3 + 2] = darkness * 1.2;   // More blue for more purple
+            }
+
+            dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+            dustGeometry.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
+
+            const dustMaterial = new THREE.PointsMaterial({
+                size: 2.5,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true,
+                opacity: 0.7,
+                transparent: true
+            });
+
+            const dust = new THREE.Points(dustGeometry, dustMaterial);
+            galaxyGroup.add(dust);
+            
+            // Position the galaxy behind other elements but visible from front view
+            galaxyGroup.position.z = -1500;
+            // No tilt for front view
+            
+            // Add enhanced purple glow to the core
+            const coreLight = new THREE.PointLight(0x8a2be2, 1.5, 150);
+            coreLight.position.set(0, 0, 0);
+            galaxyGroup.add(coreLight);
+            
+            scene.add(galaxyGroup);
+            
+            // Store the galaxy group for animation
+            return galaxyGroup;
+        }
+        
+        function createStarfield() {
+            // Create a background starfield
+            const starGeometry = new THREE.BufferGeometry();
+            const starMaterial = new THREE.PointsMaterial({
+                size: 2.5,
+                sizeAttenuation: true,
+                color: 0xffffff,
+                transparent: true,
+                opacity: 1,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const starPositions = [];
+            const starCount = 8000;
+            
+            for (let i = 0; i < starCount; i++) {
+                const x = THREE.MathUtils.randFloatSpread(3000);
+                const y = THREE.MathUtils.randFloatSpread(3000);
+                const z = THREE.MathUtils.randFloatSpread(3000);
+                starPositions.push(x, y, z);
+            }
+            
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+            starField = new THREE.Points(starGeometry, starMaterial);
+            scene.add(starField);
+        }
+        
+        function createCosmicDust() {
+            // Create floating dust particles
+            const dustGeometry = new THREE.BufferGeometry();
+            const dustMaterial = new THREE.PointsMaterial({
+                size: 4,
+                sizeAttenuation: true,
+                color: 0xb19cd9,
+                transparent: true,
+                opacity: 0.7,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const dustPositions = [];
+            const dustCount = 1500;
+            
+            for (let i = 0; i < dustCount; i++) {
+                const x = THREE.MathUtils.randFloatSpread(2000);
+                const y = THREE.MathUtils.randFloatSpread(2000);
+                const z = THREE.MathUtils.randFloatSpread(2000);
+                dustPositions.push(x, y, z);
+            }
+            
+            dustGeometry.setAttribute('position', new THREE.Float32BufferAttribute(dustPositions, 3));
+            particles = new THREE.Points(dustGeometry, dustMaterial);
+            scene.add(particles);
+        }
+        
+        function createPortals() {
+            // Create a central time portal
+            const portalGeometry = new THREE.RingGeometry(60, 90, 64);
+            
+            // Main portal with cosmic colors
+            const portalMaterial = new THREE.MeshBasicMaterial({
+                color: 0x9b59b6,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const mainPortal = new THREE.Mesh(portalGeometry, portalMaterial);
+            mainPortal.position.set(0, 0, -1200);
+            // Add slight rotation for perspective
+            mainPortal.rotation.x = Math.PI / 4;
+            mainPortal.rotation.y = Math.PI / 6;
+            scene.add(mainPortal);
+            
+            // Add a second inner ring
+            const innerPortalGeometry = new THREE.RingGeometry(40, 55, 64);
+            const innerPortalMaterial = new THREE.MeshBasicMaterial({
+                color: 0x4b0082,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.9,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const innerPortal = new THREE.Mesh(innerPortalGeometry, innerPortalMaterial);
+            innerPortal.position.copy(mainPortal.position);
+            innerPortal.rotation.copy(mainPortal.rotation);
+            scene.add(innerPortal);
+            
+            // Create portal glow
+            const glowGeometry = new THREE.SphereGeometry(50, 32, 32);
+            const pastGlowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x4b0082,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.BackSide
+            });
+            
+            const portalGlow = new THREE.Mesh(glowGeometry, pastGlowMaterial);
+            portalGlow.position.copy(mainPortal.position);
+            portalGlow.scale.set(2, 2, 2);
+            scene.add(portalGlow);
+            
+            // Add animated pulse effect
+            const pulseGeometry = new THREE.SphereGeometry(75, 32, 32);
+            const pulseGlowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x9b59b6,
+                transparent: true,
+                opacity: 0.2,
+                side: THREE.BackSide
+            });
+            
+            const pulseGlow = new THREE.Mesh(pulseGeometry, pulseGlowMaterial);
+            pulseGlow.position.copy(mainPortal.position);
+            scene.add(pulseGlow);
+            
+            // Store the pulse glow for animation
+            portal = {
+                main: mainPortal,
+                inner: innerPortal,
+                glow: pulseGlow
+            };
+        }
+        
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            const elapsed = clock.getElapsedTime();
+            
+            // Smooth camera movement based on mouse position
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+            
+            camera.rotation.y += 0.05 * (targetX - camera.rotation.y);
+            camera.rotation.x += 0.05 * (targetY - camera.rotation.x);
+            
+            // We don't need to rotate the bridge anymore since it's removed
+            
+            // Move starfield slightly with subtle pulsing
+            if (starField) {
+                starField.rotation.y += delta * 0.02;
+                starField.rotation.x += delta * 0.01;
+                
+                // Add subtle pulsing to the stars
+                const pulseFactor = (Math.sin(elapsed * 1.5) * 0.05) + 1;
+                starField.scale.set(pulseFactor, pulseFactor, pulseFactor);
+            }
+            
+            // Move particles with enhanced motion
+            if (particles) {
+                particles.rotation.y += delta * 0.05;
+                
+                // Add subtle upward drift to particles
+                particles.position.y += delta * Math.sin(elapsed * 0.5) * 2;
+            }
+            
+            // Animate portal elements
+            if (portal) {
+                portal.main.rotation.z += delta * 0.2;
+                portal.inner.rotation.z -= delta * 0.3;
+                
+                // Pulse effect
+                const pulseFactor = (Math.sin(elapsed * 2) + 1) / 2;
+                portal.glow.scale.set(
+                    1 + pulseFactor * 0.3,
+                    1 + pulseFactor * 0.3,
+                    1 + pulseFactor * 0.3
+                );
+                
+                // Adjust opacity for ethereal effect
+                portal.glow.material.opacity = 0.1 + pulseFactor * 0.2;
+            }
+            
+            // Rotate Milky Way galaxy slowly
+            if (milkyWay) {
+                milkyWay.rotation.y += delta * 0.02; // Slow rotation
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        function setupUIInteractions() {
+            // CTA button interaction
+            document.getElementById('getStartedBtn').addEventListener('click', () => {
+                // Start hyperspace transition
+                initiateHyperspaceTransition();
+            });
+            
+            // Set up authentication handlers
+            document.getElementById('loginNavBtn').addEventListener('click', () => {
+                const loginModal = document.getElementById('loginModal');
+                loginModal.classList.add('active');
+                
+                // Animation
+                const modalContent = loginModal.querySelector('.auth-modal-content');
+                if (window.gsap) {
+                    gsap.fromTo(modalContent, 
+                        { y: 30, opacity: 0, scale: 0.95 },
+                        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                    );
+                }
+            });
+            
+            document.getElementById('signupNavBtn').addEventListener('click', () => {
+                const signupModal = document.getElementById('signupModal');
+                signupModal.classList.add('active');
+                
+                // Animation
+                const modalContent = signupModal.querySelector('.auth-modal-content');
+                if (window.gsap) {
+                    gsap.fromTo(modalContent, 
+                        { y: 30, opacity: 0, scale: 0.95 },
+                        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                    );
+                }
+            });
+            
+            // Close modal handlers
+            document.getElementById('loginModalClose').addEventListener('click', () => {
+                document.getElementById('loginModal').classList.remove('active');
+            });
+            
+            document.getElementById('signupModalClose').addEventListener('click', () => {
+                document.getElementById('signupModal').classList.remove('active');
+            });
+            
+            // Switch between login and signup
+            document.getElementById('switchToSignup').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('loginModal').classList.remove('active');
+                document.getElementById('signupModal').classList.add('active');
+                
+                const modalContent = document.getElementById('signupModal').querySelector('.auth-modal-content');
+                if (window.gsap) {
+                    gsap.fromTo(modalContent, 
+                        { y: 30, opacity: 0, scale: 0.95 },
+                        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                    );
+                }
+            });
+            
+            document.getElementById('switchToLogin').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('signupModal').classList.remove('active');
+                document.getElementById('loginModal').classList.add('active');
+                
+                const modalContent = document.getElementById('loginModal').querySelector('.auth-modal-content');
+                if (window.gsap) {
+                    gsap.fromTo(modalContent, 
+                        { y: 30, opacity: 0, scale: 0.95 },
+                        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
+                    );
+                }
+            });
+        }
+        
+        function initiateHyperspaceTransition() {
+            // Create audio for warp effect (optional)
+            const warpSound = new Audio();
+            warpSound.src = 'assets/audio/hyperspace.mp3'; // Make sure this file exists or remove this
+            warpSound.volume = 0.6;
+            warpSound.play().catch(error => console.log('Audio play failed: ', error));
+            
+            // Hide all UI elements
+            const mainTitle = document.getElementById('mainTitle');
+            const ctaButtons = document.getElementById('ctaButtons');
+            const authNav = document.getElementById('authNav');
+            
+            // Fade out UI elements with animation
+            if (window.gsap) {
+                // More dramatic exit animation with a zoom/fade effect
+                gsap.to(mainTitle, {
+                    opacity: 0,
+                    scale: 1.2,
+                    duration: 0.6,
+                    ease: "power2.in"
+                });
+                
+                gsap.to(ctaButtons, {
+                    opacity: 0,
+                    scale: 0.8,
+                    duration: 0.5,
+                    ease: "power2.in"
+                });
+                
+                gsap.to(authNav, {
+                    opacity: 0,
+                    y: -30,
+                    duration: 0.4,
+                    ease: "power2.in",
+                    onComplete: () => {
+                        mainTitle.style.display = 'none';
+                        ctaButtons.style.display = 'none';
+                        authNav.style.display = 'none';
+                    }
+                });
+            } else {
+                // Fallback without GSAP
+                mainTitle.style.opacity = '0';
+                mainTitle.style.transform = 'scale(1.2)';
+                ctaButtons.style.opacity = '0';
+                ctaButtons.style.transform = 'scale(0.8)';
+                authNav.style.opacity = '0';
+                authNav.style.transform = 'translateY(-30px)';
+                
+                setTimeout(() => {
+                    mainTitle.style.display = 'none';
+                    ctaButtons.style.display = 'none';
+                    authNav.style.display = 'none';
+                }, 500);
+            }
+            
+            // Get our hyperspace elements
+            const hyperspaceContainer = document.getElementById('hyperspaceContainer');
+            const wormhole = document.getElementById('wormhole');
+            const whiteFlash = document.getElementById('whiteFlash');
+            
+            // Make sure hyperspace container is shown
+            hyperspaceContainer.classList.add('active');
+            
+            // Make sure THREE.js canvas is visible during hyperspace
+            document.getElementById('spaceCanvas').classList.add('hyperspace-active');
+            
+            // Show hyperspace container immediately
+            hyperspaceContainer.classList.add('active');
+            
+            // Create warp stars only after UI elements are hidden
+            setTimeout(() => {
+                // Now start the hyperspace effect
+                createWarpStars();
+                
+                // Start camera zoom
+                startZoomEffect();
+            }, 600); // Wait for UI fade-out
+        }
+        
+        function startZoomEffect() {
+            // Get elements we need to manipulate
+            const wormhole = document.getElementById('wormhole');
+            const whiteFlash = document.getElementById('whiteFlash');
+            const hyperspaceContainer = document.getElementById('hyperspaceContainer');
+            // Camera zoom effect using three.js camera
+            let zoomProgress = 0;
+            const zoomDuration = 3000; // 3 seconds
+            const zoomStart = Date.now();
+            let transitionStarted = false;
+
+            function zoomCamera() {
+                const now = Date.now();
+                zoomProgress = Math.min(1, (now - zoomStart) / zoomDuration);
+
+                // Move camera forward
+                camera.position.z = 1000 - (zoomProgress * 1500);
+                // Increase FOV for warp effect
+                camera.fov = 75 + (zoomProgress * 40);
+                camera.updateProjectionMatrix();
+
+                if (milkyWay) {
+                    // Scale up milky way slightly for effect
+                    const scale = 1 + (zoomProgress * 0.5);
+                    milkyWay.scale.set(scale, scale, scale);
+                    // Rotate faster as we zoom
+                    milkyWay.rotation.y += 0.01 * zoomProgress;
+                    milkyWay.rotation.z += 0.005 * zoomProgress;
+                }
+
+                // If we're halfway through, start showing the wormhole
+                if (zoomProgress > 0.5 && !wormhole.classList.contains('active')) {
+                    wormhole.classList.add('active');
+                }
+
+                // When zoom is complete, start smooth fade out
+                if (zoomProgress >= 1 && !transitionStarted) {
+                    transitionStarted = true;
+                    // Fade out hyperspace and wormhole
+                    hyperspaceContainer.classList.add('smooth-fade');
+                    wormhole.classList.add('smooth-fade');
+                    setTimeout(() => {
+                        // Fade in white flash
+                        whiteFlash.classList.add('smooth-fade');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 900); // Wait for white flash
+                    }, 800); // Wait for fade out
+                } else if (!transitionStarted) {
+                    requestAnimationFrame(zoomCamera);
+                }
+            }
+            // Start zoom effect
+            requestAnimationFrame(zoomCamera);
+        }
+        
+        function createWarpStars() {
+            const hyperspaceContainer = document.getElementById('hyperspaceContainer');
+            
+            // Clear any existing stars
+            hyperspaceContainer.innerHTML = '';
+            
+            // Create stars
+            const starCount = 400;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'warp-star';
+                
+                // Randomize star properties
+                const size = Math.random() * 4 + 1;
+                const opacity = Math.random() * 0.8 + 0.2;
+                
+                // Position star randomly but more toward the center
+                const theta = Math.random() * Math.PI * 2;
+                const radius = 50 + Math.random() * 40;
+                const x = 50 + Math.cos(theta) * radius;
+                const y = 50 + Math.sin(theta) * radius;
+                
+                // Set star style
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.opacity = opacity;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                
+                // Add animation for star
+                const speed = 2 + Math.random() * 8;
+                const delay = Math.random() * 1;
+                const scale = 10 + Math.random() * 20;
+                
+                // Use GSAP for star animation if available
+                if (window.gsap) {
+                    gsap.to(star, {
+                        scale: scale,
+                        opacity: 0,
+                        x: (x - 50) * 10,
+                        y: (y - 50) * 10,
+                        duration: speed,
+                        delay: delay,
+                        ease: "power1.in"
+                    });
+                } else {
+                    // Fallback animation with CSS
+                    star.style.transition = `all ${speed}s ${delay}s ease-in`;
+                    setTimeout(() => {
+                        star.style.transform = `translate(${(x - 50) * 10}px, ${(y - 50) * 10}px) scale(${scale})`;
+                        star.style.opacity = '0';
+                    }, 10);
+                }
+                
+                // Add shimmer effect to some stars
+                if (Math.random() > 0.7) {
+                    star.style.animation = `pulse ${0.5 + Math.random() * 1}s infinite alternate ease-in-out`;
+                }
+                
+                hyperspaceContainer.appendChild(star);
+            }
+        }
+        
+        // Start the 3D scene
+        try {
+            init();
+        } catch(e) {
+            console.error("Error initializing scene:", e);
+            showUI();
+        }
+    </script>
+</body>
+</html>
