@@ -623,7 +623,20 @@
         .white-flash.smooth-fade {
             opacity: 1 !important;
             filter: blur(0px);
-            transition: opacity 0.8s cubic-bezier(0.77,0,0.175,1), filter 0.8s cubic-bezier(0.77,0,0.175,1);
+            transition: opacity 1.2s cubic-bezier(0.19, 1, 0.22, 1), filter 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            background: radial-gradient(circle at center, 
+                rgba(255,255,255,1) 30%,
+                rgba(230,230,255,0.95) 70%,
+                rgba(200,200,255,0.9) 100%);
+        }
+
+        /* Prevent any glitchy transition */
+        .hyperspace-active canvas {
+            position: fixed;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
         }
     </style>
 </head>
@@ -854,29 +867,7 @@
             energyParticles.position.z = -800;
             scene.add(energyParticles);
             
-            // Create floating cosmic rings in a more scattered arrangement
-            const ringCount = 15;
-            for (let i = 0; i < ringCount; i++) {
-                const ringGeometry = new THREE.TorusGeometry(40 + Math.random() * 20, 1, 16, 100);
-                const ringMaterial = new THREE.MeshPhongMaterial({
-                    color: 0xb19cd9,
-                    transparent: true,
-                    opacity: 0.5,
-                    emissive: 0x9b59b6,
-                    emissiveIntensity: 0.3
-                });
-                
-                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-                // Position rings more randomly throughout the scene
-                const x = THREE.MathUtils.randFloatSpread(800);
-                const y = THREE.MathUtils.randFloatSpread(800);
-                const z = -800 - Math.random() * 500;
-                ring.position.set(x, y, z);
-                // Random rotation
-                ring.rotation.x = Math.random() * Math.PI;
-                ring.rotation.y = Math.random() * Math.PI;
-                scene.add(ring);
-            }
+            // Rings have been removed to avoid cluttering around the Milky Way
         }
         
         function createMilkyWay() {
@@ -1397,9 +1388,13 @@
             const wormhole = document.getElementById('wormhole');
             const whiteFlash = document.getElementById('whiteFlash');
             const hyperspaceContainer = document.getElementById('hyperspaceContainer');
+            
+            // Create special zoom galaxy for transition
+            const zoomGalaxy = createZoomGalaxy();
+            
             // Camera zoom effect using three.js camera
             let zoomProgress = 0;
-            const zoomDuration = 3000; // 3 seconds
+            const zoomDuration = 4000; // 4 seconds for a longer, more dramatic effect
             const zoomStart = Date.now();
             let transitionStarted = false;
 
@@ -1412,14 +1407,33 @@
                 // Increase FOV for warp effect
                 camera.fov = 75 + (zoomProgress * 40);
                 camera.updateProjectionMatrix();
-
+                
+                // Animate zoom galaxy - rotation and scale increases as we zoom
+                if (zoomGalaxy) {
+                    // Rotation speeds up as we zoom
+                    zoomGalaxy.rotation.z += 0.003 * (1 + zoomProgress * 3);
+                    
+                    // Move the galaxy with the camera so it stays visible
+                    zoomGalaxy.position.z = -400 - (zoomProgress * 800);
+                    
+                    // Slightly scale up the galaxy for dramatic effect
+                    const galaxyScale = 1 + (zoomProgress * 0.8);
+                    zoomGalaxy.scale.set(galaxyScale, galaxyScale, galaxyScale * 2); // elongated on z-axis
+                }
+                
+                // Hide the regular Milky Way once we start zooming
                 if (milkyWay) {
-                    // Scale up milky way slightly for effect
-                    const scale = 1 + (zoomProgress * 0.5);
-                    milkyWay.scale.set(scale, scale, scale);
-                    // Rotate faster as we zoom
-                    milkyWay.rotation.y += 0.01 * zoomProgress;
-                    milkyWay.rotation.z += 0.005 * zoomProgress;
+                    const fadeOutFactor = 1 - Math.min(1, zoomProgress * 3); // Fade out quickly
+                    
+                    // Make original milky way fade out and shrink away
+                    milkyWay.scale.set(fadeOutFactor, fadeOutFactor, fadeOutFactor);
+                    
+                    // Adjust the children's materials to fade out
+                    milkyWay.children.forEach(child => {
+                        if (child.material && child.material.opacity !== undefined) {
+                            child.material.opacity = fadeOutFactor;
+                        }
+                    });
                 }
 
                 // If we're halfway through, start showing the wormhole
@@ -1427,12 +1441,57 @@
                     wormhole.classList.add('active');
                 }
 
+                // Build up to transition at 80% of zoom progress
+                if (zoomProgress > 0.8 && !transitionStarted) {
+                    // Start wormhole effect near the end of the zoom
+                    if (!wormhole.classList.contains('active')) {
+                        wormhole.classList.add('active');
+                    }
+                    
+                    // Increase galaxy brightness for dramatic effect at the end
+                    if (zoomGalaxy && zoomGalaxy.children.length > 0) {
+                        const brightnessFactor = (zoomProgress - 0.8) * 5; // 0 to 1 in the final 20% of zoom
+                        
+                        zoomGalaxy.children.forEach(child => {
+                            if (child instanceof THREE.PointLight && brightnessFactor > 0.5) {
+                                child.intensity = 2 + (brightnessFactor * 8); // Core gets extremely bright at the end
+                                child.distance = 300 + (brightnessFactor * 700); // Light reaches further
+                            }
+                        });
+                    }
+                }
+                
                 // When zoom is complete, start smooth fade out
                 if (zoomProgress >= 1 && !transitionStarted) {
                     transitionStarted = true;
+                    
                     // Fade out hyperspace and wormhole
                     hyperspaceContainer.classList.add('smooth-fade');
                     wormhole.classList.add('smooth-fade');
+                    
+                    // Fade galaxy into white flash
+                    if (zoomGalaxy) {
+                        // Final explosion effect - scale rapidly
+                        gsap.to(zoomGalaxy.scale, {
+                            x: 3,
+                            y: 3,
+                            z: 3,
+                            duration: 0.8,
+                            ease: "power2.in"
+                        });
+                        
+                        // Increase brightness to white
+                        zoomGalaxy.children.forEach(child => {
+                            if (child instanceof THREE.PointLight) {
+                                gsap.to(child, {
+                                    intensity: 15,
+                                    distance: 2000,
+                                    duration: 0.8
+                                });
+                            }
+                        });
+                    }
+                    
                     setTimeout(() => {
                         // Fade in white flash
                         whiteFlash.classList.add('smooth-fade');
@@ -1446,6 +1505,148 @@
             }
             // Start zoom effect
             requestAnimationFrame(zoomCamera);
+        }
+        
+        // Create zoom galaxy effect when transition starts
+        function createZoomGalaxy() {
+            // Create a bright Milky Way galaxy for the transition
+            const galaxyGroup = new THREE.Group();
+            
+            // Central bright core - larger and brighter than the normal Milky Way
+            const coreGeometry = new THREE.BufferGeometry();
+            const coreCount = 3000;
+            const corePositions = new Float32Array(coreCount * 3);
+            const coreColors = new Float32Array(coreCount * 3);
+            const coreSizes = new Float32Array(coreCount);
+
+            for (let i = 0; i < coreCount; i++) {
+                const i3 = i * 3;
+                const radius = Math.pow(Math.random(), 0.5) * 80; // Concentrated core
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                
+                corePositions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+                corePositions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.2;
+                corePositions[i3 + 2] = radius * Math.cos(phi);
+                
+                // Bright blue-white core with purple edges
+                const distFromCenter = Math.sqrt(
+                    Math.pow(corePositions[i3], 2) + 
+                    Math.pow(corePositions[i3 + 1], 2) + 
+                    Math.pow(corePositions[i3 + 2], 2)
+                ) / 80;
+                
+                const brightness = 1 - (distFromCenter * 0.7);
+                
+                coreColors[i3] = 0.8 * brightness; // Red (more for white-blue core)
+                coreColors[i3 + 1] = 0.9 * brightness; // Green (high for white-blue)
+                coreColors[i3 + 2] = 1.0 * brightness; // Blue (highest)
+                
+                coreSizes[i] = Math.random() * 4 + 2; // Larger particles for visibility during zoom
+            }
+
+            coreGeometry.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+            coreGeometry.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
+            coreGeometry.setAttribute('size', new THREE.BufferAttribute(coreSizes, 1));
+
+            const coreMaterial = new THREE.PointsMaterial({
+                size: 2.5,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+
+            const core = new THREE.Points(coreGeometry, coreMaterial);
+            galaxyGroup.add(core);
+            
+            // Spiral arms - stretched out dramatically for the zoom effect
+            const armGeometry = new THREE.BufferGeometry();
+            const armCount = 20000;
+            const armPositions = new Float32Array(armCount * 3);
+            const armColors = new Float32Array(armCount * 3);
+            const armSizes = new Float32Array(armCount);
+
+            const arms = 5; // More arms for dramatic effect
+            const maxRadius = 600; // Much larger radius for dramatic zoom effect
+            const spiralTightness = 3;
+            
+            for (let i = 0; i < armCount; i++) {
+                const i3 = i * 3;
+                
+                // Determine which arm
+                const armIndex = i % arms;
+                const armOffset = (armIndex / arms) * Math.PI * 2;
+                
+                // Distance from center - weighted toward the outer edges
+                const radius = 50 + Math.pow(Math.random(), 0.5) * (maxRadius - 50);
+                
+                // Spiral angle - tighter near center, looser at edges
+                const spiralFactor = radius / maxRadius;
+                const spiralAngle = armOffset + (spiralFactor * spiralFactor * Math.PI * spiralTightness * 2);
+                
+                // Z coordinate gets more negative (further away) for outer stars to create tunnel effect
+                const zFactor = Math.pow(spiralFactor, 2) * 800;
+                
+                // Add randomness that increases with distance
+                const randomScale = 10 + (radius / maxRadius) * 100;
+                const randomX = (Math.random() - 0.5) * randomScale;
+                const randomY = (Math.random() - 0.5) * randomScale;
+                
+                armPositions[i3] = Math.cos(spiralAngle) * radius + randomX;
+                armPositions[i3 + 1] = Math.sin(spiralAngle) * radius + randomY;
+                armPositions[i3 + 2] = -zFactor; // Negative z to create tunnel going forward
+                
+                // Color based on distance and arm
+                const distanceFactor = radius / maxRadius;
+                let r, g, b;
+                
+                if (armIndex % 2 === 0) {
+                    // Blue-white arm
+                    r = 0.7 * (1 - distanceFactor * 0.5);
+                    g = 0.8 * (1 - distanceFactor * 0.5);
+                    b = 1.0;
+                } else {
+                    // Purple arm
+                    r = 0.8 * (1 - distanceFactor * 0.5);
+                    g = 0.4 * (1 - distanceFactor * 0.5);
+                    b = 1.0;
+                }
+                
+                armColors[i3] = r;
+                armColors[i3 + 1] = g;
+                armColors[i3 + 2] = b;
+                
+                // Stars get smaller with distance to enhance tunnel effect
+                armSizes[i] = 3 * (1 - distanceFactor * 0.7);
+            }
+
+            armGeometry.setAttribute('position', new THREE.BufferAttribute(armPositions, 3));
+            armGeometry.setAttribute('color', new THREE.BufferAttribute(armColors, 3));
+            armGeometry.setAttribute('size', new THREE.BufferAttribute(armSizes, 1));
+
+            const armMaterial = new THREE.PointsMaterial({
+                size: 1.5,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+
+            const arms3D = new THREE.Points(armGeometry, armMaterial);
+            galaxyGroup.add(arms3D);
+            
+            // Position in front of camera, aligned with the wormhole direction
+            galaxyGroup.position.z = -400;
+            
+            // Add bright core light
+            const coreLight = new THREE.PointLight(0xffffff, 2, 300);
+            coreLight.position.set(0, 0, 0);
+            galaxyGroup.add(coreLight);
+            
+            scene.add(galaxyGroup);
+            
+            return galaxyGroup;
         }
         
         function createWarpStars() {
