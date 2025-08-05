@@ -813,7 +813,7 @@
                 window.scrollTo(0, scrollPos);
             }
             
-            // Validate if the selected date is in the future
+            // Validate if the selected date is at least 1 hour in the future
             function isDateValid() {
                 const day = parseInt(openDay.value);
                 const month = parseInt(openMonth.value);
@@ -828,12 +828,12 @@
                 
                 // Create Date objects for comparison
                 const selectedDate = new Date(year, month - 1, day); // Month is 0-based in JavaScript
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset time for comparison
+                const now = new Date();
+                const oneHourFromNow = new Date(now.getTime() + (60 * 60 * 1000)); // Add 1 hour
                 
-                // Check if selected date is today or in the future
-                if (selectedDate < today) {
-                    dateError.textContent = 'Please select a date in the future';
+                // Check if selected date is at least 1 hour in the future
+                if (selectedDate <= oneHourFromNow) {
+                    dateError.textContent = 'Please select a date at least 1 hour in the future';
                     dateError.style.display = 'block';
                     return false;
                 }
@@ -945,7 +945,7 @@
             });
             
             // Form submission
-            timeCapsuleForm.addEventListener('submit', function(event) {
+            timeCapsuleForm.addEventListener('submit', async function(event) {
                 event.preventDefault();
                 
                 // Validate date
@@ -964,48 +964,98 @@
                 const year = parseInt(openYear.value);
                 const selectedDate = new Date(year, month - 1, day);
                 
-                // For time-travel functionality - redirect to the corresponding decade
-                if (selectedDate.getFullYear() >= 1950 && selectedDate.getFullYear() <= 2019) {
-                    // Calculate the decade (e.g., 1953 → 1950, 1973 → 1970)
-                    const decade = Math.floor(selectedDate.getFullYear() / 10) * 10;
+                // Show loading state
+                const submitBtn = document.querySelector('.send-capsule-btn');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-icon">⏳</span> Creating Time Capsule...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Create FormData object
+                    const formData = new FormData();
+                    formData.append('message', document.getElementById('message').value);
+                    formData.append('recipientType', recipientType.value);
+                    if (recipientType.value === 'other') {
+                        formData.append('recipientEmail', recipientEmail.value);
+                    }
+                    formData.append('openDay', openDay.value);
+                    formData.append('openMonth', openMonth.value);
+                    formData.append('openYear', openYear.value);
                     
-                    // Redirect to the appropriate decade page
-                    window.location.href = `decades/${decade}/index.html`;
-                    return;
+                    // Add files if they exist
+                    const audioFile = document.getElementById('audioFile').files[0];
+                    const videoFile = document.getElementById('videoFile').files[0];
+                    const imageFile = document.getElementById('imageFile').files[0];
+                    
+                    if (audioFile) formData.append('audioFile', audioFile);
+                    if (videoFile) formData.append('videoFile', videoFile);
+                    if (imageFile) formData.append('imageFile', imageFile);
+                    
+                    // Submit to backend
+                    const response = await fetch('/api/time-capsule', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    // Create message element
+                    let formMessage = document.querySelector('.form-message');
+                    if (!formMessage) {
+                        formMessage = document.createElement('div');
+                        timeCapsuleForm.after(formMessage);
+                    }
+                    
+                    if (result.success) {
+                        // Success message
+                        formMessage.className = 'form-message success-message';
+                        formMessage.innerHTML = `
+                            <p>🎉 Your time capsule has been created and scheduled to open on ${result.data.openDate}!</p>
+                            <p>We'll send ${recipientType.value === 'self' ? 'you' : 'the recipient'} an email when it's time to open it.</p>
+                        `;
+                        
+                        // Clear form
+                        timeCapsuleForm.reset();
+                        document.querySelectorAll('.selected-file').forEach(el => el.textContent = '');
+                        document.querySelectorAll('.media-label').forEach(label => {
+                            label.classList.remove('has-file');
+                        });
+                        document.getElementById('imagePreview').src = '';
+                        recipientDetails.style.display = 'none';
+                        
+                    } else {
+                        // Error message
+                        formMessage.className = 'form-message error-message';
+                        formMessage.innerHTML = `
+                            <p>❌ Error: ${result.message}</p>
+                            <p>Please try again or contact support if the problem persists.</p>
+                        `;
+                    }
+                    
+                    formMessage.style.display = 'block';
+                    formMessage.scrollIntoView({ behavior: 'smooth' });
+                    
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    
+                    // Show error message
+                    let formMessage = document.querySelector('.form-message');
+                    if (!formMessage) {
+                        formMessage = document.createElement('div');
+                        timeCapsuleForm.after(formMessage);
+                    }
+                    formMessage.className = 'form-message error-message';
+                    formMessage.innerHTML = `
+                        <p>❌ Network Error: Unable to submit your time capsule.</p>
+                        <p>Please check your connection and try again.</p>
+                    `;
+                    formMessage.style.display = 'block';
+                    formMessage.scrollIntoView({ behavior: 'smooth' });
+                } finally {
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
                 }
-                
-                // If year is outside our decade range, continue with normal form submission
-                // Create a success message
-                let formMessage = document.querySelector('.form-message');
-                if (!formMessage) {
-                    formMessage = document.createElement('div');
-                    formMessage.className = 'form-message success-message';
-                    timeCapsuleForm.after(formMessage);
-                }
-                
-                // Format the date for display
-                const formattedDate = selectedDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                // Set success message text
-                formMessage.innerHTML = `
-                    <p>🎉 Your time capsule has been created and scheduled to open on ${formattedDate}!</p>
-                    <p>We'll send ${recipientType.value === 'self' ? 'you' : 'the recipient'} an email when it's time to open it.</p>
-                `;
-                formMessage.style.display = 'block';
-                
-                // Clear form
-                timeCapsuleForm.reset();
-                document.querySelectorAll('.selected-file').forEach(el => el.textContent = '');
-                recipientDetails.style.display = 'none';
-                
-                // Scroll to the message
-                formMessage.scrollIntoView({ behavior: 'smooth' });
-                
-                console.log('Time Capsule created for date:', formattedDate);
             });
             
             // Create enhanced star background with more stars and improved twinkling
