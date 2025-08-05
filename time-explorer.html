@@ -991,13 +991,32 @@
                     if (videoFile) formData.append('videoFile', videoFile);
                     if (imageFile) formData.append('imageFile', imageFile);
                     
+                    console.log('Submitting form data to /api/time-capsule');
+                    
                     // Submit to backend
                     const response = await fetch('/api/time-capsule', {
                         method: 'POST',
                         body: formData
                     });
                     
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    
+                    // Check if response is ok
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    // Check content type
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        console.error('Non-JSON response:', text);
+                        throw new Error('Server returned non-JSON response');
+                    }
+                    
                     const result = await response.json();
+                    console.log('Parsed result:', result);
                     
                     // Create message element
                     let formMessage = document.querySelector('.form-message');
@@ -1045,10 +1064,26 @@
                         timeCapsuleForm.after(formMessage);
                     }
                     formMessage.className = 'form-message error-message';
-                    formMessage.innerHTML = `
-                        <p>❌ Network Error: Unable to submit your time capsule.</p>
-                        <p>Please check your connection and try again.</p>
-                    `;
+                    
+                    // More specific error messages
+                    if (error.message.includes('Failed to fetch')) {
+                        formMessage.innerHTML = `
+                            <p>❌ Connection Error: Unable to reach the server.</p>
+                            <p>Please make sure the server is running on port 3000.</p>
+                            <p>Try: <code>npm start</code> in your terminal</p>
+                        `;
+                    } else if (error.message.includes('non-JSON response')) {
+                        formMessage.innerHTML = `
+                            <p>❌ Server Error: Received invalid response.</p>
+                            <p>The server may not be configured correctly.</p>
+                            <p>Check the server console for errors.</p>
+                        `;
+                    } else {
+                        formMessage.innerHTML = `
+                            <p>❌ Error: ${error.message}</p>
+                            <p>Please try again or contact support if the problem persists.</p>
+                        `;
+                    }
                     formMessage.style.display = 'block';
                     formMessage.scrollIntoView({ behavior: 'smooth' });
                 } finally {
@@ -1260,5 +1295,6 @@
             });
         });
     </script>
+    <script src="test-server.js"></script>
 </body>
 </html>

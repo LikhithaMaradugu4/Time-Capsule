@@ -25,6 +25,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.')); // Serve static files from current directory
 
+// Add CORS headers for development
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
+// Add request logging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    next();
+});
+
 // Configure multer for file uploads (store in memory)
 const upload = multer({ 
     storage: multer.memoryStorage(),
@@ -57,6 +75,11 @@ const timeCapsuleSchema = new mongoose.Schema({
 });
 
 const TimeCapsule = mongoose.model('TimeCapsule', timeCapsuleSchema);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ success: true, message: 'Server is running', timestamp: new Date().toISOString() });
+});
 
 // Helper function to upload file to Azure Blob Storage
 async function uploadToAzure(file, fileName) {
@@ -215,6 +238,11 @@ app.post('/api/time-capsule', upload.fields([
     { name: 'videoFile', maxCount: 1 },
     { name: 'imageFile', maxCount: 1 }
 ]), async (req, res) => {
+    console.log('Received time capsule submission:', {
+        body: req.body,
+        files: req.files ? Object.keys(req.files) : 'No files'
+    });
+    
     try {
         const { message, recipientType, recipientEmail, openDay, openMonth, openYear } = req.body;
         
@@ -312,6 +340,21 @@ app.get('/api/time-capsules', async (req, res) => {
         console.error('Error fetching time capsules:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
+});
+
+// Global error handler
+app.use((error, req, res, next) => {
+    console.error('Global error handler:', error);
+    res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+});
+
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ success: false, message: 'API endpoint not found' });
 });
 
 // Handle 404s
